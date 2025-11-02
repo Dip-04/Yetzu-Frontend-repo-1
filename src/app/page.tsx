@@ -7,7 +7,8 @@ import useSession from "@/hooks/useSession";
 export default function Home() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { user, logout } = useSession();
+  const { user, logout, isUserLoggedIn } = useSession();
+  console.log(user)
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -25,7 +26,7 @@ export default function Home() {
         Welcome, {user?.name || "User"}
       </h1>
 
-      {user ? (
+      {isUserLoggedIn ? (
         <button
           onClick={handleLogout}
           disabled={isLoading}
