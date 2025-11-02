@@ -32,7 +32,6 @@ export default function Footer() {
           </div>
         </div>
       </div>
-
       {/* Right Menu Columns */}
       <div className="flex flex-wrap justify-between flex-1">
         {[1, 2, 3].map((col) => (
