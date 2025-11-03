@@ -54,6 +54,7 @@ authApi.interceptors.response.use(
           secure: true,
           sameSite: "strict",
         });
+        Cookies.set("isUserLoggedIn", "true", { expires: 1 });
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return authApi(originalRequest);
@@ -62,6 +63,7 @@ authApi.interceptors.response.use(
 
         Cookies.remove("jwtToken");
         Cookies.remove("refreshToken");
+        Cookies.remove("isUserLoggedIn");
 
         toast.error("Session expired. Please log in again.");
 

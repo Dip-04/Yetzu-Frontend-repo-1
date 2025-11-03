@@ -3,14 +3,15 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useRouter, useSearchParams } from "next/navigation";
 import Input from "@/components/ui/Input";
-import { api } from "@/lib/axios";
 import Button from "@/components/ui/Button";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
+import { useResetPasswordMutation } from "@/lib/queries/identityService/useIdentityService";
 
 const ResetPassword = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { mutateAsync: resetPassword, isPending, isSuccess } = useResetPasswordMutation();
     const email = searchParams.get("email");
     const otp = searchParams.get("otp");
 
@@ -31,22 +32,12 @@ const ResetPassword = () => {
 
     const handleSubmit = async (values: { password: string }) => {
         try {
-            const res = await api.post(
-                "/identityapi/v1/auth/reset-password",
-                {
-                    email,
-                    otp,
-                    newPassword: values.password,
+            if (email && otp && values.password) {
+                const res = await resetPassword({ email, otp, newPassword: values.password })
+                if (res?.message && isSuccess) {
+                    toast.success("Password reset successful! Please log in.");
+                    router.push("/login");
                 }
-            );
-
-            if (res?.data?.message) {
-                toast.success(res.data.message || "Password reset successful!");
-            }
-
-            if (res.status === 200) {
-                toast.success("Password reset successful! Please log in.");
-                router.push("/login");
             }
         } catch (error: any) {
             const msg =
@@ -72,7 +63,7 @@ const ResetPassword = () => {
                 validationSchema={validationSchema}
                 onSubmit={handleSubmit}
             >
-                {({ isSubmitting, touched, dirty, errors, isValid, values, handleBlur, handleChange }) => (
+                {({ touched, dirty, errors, isValid, values, handleBlur, handleChange }) => (
                     <Form className="flex flex-col gap-6">
                         <Input
                             type="password"
@@ -101,9 +92,9 @@ const ResetPassword = () => {
                         <Button
                             type="submit"
                             variant="primary"
-                            disabled={!isValid || !dirty || isSubmitting}
+                            disabled={!isValid || !dirty || isPending}
                         >
-                            {isSubmitting ? "Please wait..." : "Done"}
+                            {isPending ? "Please wait..." : "Done"}
                         </Button>
                     </Form>
                 )}

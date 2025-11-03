@@ -10,6 +10,11 @@ export type SignupPayload = {
   role: string;
 };
 
+export type BaseSuccessResponse = {
+  message: string;
+  success: boolean;
+};
+
 export type SignupResponse = {
   message: string;
   success: boolean;

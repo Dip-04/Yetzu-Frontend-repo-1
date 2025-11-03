@@ -10,6 +10,7 @@ import {
 import { identityService } from "./identityService";
 import Cookies from "js-cookie";
 import {
+  BaseSuccessResponse,
   GetUserProfileResponse,
   LoginPayload,
   LoginResponse,
@@ -30,7 +31,6 @@ const useGetUserProfile = (): UseQueryResult<
     queryFn: identityService.getUserProfile,
     enabled: !!accessToken,
     refetchInterval: false,
-    refetchOnWindowFocus: false,
   });
 };
 
@@ -77,6 +77,7 @@ const useLogoutMutation = (): UseMutationResult<
     onSuccess: () => {
       Cookies.remove("jwtToken");
       Cookies.remove("refreshToken");
+      Cookies.remove("isUserLoggedIn");
       queryClient.invalidateQueries({ queryKey: ["getUserProfile"] });
     },
   });
@@ -105,10 +106,52 @@ const useSignUpMutation = (): UseMutationResult<
   });
 };
 
+const useForgotPasswordMutation = (): UseMutationResult<
+  BaseSuccessResponse,
+  unknown,
+  { email: string }
+> => {
+  return useMutation<BaseSuccessResponse, unknown, { email: string }>({
+    mutationFn: ({ email }) => identityService.forgotPassword(email),
+  });
+};
+
+const useOtpVerificationMutation = (): UseMutationResult<
+  BaseSuccessResponse,
+  unknown,
+  { email: string; otp: string }
+> => {
+  return useMutation<
+    BaseSuccessResponse,
+    unknown,
+    { email: string; otp: string }
+  >({
+    mutationFn: ({ email, otp }) => identityService.verifyOtp(email, otp),
+  });
+};
+
+const useResetPasswordMutation = (): UseMutationResult<
+  BaseSuccessResponse,
+  unknown,
+  { email: string; otp: string; newPassword: string }
+> => {
+  return useMutation<
+    BaseSuccessResponse,
+    unknown,
+    { email: string; otp: string; newPassword: string }
+  >({
+    mutationFn: ({ email, otp, newPassword }) =>
+      identityService.resetPassowrd(email, otp, newPassword),
+  });
+};
+
 export {
   useGetUserProfile,
   useLoginMutation,
   useGoogleLoginMutation,
   useLogoutMutation,
   useSignUpMutation,
+  useForgotPasswordMutation,
+  useOtpVerificationMutation,
+  useResetPasswordMutation,
 };

@@ -34,4 +34,25 @@ export const identityService = {
     });
     return res?.data;
   },
+  forgotPassword: async (email: string) => {
+    const res = await api.post("/identityapi/v1/auth/forgot-password", {
+      email,
+    });
+    return res.data;
+  },
+  verifyOtp: async (email: string, otp: string) => {
+    const res = await api.post("/identityapi/v1/auth/verify-otp", {
+      email,
+      otp,
+    });
+    return res.data;
+  },
+  resetPassowrd: async (email: string, otp: string, newPassword: string) => {
+    const res = await api.post("/identityapi/v1/auth/reset-password", {
+      email,
+      otp,
+      newPassword,
+    });
+    return res.data;
+  },
 };

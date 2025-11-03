@@ -9,6 +9,7 @@ import { api } from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import toast from "react-hot-toast";
+import { useForgotPasswordMutation } from "@/lib/queries/identityService/useIdentityService";
 
 const ForgotPasswordSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Email is required"),
@@ -16,6 +17,7 @@ const ForgotPasswordSchema = Yup.object().shape({
 
 export default function ForgotPasswordForm() {
     const router = useRouter();
+    const { mutateAsync: forgotPassword, isPending } = useForgotPasswordMutation();
 
     return (
         <div className="flex flex-col gap-6">
@@ -31,34 +33,27 @@ export default function ForgotPasswordForm() {
             <Formik
                 initialValues={{ email: "" }}
                 validationSchema={ForgotPasswordSchema}
-                onSubmit={async (values, { setSubmitting }) => {
+                onSubmit={async (values) => {
                     try {
-                        const response = await api.post(
-                            "/identityapi/v1/auth/forgot-password",
-                            { email: values.email },
-                            { headers: { "Content-Type": "application/json" } }
-                        );
-
-                        if (response.data.message) {
+                        const response = await forgotPassword({ email: values.email });
+                        if (response?.message && response?.success) {
                             toast.success("OTP sent successfully to your email.");
                             router.push(`/otp-verification?email=${encodeURIComponent(values.email)}`);
                         } else {
-                            toast.error(response.data.message || "Something went wrong!");
+                            toast.error(response?.message || "Something went wrong!");
                         }
                     } catch (err: any) {
                         toast.error(err.response?.data?.message || "Failed to send OTP.");
-                    } finally {
-                        setSubmitting(false);
                     }
                 }}
             >
-                {({ isSubmitting, touched, isValid, errors, dirty, values: { email }, handleChange, handleBlur }) => (
+                {({ touched, isValid, errors, dirty, values: { email }, handleChange, handleBlur }) => (
                     <Form className="flex flex-col gap-3">
                         <Input name="email"
                             label="Enter your email"
                             placeholder="Enter Input"
                             required
-                            disabled={isSubmitting}
+                            disabled={isPending}
                             value={email}
                             onChange={handleChange}
                             onBlur={handleBlur}
@@ -68,11 +63,11 @@ export default function ForgotPasswordForm() {
 
                         <Button
                             variant="primary"
-                            disabled={!isValid || !dirty || isSubmitting}
-                            loading={isSubmitting}
+                            disabled={!isValid || !dirty || isPending}
+                            loading={isPending}
                             type="submit"
                         >
-                            {isSubmitting ? "Sending..." : "Get OTP"}
+                            {isPending ? "Sending..." : "Get OTP"}
                         </Button>
 
                         <div className="flex items-center gap-2 my-2">
@@ -83,7 +78,7 @@ export default function ForgotPasswordForm() {
 
                         <p className="text-sm text-center text-gray-600">
                             Don’t have an account?{" "}
-                            <Link href="/signup" className={`text-xs lg:text-sm ${isSubmitting ? "bg-gray-100 text-gray-400" : "text-[#0047FF] hover:underline"} font-medium`}>
+                            <Link href="/signup" className={`text-xs lg:text-sm ${isPending ? "bg-gray-100 text-gray-400" : "text-[#0047FF] hover:underline"} font-medium`}>
                                 Sign up here
                             </Link>
                         </p>
