@@ -1,15 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+
 import Image from "next/image";
 import { useGetCourses } from "@/lib/queries/courses/useCoursesService";
-
-interface Course {
-  _id: string;
-  title: string;
-  description: string;
-  thumbnail: string;
-  cost: number;
-}
 
 export default function WebinarsSection() {
   const { data: courses } = useGetCourses();
