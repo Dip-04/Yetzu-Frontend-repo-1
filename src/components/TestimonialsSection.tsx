@@ -8,31 +8,31 @@ export default function Testimonials() {
       name: "Sohab Alam",
       role: "Neurosurgeon",
       text: "Yetzu transformed my approach to studying with personalized mentorship that kept me focused and confident.",
-      avatar: "/images/avatar1.png",
+      avatar: "/images/avatar.png",
     },
     {
       name: "Ananya Sharma",
       role: "Medical Student",
       text: "The guidance I received was beyond academics — it shaped how I think and plan for success.",
-      avatar: "/images/avatar2.png",
+      avatar: "/images/avatar.png",
     },
     {
       name: "Rahul Mehta",
       role: "Engineering Graduate",
       text: "Yetzu’s mentors were incredibly supportive and practical — helping me balance learning and life.",
-      avatar: "/images/avatar3.png",
+      avatar: "/images/avatar.png",
     },
     {
       name: "Priya Patel",
       role: "Business Analyst",
       text: "Loved how structured and insightful every mentorship session was. Highly recommend to all learners!",
-      avatar: "/images/avatar4.png",
+      avatar: "/images/avatar.png",
     },
     {
       name: "Amit Verma",
       role: "Data Scientist",
       text: "The entire learning journey felt personalized and truly empowering — a great experience overall.",
-      avatar: "/images/avatar5.png",
+      avatar: "/images/avatar.png",
     },
   ];
 
