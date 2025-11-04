@@ -12,6 +12,8 @@ import Script from "next/script";
 import { useEffect } from "react";
 import { api } from "@/lib/axios";
 import useSession from "@/hooks/useSession";
+import Cookies from "js-cookie";
+import { useGoogleLoginMutation, useLoginMutation } from "@/lib/queries/identityService/useIdentityService";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
@@ -23,7 +25,10 @@ const LoginSchema = Yup.object().shape({
 
 export default function LoginForm() {
   const router = useRouter();
-  const { setUser } = useSession();
+  const { setUser, setIsUserLoggedIn } = useSession();
+  const { mutateAsync: login, isPending: isLoginPending } = useLoginMutation();
+  const { mutateAsync: googleSignIn, isPending: isGoogleSignInPending } = useGoogleLoginMutation();
+  const isPending = isLoginPending || isGoogleSignInPending;
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
   const initializeGoogleButtons = () => {
@@ -48,19 +53,9 @@ export default function LoginForm() {
 
   const handleGoogleCredentialResponse = async (response: any) => {
     try {
-      // Post Google token to your backend API for validation and get user data + tokens back
-      const res = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/identityapi/v1/auth/google-signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id_token: response.credential }),
-      });
-      const data = await res.json();
-      if (data?.success && data?.userData && data?.userProfileData) {
-        // Store tokens and user info in localStorage
-        localStorage.setItem("accessToken", data.userData.access_token);
-        localStorage.setItem("refreshToken", data.userData.refresh_token);
-        localStorage.setItem("user", JSON.stringify(data.userProfileData));
-        setUser(data.userProfileData);
+      const data = await googleSignIn({ idToken: response.credential });
+      if (data?.userData && data?.userProfileData) {
+        setIsUserLoggedIn(true);
         toast.success("Google sign-in successful!");
         router.push("/");
       } else {
@@ -83,18 +78,11 @@ export default function LoginForm() {
       <Formik
         initialValues={{ email: "", password: "", rememberMe: false }}
         validationSchema={LoginSchema}
-        onSubmit={async (values, { setSubmitting }) => {
+        onSubmit={async (values) => {
           try {
-            const res = await api.post("/identityapi/v1/auth/signin", {
-              email: values.email, password: values.password,
-            });
-            const { data } = res;
+            const data = await login({ email: values.email, password: values.password })
             if (data?.userData && data?.userProfileData) {
-              // Store tokens and user info in localStorage
-              localStorage.setItem("accessToken", data.userData.access_token);
-              localStorage.setItem("refreshToken", data.userData.refresh_token);
-              localStorage.setItem("user", JSON.stringify(data.userProfileData));
-              setUser(data.userProfileData);
+              setIsUserLoggedIn(true)
               toast.success("Login successful!");
               router.push("/");
             } else {
@@ -103,8 +91,6 @@ export default function LoginForm() {
           } catch (error) {
             toast.error("Login failed. Please try again.");
             console.error("Login error:", error);
-          } finally {
-            setSubmitting(false);
           }
         }}
       >
@@ -113,7 +99,6 @@ export default function LoginForm() {
           touched,
           isValid,
           dirty,
-          isSubmitting,
           setFieldValue,
           handleChange,
           handleBlur,
@@ -126,7 +111,7 @@ export default function LoginForm() {
               placeholder="Enter your email"
               value={values.email}
               onChange={handleChange}
-              disabled={isSubmitting}
+              disabled={isPending}
               onBlur={handleBlur}
               error={touched.email && !!errors.email}
               helperText={touched.email && errors.email ? errors.email : ""}
@@ -139,7 +124,7 @@ export default function LoginForm() {
               placeholder="Enter your password"
               value={values.password}
               onChange={handleChange}
-              disabled={isSubmitting}
+              disabled={isPending}
               onBlur={handleBlur}
               error={touched.password && !!errors.password}
               helperText={touched.password && errors.password ? errors.password : ""}
@@ -156,12 +141,12 @@ export default function LoginForm() {
                 <span className="ml-3 text-sm font-medium">Remember me</span>
               </label>
 
-              <Link href="/forgot-password" className={`text-xs lg:text-sm ${isSubmitting ? "bg-gray-100 text-gray-400" : "text-[#0047FF] hover:underline"} font-medium`}>
+              <Link href="/forgot-password" className={`text-xs lg:text-sm ${isPending ? "bg-gray-100 text-gray-400" : "text-[#0047FF] hover:underline"} font-medium`}>
                 Forgot password?
               </Link>
             </div>
 
-            <Button variant="primary" disabled={!isValid || !dirty || isSubmitting} loading={isSubmitting}>
+            <Button variant="primary" disabled={!isValid || !dirty || isPending} loading={isPending}>
               Log In
             </Button>
 
@@ -171,11 +156,11 @@ export default function LoginForm() {
               <div className="flex-1 border-t border-gray-300" />
             </div>
 
-            {!isSubmitting && <div id="google-login" className="w-full"></div>}
+            {!isPending && <div id="google-login" className="w-full"></div>}
 
             <p className="text-xs lg:text-sm text-center mt-2 text-gray-600">
               Don’t have an account?{" "}
-              <Link href="/signup" className={`text-xs lg:text-sm ${isSubmitting ? "bg-gray-100 text-gray-400" : "text-[#0047FF] hover:underline"} font-medium`}>
+              <Link href="/signup" className={`text-xs lg:text-sm ${isPending ? "bg-gray-100 text-gray-400" : "text-[#0047FF] hover:underline"} font-medium`}>
                 Sign up here
               </Link>
             </p>

@@ -1,11 +1,13 @@
-"use client";
+"use client"
 
 import Link from "next/link";
 import { ChevronDown, Menu, X } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
+import useSession from "@/hooks/useSession";
 
 const Navbar = () => {
+  const { user: { name } } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCoursesOpen, setIsCoursesOpen] = useState(false);
 
@@ -41,9 +43,8 @@ const Navbar = () => {
               Courses
               <ChevronDown
                 size={16}
-                className={`transition-transform duration-300 ${
-                  isCoursesOpen ? "rotate-180" : ""
-                }`}
+                className={`transition-transform duration-300 ${isCoursesOpen ? "rotate-180" : ""
+                  }`}
               />
             </button>
 
@@ -68,13 +69,16 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:block">
-          <Link href="/login" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition font-medium">
-            Log In
-          </Link>
+          {!name &&
+            <Link href="/login" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition font-medium">
+              Log In
+            </Link>
+          }
+          <p>{name}</p>
         </div>
       </div>
     </nav>
-    
+
   );
 };
 

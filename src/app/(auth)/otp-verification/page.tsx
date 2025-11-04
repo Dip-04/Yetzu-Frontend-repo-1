@@ -2,18 +2,21 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { api } from "@/lib/axios";
 import Button from "@/components/ui/Button";
 import toast from "react-hot-toast";
+import { useOtpVerificationMutation } from "@/lib/queries/identityService/useIdentityService";
 
 export default function OTPVerification() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const email = searchParams.get("email");
+    const { mutateAsync: verifyOtp, isPending } = useOtpVerificationMutation();
 
     const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
+    const [error, setError] = useState<string>("");
+    const [shake, setShake] = useState(false);
+
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (!email) router.push("/forgot-password");
@@ -24,6 +27,7 @@ export default function OTPVerification() {
         const newOtp = [...otp];
         newOtp[index] = value;
         setOtp(newOtp);
+        setError("");
         if (value && index < 5) inputRefs.current[index + 1]?.focus();
     };
 
@@ -36,65 +40,68 @@ export default function OTPVerification() {
     const handleSubmit = async () => {
         const otpCode = otp.join("");
         if (otpCode.length !== 6) {
+            setError("Please enter all 6 digits of the OTP.");
             toast.error("Please enter all 6 digits of the OTP.");
             return;
         }
 
-        setIsLoading(true);
         try {
-            const response = await api.post(
-                "/identityapi/v1/auth/verify-otp",
-                { email, otp: otpCode }
-            );
+            const response = await verifyOtp({ email: email || "", otp: otpCode });
 
-            if (response.status === 200) {
-                toast.success(response?.data?.message || "OTP verified successfully!");
+            if (response.success) {
+                toast.success(response?.message || "OTP verified successfully!");
                 router.push(
                     `/reset-password?email=${encodeURIComponent(email!)}&otp=${encodeURIComponent(otpCode!)}`
                 );
             }
         } catch (err: any) {
-            toast.error(err.response?.data?.message || "OTP verification failed. Please try again.");
-            console.error(err);
-        } finally {
-            setIsLoading(false);
+            const message =
+                err.response?.data?.message || "OTP verification failed. Please try again.";
+            setError(message);
+            toast.error(message);
+            setShake(true);
+            setTimeout(() => setShake(false), 600);
         }
     };
 
     return (
         <div className="flex flex-col gap-6">
-            <h1 className="text-2xl font-bold text-[#021165] mb-2">
-                OTP Verification
-            </h1>
+            <h1 className="text-2xl font-bold text-[#021165] mb-2">OTP Verification</h1>
             <p className="text-gray-600 text-sm mb-6">
                 Enter the 6-digit OTP sent to <br />
                 <span className="font-medium">{email}</span>
             </p>
 
-            <div className="flex justify-between mb-6">
+            <div
+                className={`flex justify-between mb-2 transition-all duration-300 ${shake ? "animate-shake" : ""
+                    }`}
+            >
                 {otp.map((digit, index) => (
                     <input
                         key={index}
                         type="text"
                         maxLength={1}
-                        disabled={isLoading}
+                        disabled={isPending}
                         value={digit}
                         ref={(el) => {
                             inputRefs.current[index] = el;
                         }}
                         onChange={(e) => handleChange(e.target.value, index)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
-                        className="w-12 h-12 text-center text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className={`w-12 h-12 text-center text-lg rounded-lg border 
+              focus:outline-none focus:ring-2 
+              ${error
+                                ? "border-red-500 focus:ring-red-400"
+                                : "border-gray-300 focus:ring-blue-500"
+                            }`}
                     />
                 ))}
             </div>
 
-            <Button
-                onClick={handleSubmit}
-                disabled={isLoading}
-                loading={isLoading}
-            >
-                {isLoading ? "Verifying..." : "Verify"}
+            {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+
+            <Button onClick={handleSubmit} disabled={isPending} loading={isPending}>
+                {isPending ? "Verifying..." : "Verify"}
             </Button>
         </div>
     );

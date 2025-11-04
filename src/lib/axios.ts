@@ -1,8 +1,10 @@
 import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
+import Cookies from "js-cookie";
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-// Public Axios instance
+// 🔹 Public Axios instance (no auth)
 export const api = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -10,7 +12,7 @@ export const api = axios.create({
   },
 });
 
-// 2️⃣ Authenticated Axios instance
+// 🔹 Authenticated Axios instance
 export const authApi = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -18,13 +20,11 @@ export const authApi = axios.create({
   },
 });
 
-// 🔹 Request interceptor to attach access token
 authApi.interceptors.request.use(async (config) => {
-  const accessToken = localStorage.getItem("accessToken") || "";
-  const token = accessToken;
+  const jwtToken = Cookies.get("jwtToken");
 
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (jwtToken && config.headers) {
+    config.headers.Authorization = `Bearer ${jwtToken}`;
   }
 
   return config;
@@ -35,44 +35,41 @@ authApi.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as any;
 
-    // Prevent infinite loops
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      const user = localStorage.getItem("user") || null;
-      const refreshToken = localStorage.getItem("refreshToken");
+      const refreshToken = Cookies.get("refreshToken");
+
       try {
         if (!refreshToken) throw new Error("No refresh token available");
 
-        // Refresh the access token
         const { data } = await api.post("/identityapi/v1/auth/refresh", {
           refreshToken,
         });
 
-        // Save new token to session (you can also update next-auth session here)
         const newAccessToken = data?.accessToken;
-        if (!newAccessToken) throw new Error("No new token received");
+        if (!newAccessToken) throw new Error("No new access token received");
 
-        // Update the Authorization header and retry the request
+        Cookies.set("jwtToken", newAccessToken, {
+          secure: true,
+          sameSite: "strict",
+        });
+        Cookies.set("isUserLoggedIn", "true", { expires: 1 });
+
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
         return authApi(originalRequest);
       } catch (err) {
-        console.error("Token refresh failed, redirecting to login", err);
-        if (user) {
-          const res = await authApi.post("/api/signout", {
-            userId: JSON.parse(user).user_id,
-          });
-          if (res.status === 200) {
-            toast.success("Logged out successfully!");
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("user");
-            localStorage.removeItem("refreshToken");
-          } else {
-            toast.error("Logout failed!");
-          }
-        }
+        console.error("Token refresh failed → redirecting to login", err);
+
+        Cookies.remove("jwtToken");
+        Cookies.remove("refreshToken");
+        Cookies.remove("isUserLoggedIn");
+
         toast.error("Session expired. Please log in again.");
+
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
       }
     }
 

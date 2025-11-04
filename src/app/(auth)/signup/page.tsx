@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import useSession from "@/hooks/useSession";
 import { api } from "@/lib/axios";
+import { useGoogleLoginMutation, useSignUpMutation } from "@/lib/queries/identityService/useIdentityService";
 
 const SignupSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -26,7 +27,10 @@ const SignupSchema = Yup.object().shape({
 
 export default function SignupForm() {
   const router = useRouter();
-  const { setUser } = useSession();
+  const { setIsUserLoggedIn } = useSession();
+  const { mutateAsync: googleSignIn, isPending: isGoogleSignInPending } = useGoogleLoginMutation();
+  const { mutateAsync: signUp, isPending: isSignupPending } = useSignUpMutation();
+  const isPending = isGoogleSignInPending || isSignupPending
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
   const initializeGoogleButtons = () => {
@@ -51,23 +55,17 @@ export default function SignupForm() {
 
   const handleGoogleCredentialResponse = async (response: any) => {
     try {
-      const res = await api.post("/identityapi/v1/auth/google-signin", {
-        id_token: response.credential
-      });
-      const { data } = res;
-      if (data?.success && data?.userData && data?.userProfileData) {
-        localStorage.setItem("accessToken", data.userData.access_token);
-        localStorage.setItem("refreshToken", data.userData.refresh_token);
-        localStorage.setItem("user", JSON.stringify(data.userProfileData));
-        setUser(data.userProfileData);
-        toast.success("Google sign-up successful!");
+      const data = await googleSignIn({ idToken: response.credential });
+      if (data?.userData && data?.userProfileData) {
+        setIsUserLoggedIn(true);
+        toast.success("Google sign-in successful!");
         router.push("/");
       } else {
-        toast.error("Google sign-up failed!");
+        toast.error("Google sign-in failed!");
       }
     } catch (error) {
-      toast.error("Google sign-up failed");
-      console.error("Google sign-up error:", error);
+      toast.error("Google sign-in failed");
+      console.error("Google sign-in error:", error);
     }
   };
 
@@ -80,46 +78,23 @@ export default function SignupForm() {
       <Formik
         initialValues={{ name: "", email: "", password: "", confirmPassword: "" }}
         validationSchema={SignupSchema}
-        onSubmit={async (values, { setSubmitting }) => {
+        onSubmit={async (values) => {
           try {
             const payload = { ...values, role: "student" };
-            const response = await fetch(process.env.NEXT_PUBLIC_API_BASE_URL + "/identityapi/v1/auth/signup", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
-            const data = await response.json();
-
+            const data = await signUp(payload);
             if (data.message === "User created") {
               toast.success("Signup successful! Redirecting...");
-
-              // Automatically log in user after signup by calling signin API
-              const res = await api.post("/identityapi/v1/auth/signin", {
-                email: values.email, password: values.password,
-              });
-              const { data } = res;
-
-              if (data?.success && data?.userData && data?.userProfileData) {
-                localStorage.setItem("accessToken", data.userData.access_token);
-                localStorage.setItem("refreshToken", data.userData.refresh_token);
-                localStorage.setItem("user", JSON.stringify(data.userProfileData));
-                setUser(data.userProfileData);
-                router.push("/");
-              } else {
-                toast.error("Login after signup failed.");
-              }
+              router.push('/')
             } else {
               toast.error(data.message || "Something went wrong!");
             }
           } catch (error: any) {
             console.error("Signup error:", error);
             toast.error(error.response?.data?.message || "Signup failed.");
-          } finally {
-            setSubmitting(false);
           }
         }}
       >
-        {({ values, errors, touched, dirty, isValid, handleChange, handleBlur, isSubmitting }) => (
+        {({ values, errors, touched, dirty, isValid, handleChange, handleBlur }) => (
           <Form className="flex flex-col gap-2 w-full">
             <Input
               name="name"
@@ -128,7 +103,7 @@ export default function SignupForm() {
               value={values.name}
               onChange={handleChange}
               onBlur={handleBlur}
-              disabled={isSubmitting}
+              disabled={isPending}
               placeholder="Enter your name"
               error={touched.name && !!errors.name}
               helperText={touched.name && errors.name ? errors.name : ""}
@@ -140,7 +115,7 @@ export default function SignupForm() {
               required
               value={values.email}
               onChange={handleChange}
-              disabled={isSubmitting}
+              disabled={isPending}
               onBlur={handleBlur}
               placeholder="Enter your email"
               error={touched.email && !!errors.email}
@@ -154,7 +129,7 @@ export default function SignupForm() {
               required
               value={values.password}
               onChange={handleChange}
-              disabled={isSubmitting}
+              disabled={isPending}
               onBlur={handleBlur}
               placeholder="Enter your password"
               error={touched.password && !!errors.password}
@@ -167,7 +142,7 @@ export default function SignupForm() {
               label="Confirm Password"
               required
               value={values.confirmPassword}
-              disabled={isSubmitting}
+              disabled={isPending}
               onChange={handleChange}
               onBlur={handleBlur}
               placeholder="Enter your password"
@@ -175,8 +150,8 @@ export default function SignupForm() {
               helperText={touched.confirmPassword && errors.confirmPassword ? errors.confirmPassword : ""}
             />
 
-            <Button variant="primary" disabled={!isValid || !dirty || isSubmitting} loading={isSubmitting}>
-              {isSubmitting ? "Signing up..." : "Sign Up"}
+            <Button variant="primary" disabled={!isValid || !dirty || isPending} loading={isPending}>
+              {isPending ? "Signing up..." : "Sign Up"}
             </Button>
 
             <div className="flex items-center gap-3 my-2">
@@ -189,7 +164,7 @@ export default function SignupForm() {
 
             <p className="text-sm text-center text-gray-600 mt-2">
               Have an account?{" "}
-              <Link href="/login" className={`text-xs lg:text-sm ${isSubmitting ? "bg-gray-100 text-gray-400" : "text-[#0047FF] hover:underline"} font-medium`}>
+              <Link href="/login" className={`text-xs lg:text-sm ${isPending ? "bg-gray-100 text-gray-400" : "text-[#0047FF] hover:underline"} font-medium`}>
                 Log in here
               </Link>
             </p>
