@@ -4,11 +4,9 @@ import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <div className="relative w-full bg-[#F9F9F9] pt-12">
-      {/* Footer */}
-      <footer className="relative rounded-2xl shadow-sm max-w-7xl px-24 py-12 mx-24 bg-gradient-to-r from-white to-[#1F1E82]/[0.16]">
+    <div className="relative w-full   flex flex-col items-center">
+      <footer className="relative rounded-[28px] shadow-sm w-full max-w-7xl px-12 py-12 bg-gradient-to-l from-[#E6EAFF] to-[#FFFFFF] mx-auto">
         <div className="flex flex-col lg:flex-row justify-between gap-10">
-          {/* Left Section */}
           <div className="flex-1">
             <img src="Images/Logo.png" alt="YETZU Logo" className="h-8 mb-4" />
             <p className="text-gray-600 max-w-sm leading-relaxed">
@@ -16,7 +14,6 @@ export default function Footer() {
               effective tool so solve our text relate problems. can be
             </p>
 
-            {/* Newsletter */}
             <div className="mt-8">
               <p className="font-semibold text-gray-800 mb-2">
                 Subscribe to Newsletter
@@ -33,7 +30,7 @@ export default function Footer() {
               </div>
             </div>
           </div>
-          {/* Right Menu Columns */}
+
           <div className="flex flex-wrap justify-between flex-1">
             {[1, 2, 3].map((col) => (
               <div key={col} className="min-w-[120px]">
@@ -53,16 +50,14 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Social Icons */}
-        <div className="flex justify-end lg:justify-end gap-6 pt-6">
-          <FaInstagram className="text-gray-700 hover:text-pink-600 text-lg cursor-pointer" />
-          <FaFacebookF className="text-gray-700 hover:text-blue-600 text-lg cursor-pointer" />
-          <FaYoutube className="text-gray-700 hover:text-red-600 text-lg cursor-pointer" />
+        <div className="flex justify-end gap-6 pt-6">
+          <FaInstagram className="text-[#252525] hover:text-pink-600 text-lg cursor-pointer" />
+          <FaFacebookF className="text-[#252525] hover:text-blue-600 text-lg cursor-pointer" />
+          <FaYoutube className="text-[#252525] hover:text-red-600 text-lg cursor-pointer" />
         </div>
       </footer>
 
-      {/* Watermark Image */}
-      <div className="w-full flex justify-center items-center bg-transparent -mt-4">
+      <div className="w-full flex justify-center items-center bg-transparent mt-[100px]">
         <img
           src="Images/Footer Last Logo.png"
           alt="YETZU Watermark"

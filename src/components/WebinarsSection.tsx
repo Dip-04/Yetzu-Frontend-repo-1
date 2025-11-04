@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useGetCourses } from "@/lib/queries/courses/useCoursesService";
 
 interface Course {
   _id: string;
@@ -11,20 +12,7 @@ interface Course {
 }
 
 export default function WebinarsSection() {
-  const [courses, setCourses] = useState<Course[]>([]);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const res = await fetch("/api/courses", { cache: "no-store" });
-        const data = await res.json();
-        setCourses(data?.courses || []);
-      } catch (err) {
-        console.error("Error fetching courses:", err);
-      }
-    };
-    fetchCourses();
-  }, []);
+  const { data: courses } = useGetCourses();
 
   return (
     <div className="min-h-screen px-[60px] py-[120px] bg-gradient-to-b from-white via-[#E2E7FF] to-white">
@@ -50,7 +38,7 @@ export default function WebinarsSection() {
           justify-items-center
         "
       >
-        {courses.map((course) => (
+        {courses?.map((course) => (
           <div
             key={course._id}
             className="w-full max-w-[392px] h-[452px] bg-white rounded-[16px] p-[12px] shadow-md flex flex-col"

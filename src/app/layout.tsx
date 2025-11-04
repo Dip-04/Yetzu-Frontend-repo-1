@@ -3,6 +3,8 @@ import "@/styles/globals.css";
 import ToastProvider from "@/providers/ToastProvider";
 import { SessionProvider } from "@/providers/SessionProvider";
 import { QueryClientWrapper } from "@/providers/QueryClientProvider";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -23,7 +25,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <QueryClientWrapper>
           <SessionProvider>
+            <Navbar />
             {children}
+            <Footer />
             <ToastProvider />
           </SessionProvider>
         </QueryClientWrapper>

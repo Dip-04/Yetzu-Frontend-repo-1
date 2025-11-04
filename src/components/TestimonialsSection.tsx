@@ -8,36 +8,36 @@ export default function Testimonials() {
       name: "Sohab Alam",
       role: "Neurosurgeon",
       text: "Yetzu transformed my approach to studying with personalized mentorship that kept me focused and confident.",
-      avatar: "/images/avatar1.png",
+      avatar: "/images/avatar.png",
     },
     {
       name: "Ananya Sharma",
       role: "Medical Student",
       text: "The guidance I received was beyond academics — it shaped how I think and plan for success.",
-      avatar: "/images/avatar2.png",
+      avatar: "/images/avatar.png",
     },
     {
       name: "Rahul Mehta",
       role: "Engineering Graduate",
       text: "Yetzu’s mentors were incredibly supportive and practical — helping me balance learning and life.",
-      avatar: "/images/avatar3.png",
+      avatar: "/images/avatar.png",
     },
     {
       name: "Priya Patel",
       role: "Business Analyst",
       text: "Loved how structured and insightful every mentorship session was. Highly recommend to all learners!",
-      avatar: "/images/avatar4.png",
+      avatar: "/images/avatar.png",
     },
     {
       name: "Amit Verma",
       role: "Data Scientist",
       text: "The entire learning journey felt personalized and truly empowering — a great experience overall.",
-      avatar: "/images/avatar5.png",
+      avatar: "/images/avatar.png",
     },
   ];
 
   return (
-    <section className="relative bg-white px-[108px] py-[120px] flex flex-col items-center gap-[52px] overflow-hidden">
+    <section className="relative bg-white px-[108px] py-[120px] flex flex-col items-center gap-[52px] overflow-hidden h-[900px]">
       {/* Background Gradient Overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -57,7 +57,7 @@ export default function Testimonials() {
           Trusted by Students and Educators Worldwide
         </h2>
         <p className="text-[#252525] text-[16px] font-[SF Pro] font-[400] tracking-[-0.03em] text-center max-w-4xl mx-auto">
-          Explore stories from learners around the world — how Yetzu mentorship helped them reach their academic and career goals.
+          Explore stories from learners around the world  how Yetzu mentorship helped them reach their academic and career goals.
         </p>
       </div>
 

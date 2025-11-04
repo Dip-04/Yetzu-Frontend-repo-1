@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useGetCourses } from "@/lib/queries/courses/useCoursesService";
 
 interface Course {
   _id: string;
@@ -13,23 +14,10 @@ interface Course {
 }
 
 export default function ProgramsWebinarsSection() {
-  const [courses, setCourses] = useState<Course[]>([]);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const res = await fetch("/api/courses", { cache: "no-store" });
-        const data = await res.json();
-        setCourses(data?.courses || []);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchCourses();
-  }, []);
+  const { data: courses } = useGetCourses();
 
   return (
-    <div className="min-h-screen bg-white px-[108px] py-[120px] flex flex-col">
+    <div className="min-h-screen bg-white px-[108px]  flex flex-col">
       {/* Heading */}
       <div className="text-center mb-[48px]">
         <h3 className="font-inter font-medium text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165]">
@@ -44,7 +32,7 @@ export default function ProgramsWebinarsSection() {
       {/* FLEX ROW: Left Big Card + Right Grid */}
       <div className="flex flex-col lg:flex-row justify-center items-start gap-[24px]">
         {/* LEFT: Big Image Card */}
-        {courses[0] && (
+        {courses && courses[0] && (
           <div className="relative w-full lg:w-[598px] h-[790px] rounded-[20px] overflow-hidden shadow-lg flex-shrink-0">
             <Image
               src={`https://productionyetzuapi.yetzu.com${courses[0].thumbnail}`}
@@ -82,7 +70,7 @@ export default function ProgramsWebinarsSection() {
           className="grid grid-cols-2 grid-rows-2 gap-[24px]"
           style={{ width: "598px", height: "790px" }}
         >
-          {courses.slice(1, 4).map((course) => (
+          {courses && courses?.slice(1, 4).map((course) => (
             <div
               key={course._id}
               className="relative bg-white rounded-[16px] shadow-md overflow-hidden"
