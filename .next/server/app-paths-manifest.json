@@ -1,4 +1,16 @@
 {
+  "/(auth)/forgot-password/page": "app/(auth)/forgot-password/page.js",
+  "/(auth)/login/page": "app/(auth)/login/page.js",
+  "/(auth)/otp-verification/page": "app/(auth)/otp-verification/page.js",
+  "/(auth)/reset-password/page": "app/(auth)/reset-password/page.js",
+  "/(auth)/signup/page": "app/(auth)/signup/page.js",
+  "/(site)/(legal)/code-of-conduct/page": "app/(site)/(legal)/code-of-conduct/page.js",
+  "/(site)/(legal)/mentorhip-policy/page": "app/(site)/(legal)/mentorhip-policy/page.js",
+  "/(site)/(legal)/privacy-policy/page": "app/(site)/(legal)/privacy-policy/page.js",
+  "/(site)/(legal)/refund-policy/page": "app/(site)/(legal)/refund-policy/page.js",
+  "/(site)/(legal)/terms/page": "app/(site)/(legal)/terms/page.js",
+  "/(site)/about/page": "app/(site)/about/page.js",
   "/(site)/page": "app/(site)/page.js",
-  "/_not-found/page": "app/_not-found/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/profile/page": "app/profile/page.js"
 }
