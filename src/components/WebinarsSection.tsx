@@ -63,34 +63,41 @@ export default function WebinarsSection() {
 
   return (
     <section
-      className="w-full min-h-screen flex flex-col px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] py-[40px] md:py-[60px]"
+      className="w-full min-h-screen flex flex-col px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] py-10 sm:py-12 md:py-16 lg:py-20"
       style={{
         background:
           "linear-gradient(180deg, #FFFFFF 0%, #E2E7FF 45%, #FFFFFF 100%)",
       }}
     >
-      {/* Header Section - Fixed height */}
-      <div className="flex flex-col items-center text-center mb-[32px] md:mb-[40px]">
-        <h2
-          className="font-inter font-medium text-[32px] md:text-[38px] lg:text-[46px] leading-[120%] tracking-[-0.06em] text-[#021165] mb-[12px]"
-          style={{ fontFamily: "var(--font-inter)" }}
-        >
-          Explore Expert-Led
-          <br  /> Webinars & Programs
-        </h2>
-        <p
-          className="font-['SF_Pro'] text-[14px] md:text-[16px] leading-[150%] tracking-[-0.03em] text-[#252525] max-w-[400px]"
-          style={{ fontFamily: "var(--font-sfpro)" }}
-        >
-          Choose from a Rich Variety of Webinars Tailored to Accelerate your
-          Academic Journey.
-        </p>
+      {/* Header Section - with button on right */}
+      <div className="flex flex-col items-center w-full max-w-[1220px] mx-auto mb-[32px] md:mb-[40px]">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full gap-4 md:gap-6">
+          <div>
+            <h2
+              className="font-inter font-semibold text-[32px] md:text-[38px] lg:text-[46px] leading-[120%] md:leading-[56px] tracking-[-0.06em] text-[#021165]"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Explore Expert-Led
+              <br /> Webinars & Programs
+            </h2>
+            <p
+              className="font-['SF_Pro'] text-[14px] md:text-[16px] leading-[150%] tracking-[-0.03em] text-[#252525] max-w-[500px] mt-[12px]"
+              style={{ fontFamily: "var(--font-sfpro)" }}
+            >
+              Choose from a Rich Variety of Webinars Tailored to Accelerate your
+              Academic Journey.
+            </p>
+          </div>
+          <button className="flex flex-row justify-center items-center gap-[8px] px-[14px] py-[6px] w-[160px] h-[48px] bg-[var(--Colors-Blue-600,#042BFD)] shadow-[0px_2px_4px_0px_#1F1E820A] rounded-[12px] font-sfpro text-[14px] md:text-[18px] leading-[21px] tracking-[-0.03em] text-white hover:bg-[#021DC0] transition-colors whitespace-nowrap md:w-auto">
+            Button
+          </button>
+        </div>
       </div>
 
       {/* Cards Container - Takes remaining space */}
-      <div className="flex flex-col items-center gap-[24px] w-full max-w-[1220px] mx-auto">
+      <div className="flex flex-col items-center gap-[24px] w-full">
         {/* Row 1 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px] w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px] w-full max-w-[1220px] mx-auto">
           {displayCourses.slice(0, 3).map((course) => (
             <div
               key={course._id}
@@ -176,9 +183,32 @@ export default function WebinarsSection() {
                   {course.description}
                 </p>
 
+                {/* Meta Info - Author on one line, Date on another */}
+                <div className="flex items-center gap-[8px] mb-[4px]">
+                  <Image
+                    src="https://i.pravatar.cc/150?img=1"
+                    alt="Avatar"
+                    width={20}
+                    height={20}
+                    className="w-5 h-5 rounded-full"
+                  />
+                  <p
+                    className="font-['SF_Pro'] text-[12px] leading-[14px] text-[#5C5C5C]"
+                    style={{ fontFamily: "var(--font-sfpro)" }}
+                  >
+                    John Doe
+                  </p>
+                </div>
+                <p
+                  className="font-['SF_Pro'] text-[12px] leading-[14px] text-[#5C5C5C]"
+                  style={{ fontFamily: "var(--font-sfpro)" }}
+                >
+                  Saturday 9:00PM
+                </p>
+
                 {/* Price */}
                 <p
-                  className="font-['SF_Pro'] font-semibold text-[18px] leading-[21px] text-[#252525]"
+                  className="font-['SF_Pro'] font-semibold text-[18px] leading-[21px] text-[#252525] mt-[8px]"
                   style={{ fontFamily: "var(--font-sfpro)" }}
                 >
                   ₹{course.cost}
@@ -205,7 +235,7 @@ export default function WebinarsSection() {
         </div>
 
         {/* Row 2 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px] w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px] w-full max-w-[1220px] mx-auto">
           {displayCourses.slice(3, 6).map((course) => (
             <div
               key={course._id}
@@ -291,9 +321,32 @@ export default function WebinarsSection() {
                   {course.description}
                 </p>
 
+                {/* Meta Info - Author on one line, Date on another */}
+                <div className="flex items-center gap-[8px] mb-[4px]">
+                  <Image
+                    src="https://i.pravatar.cc/150?img=4"
+                    alt="Avatar"
+                    width={20}
+                    height={20}
+                    className="w-5 h-5 rounded-full"
+                  />
+                  <p
+                    className="font-['SF_Pro'] text-[12px] leading-[14px] text-[#5C5C5C]"
+                    style={{ fontFamily: "var(--font-sfpro)" }}
+                  >
+                    John Doe
+                  </p>
+                </div>
+                <p
+                  className="font-['SF_Pro'] text-[12px] leading-[14px] text-[#5C5C5C]"
+                  style={{ fontFamily: "var(--font-sfpro)" }}
+                >
+                  Saturday 9:00PM
+                </p>
+
                 {/* Price */}
                 <p
-                  className="font-['SF_Pro'] font-semibold text-[18px] leading-[21px] text-[#252525]"
+                  className="font-['SF_Pro'] font-semibold text-[18px] leading-[21px] text-[#252525] mt-[8px]"
                   style={{ fontFamily: "var(--font-sfpro)" }}
                 >
                   ₹{course.cost}
