@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function ProgramsWebinarsSection() {
   return (
-    <div className="w-full bg-white px-4 sm:px-6 lg:px-[100px] py-[60px] flex flex-col items-center">
+    <div className="w-full bg-white px-4 sm:px-6 lg:px-[100px] py-6 sm:py-12 md:py-16 lg:py-20 flex flex-col items-center">
       {/* Header Section */}
       <div className="text-center mb-[52px]">
         <h2
@@ -23,9 +23,9 @@ export default function ProgramsWebinarsSection() {
       </div>
 
       {/* Main Content Grid - 1220x790 */}
-      <div className="w-full max-w-[1220px] h-[790px] flex flex-col lg:flex-row gap-[24px]">
+      <div className="w-full max-w-[1220px] min-h-[790px] lg:h-[790px] flex flex-col lg:flex-row gap-[24px]">
         {/* Left Large Card - 598x790 */}
-        <div className="relative w-full lg:w-[598px] h-[790px] rounded-[20px] overflow-hidden flex-shrink-0">
+        <div className="relative w-full lg:w-[598px] min-h-[400px] lg:h-[790px] rounded-[20px] overflow-hidden flex-shrink-0">
           {/* Background Image */}
           <div className="absolute inset-0 bg-gradient-to-br from-gray-700 to-gray-900">
             <Image
@@ -95,7 +95,7 @@ export default function ProgramsWebinarsSection() {
         </div>
 
         {/* Right Grid - 598x790 */}
-        <div className="w-full lg:w-[598px] h-[790px] grid grid-cols-2 gap-[24px]">
+        <div className="w-full lg:w-[598px] min-h-[790px] lg:h-[790px] grid grid-cols-1 sm:grid-cols-2 gap-[24px]">
           {/* Top Left Card - 287x383 */}
           <div className="relative w-full h-[383px] rounded-[16px] overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-amber-600 to-amber-800">
@@ -125,7 +125,7 @@ export default function ProgramsWebinarsSection() {
               >
                 Title
               </h4>
-              <div className="flex items-center gap-[8px]">
+              <div className="flex items-center gap-[8px] mb-[8px]">
                 <div className="w-[32px] h-[32px] rounded-full bg-gray-400 overflow-hidden flex-shrink-0">
                   <Image
                     src="https://i.pravatar.cc/150?img=15"
@@ -141,17 +141,15 @@ export default function ProgramsWebinarsSection() {
                 >
                   John Doe
                 </span>
-                <span className="text-white text-[18px]">•</span>
-                <span
-                  className="text-white text-[18px] leading-[21px] tracking-[-0.03em]"
-                  style={{ fontFamily: "var(--font-sfpro)" }}
-                >
-                  Saturday 9:00PM
-                </span>
               </div>
+              <span
+                className="text-white text-[18px] leading-[21px] tracking-[-0.03em] block"
+                style={{ fontFamily: "var(--font-sfpro)" }}
+              >
+                Saturday 9:00PM
+              </span>
             </div>
           </div>
-
           {/* Top Right Card - 287x383 */}
           <div className="relative w-full h-[383px] rounded-[16px] overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-amber-700 to-amber-900">
@@ -181,7 +179,7 @@ export default function ProgramsWebinarsSection() {
               >
                 Title
               </h4>
-              <div className="flex items-center gap-[8px]">
+              <div className="flex items-center gap-[8px] mb-[8px]">
                 <div className="w-[32px] h-[32px] rounded-full bg-gray-400 overflow-hidden flex-shrink-0">
                   <Image
                     src="https://i.pravatar.cc/150?img=20"
@@ -197,17 +195,15 @@ export default function ProgramsWebinarsSection() {
                 >
                   John Doe
                 </span>
-                <span className="text-white text-[18px]">•</span>
-                <span
-                  className="text-white text-[18px] leading-[21px] tracking-[-0.03em]"
-                  style={{ fontFamily: "var(--font-sfpro)" }}
-                >
-                  Saturday 9:00PM
-                </span>
               </div>
+              <span
+                className="text-white text-[18px] leading-[21px] tracking-[-0.03em] block"
+                style={{ fontFamily: "var(--font-sfpro)" }}
+              >
+                Saturday 9:00PM
+              </span>
             </div>
           </div>
-
           {/* Bottom Left Card - 287x383 */}
           <div className="relative w-full h-[383px] rounded-[16px] overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-amber-600 to-amber-800">
@@ -237,7 +233,7 @@ export default function ProgramsWebinarsSection() {
               >
                 Title
               </h4>
-              <div className="flex items-center gap-[8px]">
+              <div className="flex items-center gap-[8px] mb-[8px]">
                 <div className="w-[32px] h-[32px] rounded-full bg-gray-400 overflow-hidden flex-shrink-0">
                   <Image
                     src="https://i.pravatar.cc/150?img=25"
@@ -253,27 +249,68 @@ export default function ProgramsWebinarsSection() {
                 >
                   John Doe
                 </span>
-                <span className="text-white text-[18px]">•</span>
+              </div>
+              <span
+                className="text-white text-[18px] leading-[21px] tracking-[-0.03em] block"
+                style={{ fontFamily: "var(--font-sfpro)" }}
+              >
+                Saturday 9:00PM
+              </span>
+            </div>
+          </div>{" "}
+          {/* Bottom Right Card - 287x383 */}
+          <div className="relative w-full h-[383px] rounded-[16px] overflow-hidden flex-shrink-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-600 to-amber-800">
+              <Image
+                src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=300&h=400&fit=crop"
+                alt="Webinar"
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            {/* Coming Soon Badge */}
+            <div
+              className="absolute top-[16px] right-[16px] bg-white rounded-full px-[16px] py-[8px]"
+              style={{ fontFamily: "var(--font-sfpro)" }}
+            >
+              <span className="text-[#021165] text-[12px] leading-[14px]">
+                Coming soon
+              </span>
+            </div>
+
+            {/* Bottom Content */}
+            <div className="absolute bottom-0 left-0 right-0 p-[20px] bg-gradient-to-t from-black/90 to-transparent">
+              <h4
+                className="text-white font-inter font-bold text-[32px] leading-[39px] mb-[8px]"
+                style={{ fontFamily: "var(--font-inter)" }}
+              >
+                Title
+              </h4>
+              <div className="flex items-center gap-[8px] mb-[8px]">
+                <div className="w-[32px] h-[32px] rounded-full bg-gray-400 overflow-hidden flex-shrink-0">
+                  <Image
+                    src="https://i.pravatar.cc/150?img=30"
+                    alt="John Doe"
+                    width={32}
+                    height={32}
+                    className="object-cover"
+                  />
+                </div>
                 <span
                   className="text-white text-[18px] leading-[21px] tracking-[-0.03em]"
                   style={{ fontFamily: "var(--font-sfpro)" }}
                 >
-                  Saturday 9:00PM
+                  John Doe
                 </span>
               </div>
+              <span
+                className="text-white text-[18px] leading-[21px] tracking-[-0.03em] block"
+                style={{ fontFamily: "var(--font-sfpro)" }}
+              >
+                Saturday 9:00PM
+              </span>
             </div>
-          </div>
-
-          {/* Bottom Right - View All Card - 287x383 */}
-          <div className="relative w-full h-[383px] bg-[#E6EAFF] rounded-[16px] flex items-center justify-center cursor-pointer hover:bg-[#dae0ff] transition-colors">
-            <p
-              className="text-[#042BFD] font-inter font-semibold text-[26px] leading-[31px] tracking-[-0.05em] text-center px-[20px]"
-              style={{ fontFamily: "var(--font-inter)" }}
-            >
-              View All
-              <br />
-              Webinars
-            </p>
           </div>
         </div>
       </div>

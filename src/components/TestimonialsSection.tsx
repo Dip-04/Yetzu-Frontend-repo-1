@@ -39,15 +39,26 @@ export default function Testimonials() {
     },
   ];
 
-  // Adjust scroll speeds per column
+  // Extended testimonials array for mobile infinite scroll (show 4 at a time)
+  const extendedTestimonials = [
+    ...testimonials,
+    ...testimonials,
+    ...testimonials,
+  ];
+
+  // Adjust scroll speeds per column (desktop)
   const speed = { left: 90, middle: 100, right: 90 };
+  // Mobile marquee speed
+  const mobileSpeed = 50;
 
   const measureRefs = [
     useRef<HTMLDivElement>(null),
     useRef<HTMLDivElement>(null),
     useRef<HTMLDivElement>(null),
   ];
+  const mobileMarqueeRef = useRef<HTMLDivElement>(null);
   const [colHeight, setColHeight] = useState([0, 0, 0]);
+  const [mobileHeight, setMobileHeight] = useState(0);
 
   useEffect(() => {
     const measure = () => {
@@ -57,7 +68,14 @@ export default function Testimonials() {
       setColHeight(newHeights);
     };
 
+    const measureMobile = () => {
+      if (mobileMarqueeRef.current) {
+        setMobileHeight(mobileMarqueeRef.current.offsetHeight);
+      }
+    };
+
     measure();
+    measureMobile();
 
     const observers = measureRefs.map((r) => {
       if (!r.current || typeof ResizeObserver === "undefined") return null;
@@ -66,9 +84,21 @@ export default function Testimonials() {
       return ro;
     });
 
-    window.addEventListener("resize", measure);
+    if (mobileMarqueeRef.current && typeof ResizeObserver !== "undefined") {
+      const mobileObserver = new ResizeObserver(measureMobile);
+      mobileObserver.observe(mobileMarqueeRef.current);
+      observers.push(mobileObserver);
+    }
+
+    window.addEventListener("resize", () => {
+      measure();
+      measureMobile();
+    });
     return () => {
-      window.removeEventListener("resize", measure);
+      window.removeEventListener("resize", () => {
+        measure();
+        measureMobile();
+      });
       observers.forEach((o) => o && o.disconnect());
     };
   }, []);
@@ -81,15 +111,14 @@ export default function Testimonials() {
           className="flex flex-col items-start gap-3 self-stretch w-full max-w-[390px] p-6 rounded-[20px] bg-[#E6EAFF] text-[#252525] text-[16px] leading-[120%] shadow-[0_16px_32px_-12px_rgba(31,30,130,0.10)] h-[260px] overflow-hidden"
         >
           <div className="flex flex-col gap-3 w-full h-full">
-           {/* Lucide Quote Icon (filled, smaller, top-left) */}
-<div className="text-[#AFC2FF]">
-  <Quote
-    size={30} 
-    strokeWidth={1.2}
-    className="fill-[#95aaf0] text-[#AFC2FF] opacity-90"
-  />
-</div>
-
+            {/* Lucide Quote Icon (filled, smaller, top-left) */}
+            <div className="text-[#AFC2FF]">
+              <Quote
+                size={30}
+                strokeWidth={1.2}
+                className="fill-[#95aaf0] text-[#AFC2FF] opacity-90"
+              />
+            </div>
 
             {/* Testimonial Text */}
             <p className="text-[#252525] text-[18px] leading-[21px] tracking-[-0.03em] line-clamp-4">
@@ -147,8 +176,8 @@ export default function Testimonials() {
         </p>
       </div>
 
-      {/* Scrolling Testimonial Columns */}
-       <div className="relative z-10 w-full max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+      {/* Scrolling Testimonial Columns - Desktop Only */}
+      <div className="hidden md:grid relative z-10 w-full max-w-[1200px] mx-auto grid-cols-3 gap-8 mt-8">
         {[0, 1, 2].map((col) => {
           const heightPx = colHeight[col] || 0;
           // Middle column (col 1) scrolls DOWN, others scroll UP
@@ -156,17 +185,17 @@ export default function Testimonials() {
           const yTo = col === 1 ? -heightPx : 0;
           const shouldAnimate = heightPx > 0;
           const verticalOffset =
-            col === 1 ? "md:translate-y-14 lg:translate-y-20" : "";
+            col === 1 ? "translate-y-14 lg:translate-y-20" : "";
 
           return (
             <div
               key={col}
-              className={`relative h-[640px] md:h-[720px] lg:h-[820px] overflow-hidden ${verticalOffset}`}
+              className={`relative h-[640px] lg:h-[820px] overflow-hidden ${verticalOffset}`}
             >
               {/* Smoke fade gradient overlays */}
               <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white via-white/80 to-transparent z-10 pointer-events-none" />
               <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white via-white/80 to-transparent z-10 pointer-events-none" />
-              
+
               {shouldAnimate ? (
                 <motion.div
                   className="flex flex-col gap-6"
@@ -195,6 +224,71 @@ export default function Testimonials() {
             </div>
           );
         })}
+      </div>
+
+      {/* Mobile Single Column Marquee - Mobile Only */}
+      <div className="md:hidden relative z-10 w-full">
+        <div className="relative h-[520px] overflow-hidden">
+          {/* Fade overlays for top and bottom */}
+          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-white via-white/80 to-transparent z-20 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-white via-white/80 to-transparent z-20 pointer-events-none" />
+
+          <motion.div
+            ref={mobileMarqueeRef}
+            className="flex flex-col gap-6"
+            animate={{ y: [-mobileHeight / 2, 0] }}
+            transition={{
+              duration: mobileSpeed,
+              ease: "linear",
+              repeat: Infinity,
+            }}
+            style={{ willChange: "transform" }}
+          >
+            {extendedTestimonials.map((t, i) => (
+              <article
+                key={`mobile-${i}`}
+                className="flex flex-col items-start gap-3 self-stretch w-full max-w-full p-6 rounded-[20px] bg-[#E6EAFF] text-[#252525] text-[16px] leading-[120%] shadow-[0_16px_32px_-12px_rgba(31,30,130,0.10)] h-[200px] overflow-hidden flex-shrink-0"
+              >
+                <div className="flex flex-col gap-3 w-full h-full">
+                  {/* Lucide Quote Icon */}
+                  <div className="text-[#AFC2FF]">
+                    <Quote
+                      size={24}
+                      strokeWidth={1.2}
+                      className="fill-[#95aaf0] text-[#AFC2FF] opacity-90"
+                    />
+                  </div>
+
+                  {/* Testimonial Text */}
+                  <p className="text-[#252525] text-[16px] leading-[19px] tracking-[-0.03em] line-clamp-3">
+                    {t.text}
+                  </p>
+
+                  {/* Author Info */}
+                  <div className="flex items-center gap-3 mt-auto">
+                    <div className="w-[40px] h-[40px] rounded-full overflow-hidden bg-[#E6EAFF] flex items-center justify-center flex-shrink-0">
+                      <Image
+                        src={t.avatar}
+                        alt={t.name}
+                        width={40}
+                        height={40}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col justify-center min-w-0">
+                      <p className="text-[#252525] text-[14px] leading-[17px] font-medium truncate">
+                        {t.name}
+                      </p>
+                      <p className="text-[#252525] text-[12px] leading-[14px] opacity-80 truncate">
+                        {t.role}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </motion.div>
+        </div>
       </div>
     </section>
   );

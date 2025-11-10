@@ -6,175 +6,161 @@ import ProgramsWebinarsSection from "../../components/ProgramsWebinarsSection";
 import WebinarsSection from "../../components/WebinarsSection";
 import TestimonalsSection from "../../components/TestimonialsSection";
 import AccordionItem from "@/components/AccordionItem";
-import { useRenewAccessTokenMutation } from "@/lib/queries/identityService/useIdentityService";
+import FAQSection from "@/app/(site)/contact-us/components/FAQSection";
 // Accordion Item Component (with black answer text)
 
 export default function Home() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const accordionData = [
-    {
-      question: "Your Question goes here?",
-      answer:
-        "Accordion description goes here, try to keep it under 2 lines so it looks good and minimal.",
-    },
-    {
-      question: "Your Question goes here?",
-      answer:
-        "Accordion description goes here, try to keep it under 2 lines so it looks good and minimal.",
-    },
-    {
-      question: "Your Question goes here?",
-      answer:
-        "Accordion description goes here, try to keep it under 2 lines so it looks good and minimal.",
-    },
-    {
-      question: "Your Question goes here?",
-      answer:
-        "Accordion description goes here, try to keep it under 2 lines so it looks good and minimal.",
-    },
-    {
-      question: "Your Question goes here?",
-      answer:
-        "Accordion description goes here, try to keep it under 2 lines so it looks good and minimal.",
-    },
-  ];
   return (
     <>
       {/* HERO SECTION */}
       {/* HERO SECTION */}
-      <section className="relative text-center min-h-[calc(100vh-80px)] flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] overflow-hidden bg-gradient-to-b from-[#F8FAFF] to-white py-4 md:py-6">
+      <section className="relative text-center min-h-auto md:min-h-[calc(100vh-80px)] flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] overflow-hidden bg-gradient-to-b from-[#F8FAFF] to-white md:py-4 md:py-6 py-8 sm:py-12">
         {/* Background Gradient Behind Hero Image */}
         <div className="absolute inset-0 bg-[linear-gradient(180deg,#FFFFFF_0%,#E2E7FF_50.01%,#FFFFFF_100%)] z-0"></div>
 
         {/* Avatars + Student count */}
-        <div className="flex justify-center items-center gap-2 mb-3 relative z-10 flex-wrap">
+        <div className="flex justify-center items-center gap-2 mb-6 md:mb-3 relative z-10 flex-wrap">
           <div className="flex -space-x-2">
             <Image
               src="/images/Avatar (1).png"
               alt="Student 1"
               width={32}
               height={32}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white"
+              className="w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-white"
             />
             <Image
               src="/images/Avatar (2).png"
               alt="Student 2"
               width={32}
               height={32}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white"
+              className="w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-white"
             />
             <Image
               src="/images/Avatar.png"
               alt="Student 3"
               width={32}
               height={32}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white"
+              className="w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-white"
             />
           </div>
-          <p className="text-sm md:text-base text-gray-500 mt-2 md:mt-0">
+          <p className="text-[14px] md:text-base text-[#021165] font-sfpro font-normal">
             150+ Students Enrolled
           </p>
         </div>
 
-        {/* Main Heading */}
-        <h1 className="font-inter font-semibold text-[28px] sm:text-[34px] md:text-[52px] lg:text-[68px] leading-[1.2] tracking-[-0.04em] text-[#252525] max-w-[95%] md:max-w-4xl mx-auto relative z-10 mb-3">
-          Your Ultimate Academic{" "}
-          <span className="block text-[#042BFD] text-[26px] sm:text-[32px] md:text-[52px] lg:text-[62px]">
-            Mentorship & Learning Ecosystem
+        {/* Mobile H1 */}
+        <h1
+          className="md:hidden font-inter font-semibold 
+          text-[28px] sm:text-[40px] 
+          leading-[34px] sm:leading-[48px] 
+          tracking-tight text-[#252525] 
+          max-w-[90%] mx-auto mb-4 md:mb-6 relative z-20"
+        >
+          <span className="block">Your Ultimate</span>
+          <span className="block">Academic</span>
+          <span className="block text-[#042BFD]">Mentorship &amp;</span>
+          <span className="block text-[#042BFD]">Learning</span>
+          <span className="block text-[#042BFD]">Ecosystem</span>
+        </h1>
+
+        {/* Desktop H1 */}
+        <h1
+          className="hidden md:block font-inter font-semibold 
+          md:text-[52px] lg:text-[68px] 
+          md:leading-[60px] lg:leading-[84px]
+          tracking-tight text-[#252525] 
+          md:max-w-5xl mx-auto mb-4 md:mb-6 relative z-20"
+        >
+          <span className="block">Your Ultimate Academic</span>
+          <span className="block text-[#042BFD]">
+            Mentorship &amp; Learning Ecosystem
           </span>
         </h1>
 
         {/* Subheading */}
-        <p className="text-gray-600 max-w-[90%] sm:max-w-2xl md:max-w-3xl mx-auto text-[14px] sm:text-[16px] md:text-[18px] leading-relaxed font-sfpro font-normal relative z-10">
-          Unlock Your Potential with Personalized Mentorship, Milestone-Based
-          Assignments, and Expert Academic Support all in one intuitive
-          platform.
+        <p className="text-[#252525] max-w-[95%] md:max-w-3xl mx-auto text-[14px] sm:text-[16px] md:text-[18px] leading-[17px] sm:leading-[19px] md:leading-[21px] font-sfpro font-normal relative z-20 mb-8 md:mb-6">
+          Unlock Your Potential with Personalized Mentorship, Milestone Based
+          Assignments, and Expert Academic Support-All in One Intuitive
+          Platform.
         </p>
 
-        {/* Hero Image - Made Bigger and Wider */}
-        <div className="flex justify-center mt-4 md:mt-6 relative z-10">
+        {/* Hero Image */}
+        <div className="flex justify-center relative z-20 mb-6 md:mb-8">
           <Image
             src="/images/Hero Section.png"
             alt="Mentors"
             width={1100}
             height={600}
-            className="w-full sm:w-[95%] md:w-[950px] lg:w-[1100px] object-contain scale-110 md:scale-105"
+            className="w-[95%] sm:w-[90%] md:w-[950px] lg:w-[1100px] object-contain md:scale-105 max-h-[240px] md:max-h-none"
           />
         </div>
 
-        {/* Stats Section - Moved Up More */}
-        <div className="flex flex-nowrap justify-center gap-4 sm:gap-6 bg-[#252525] text-white rounded-2xl py-6 sm:py-8 px-4 sm:px-6 w-full overflow-x-auto max-w-[1220px] mx-auto -mt-20 md:-mt-32 lg:-mt-40 shadow-lg relative z-20">
-          {[
-            { num: "200+", label: "Community Members" },
-            { num: "24+", label: "Institutes Affiliated" },
-            { num: "30k+", label: "Mentorship Hours" },
-            { num: "100+", label: "Students Mentored" },
-          ].map((item, i) => (
-            <div
-              key={i}
-              className="flex flex-col items-center justify-center gap-2 w-[267px] min-w-[267px] flex-shrink-0 h-[164px] bg-white rounded-[16px] shadow-md transition-transform p-[24px]"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "24px",
-                gap: "8px",
-              }}
-            >
-              <h3
-                className="font-inter font-semibold text-[56px] leading-[68px] text-center tracking-[-0.02em] text-[#021165]"
-                style={{
-                  fontFamily: "Inter",
-                  fontStyle: "normal",
-                  fontWeight: 600,
-                  fontSize: "56px",
-                  lineHeight: "68px",
-                  textAlign: "center",
-                  letterSpacing: "-0.02em",
-                  color: "#021165",
-                }}
+        {/* Stats Section */}
+        <div
+          className="bg-[#252525] text-white rounded-[16px] py-6 px-6 sm:px-8 w-full max-w-[1220px] mx-auto shadow-lg relative z-30 md:-mt-32 lg:-mt-40"
+          style={{ marginTop: "-85px" }}
+        >
+          {/* Mobile: 2x2 Grid */}
+          <div className="grid grid-cols-2 gap-4 md:hidden">
+            {[
+              { num: "200+", label: "Community Members" },
+              { num: "24+", label: "Institutes Affiliated" },
+              { num: "30k+", label: "Mentorship Hours" },
+              { num: "100+", label: "Students Mentored" },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center justify-center gap-1 bg-white rounded-[16px] shadow-md p-6 h-[107px]"
               >
-                {item.num}
-              </h3>
-              <p
-                className="font-inter font-semibold text-[22px] leading-[27px] text-center tracking-[-0.06em] text-[#252525]"
-                style={{
-                  fontFamily: "Inter",
-                  fontStyle: "normal",
-                  fontWeight: 600,
-                  fontSize: "22px",
-                  lineHeight: "27px",
-                  textAlign: "center",
-                  letterSpacing: "-0.06em",
-                  color: "#252525",
-                }}
+                <h3 className="font-inter font-bold text-[32px] leading-[39px] text-center text-[#021165] w-full mb-[2px]">
+                  {item.num}
+                </h3>
+                <p className="font-sfpro font-normal text-[18px] leading-[21px] text-center tracking-[-0.03em] text-[#252525] w-full">
+                  {item.label}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: Horizontal Scroll */}
+          <div className="hidden md:flex flex-nowrap justify-center gap-6 overflow-x-auto">
+            {[
+              { num: "200+", label: "Community Members" },
+              { num: "24+", label: "Institutes Affiliated" },
+              { num: "30k+", label: "Mentorship Hours" },
+              { num: "100+", label: "Students Mentored" },
+            ].map((item, i) => (
+              <div
+                key={i}
+                className="flex flex-col items-center justify-center gap-2 w-[267px] min-w-[267px] flex-shrink-0 h-[164px] bg-white rounded-[16px] shadow-md transition-transform p-[24px]"
               >
-                {item.label}
-              </p>
-            </div>
-          ))}
+                <h3 className="font-inter font-semibold text-[56px] leading-[68px] text-center tracking-[-0.02em] text-[#021165]">
+                  {item.num}
+                </h3>
+                <p className="font-inter font-semibold text-[22px] leading-[27px] text-center tracking-[-0.06em] text-[#252525]">
+                  {item.label}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Video Section */}
+      {/* Video Section */}
       <section
-        className="w-full mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] 
-             flex flex-col items-center justify-center gap-8 md:gap-12 
-             bg-white py-8 md:py-12"
-        style={{
-          // Navbar takes ~75px; make the rest full height dynamically
-          minHeight: "calc(100vh - 75px)",
-        }}
+        className="w-full mx-auto px-4 sm:px-6 md:px-12 lg:px-[108px] 
+               flex flex-col items-center justify-center gap-4 sm:gap-6 md:gap-10 lg:gap-12 
+               bg-white py-12 md:py-14 lg:py-16"
       >
         {/* Heading */}
-        <h2 className="font-inter text-[22px] sm:text-[28px] md:text-[34px] lg:text-[40px] font-semibold text-[#021165] text-center leading-tight">
+        <h2 className="font-inter font-semibold text-[38px] sm:text-[38px] md:text-[40px] lg:text-[40px] text-[#021165] text-center leading-[100%] px-4 tracking-[-0.7%]">
           Lorem Ipsum Dolor Self Amet
         </h2>
 
         {/* Video Wrapper */}
         <div
-          className="w-full max-w-[1224px] rounded-2xl overflow-hidden shadow-lg relative"
+          className="w-full max-w-[1224px] rounded-xl lg:rounded-2xl overflow-hidden shadow-lg relative"
           style={{
             // Responsive 16:9 aspect ratio — fallback-friendly
             aspectRatio: "16/9",
@@ -194,19 +180,18 @@ export default function Home() {
         </div>
       </section>
 
-
       <WebinarsSection />
 
       {/* 1:1 Mentorship Section */}
-      <section className="flex flex-col justify-center items-center min-h-[calc(100vh-80px)] px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] gap-[32px] md:gap-[52px] bg-white w-full py-8 md:py-12">
-        <div className="flex flex-col justify-center items-start gap-[24px] w-full max-w-[1224px]">
+      <section className="flex flex-col justify-center items-center min-h-auto px-4 sm:px-6 md:px-12 lg:px-[108px] gap-6 sm:gap-8 md:gap-10 lg:gap-12 bg-white w-full py-12 md:py-14 lg:py-16">
+        <div className="flex flex-col justify-center items-start gap-6 md:gap-8 w-full max-w-[1224px]">
           {/* Header & Button */}
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full gap-4 md:gap-0">
-            <h2 className="font-inter font-medium text-[28px] md:text-[36px] lg:text-[46px] leading-[120%] md:leading-[56px] tracking-[-0.06em] text-[#021165] max-w-full md:max-w-[658px]">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full gap-4 md:gap-6">
+            <h2 className="font-inter font-semibold text-[38px] sm:text-[38px] md:text-[40px] lg:text-[46px] leading-[100%] md:leading-[56px] tracking-[-0.7%] text-[#021165] max-w-full md:max-w-[658px]">
               1:1 Mentorship & Expert Academic Guidance
             </h2>
 
-            <button className="flex flex-row justify-center items-center gap-[8px] px-[16px] py-[8px] w-full sm:w-[174px] h-[52px] bg-[#042BFD] shadow-[0px_2px_4px_rgba(31,30,130,0.04)] rounded-[12px] font-sfpro text-[16px] md:text-[18px] leading-[21px] tracking-[-0.03em] text-white hover:bg-[#021DC0] transition-colors">
+            <button className="flex flex-row justify-center items-center gap-[8px] px-[14px] py-[6px] w-[160px] h-[48px] bg-[var(--Colors-Blue-600,#042BFD)] shadow-[0px_2px_4px_0px_#1F1E820A] rounded-[12px] font-sfpro text-[14px] md:text-[18px] leading-[21px] tracking-[-0.03em] text-white hover:bg-[#021DC0] transition-colors whitespace-nowrap md:w-auto">
               Button
             </button>
           </div>
@@ -220,7 +205,7 @@ export default function Home() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-[20px] md:gap-[24px] w-full max-w-[1224px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 w-full max-w-[1224px]">
           {[
             {
               title: "Customized Mentorship Sessions",
@@ -231,7 +216,7 @@ export default function Home() {
               descColor: "text-[#252525]",
             },
             {
-              title: "Milestone-Based Progress Tracking",
+              title: "Milestone Based Progress Tracking",
               desc: "Regular feedback loops track your development and keep you motivated.",
               bgColor: "bg-[#506BFE]",
               iconBg: "bg-[#E6EAFF]",
@@ -257,7 +242,7 @@ export default function Home() {
           ].map((item, index) => (
             <div
               key={index}
-              className={`flex flex-col justify-between items-start p-[20px] md:p-[24px] gap-[20px] w-full min-h-[280px] md:min-h-[288px] ${item.bgColor} shadow-[0px_16px_32px_-12px_rgba(31,30,130,0.1)] rounded-[16px]`}
+              className={`flex flex-col justify-between items-start p-5 md:p-6 gap-4 md:gap-5 w-full min-h-[260px] md:min-h-[288px] ${item.bgColor} shadow-[0px_16px_32px_-12px_rgba(31,30,130,0.1)] rounded-[16px]`}
             >
               {/* Icon */}
               <div
@@ -292,14 +277,14 @@ export default function Home() {
 
       {/* How Yetzu Supports Assignments Section */}
       {/* How Yetzu Supports Assignments Section */}
-      <section className="flex justify-center bg-[linear-gradient(180deg,#FFFFFF_0%,#E2E7FF_45%,#FFFFFF_100%)] py-[60px] md:py-[80px] lg:py-[100px] px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px]">
+      <section className="flex justify-center bg-[linear-gradient(180deg,#FFFFFF_0%,#E2E7FF_45%,#FFFFFF_100%)] py-12 md:py-14 lg:py-16 px-4 sm:px-6 md:px-12 lg:px-[108px]">
         <div className="w-full max-w-[1224px]">
           {/* ===== Header Row ===== */}
-          <div className="flex flex-col md:flex-row items-start justify-between mb-[40px] md:mb-[60px] gap-4">
-            <h2 className="font-inter font-medium text-[#021165] text-[28px] md:text-[36px] lg:text-[46px] leading-[120%] md:leading-[56px] tracking-[-0.06em] max-w-full md:max-w-[640px]">
+          <div className="flex flex-col md:flex-row items-start justify-between mb-8 md:mb-14 lg:mb-16 gap-4 md:gap-6">
+            <h2 className="font-inter font-semibold text-[#021165] text-[38px] sm:text-[38px] md:text-[40px] lg:text-[46px] leading-[100%] md:leading-[56px] tracking-[-0.7%] max-w-full md:max-w-[640px]">
               How Yetzu Supports Your Academic Assignments
             </h2>
-            <button className="mt-2 px-6 md:px-8 py-3 bg-[#042BFD] text-white rounded-[10px] text-[14px] md:text-[16px] font-medium shadow-[0_3px_8px_rgba(4,43,253,0.3)] hover:bg-[#001EE5] transition-all w-full sm:w-auto">
+            <button className="mt-2 px-[14px] py-[6px] w-[160px] h-[48px] bg-[var(--Colors-Blue-600,#042BFD)] text-white rounded-[12px] text-[14px] md:text-[16px] font-medium shadow-[0px_2px_4px_0px_#1F1E820A] hover:bg-[#001EE5] transition-all sm:w-auto md:w-auto md:h-auto flex items-center justify-center">
               Submit Now
             </button>
           </div>
@@ -421,10 +406,8 @@ export default function Home() {
 
       {/* Testimonials Section */}
       <TestimonalsSection />
-
-      {/* Join Learners & Educators Section */}
-      {/* Join Learners & Educators Section */}
-      <section className="bg-gradient-to-b from-white via-[#E2E7FF] to-white min-h-[calc(100vh-80px)] flex items-center justify-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12">
+      {/* Join Our Community Section */}
+      <section className="bg-gradient-to-b from-white via-[#E2E7FF] to-white min-h-auto flex items-center justify-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-8 md:py-10 lg:py-12">
         <div className="w-full max-w-[1224px] mx-auto">
           <div className="rounded-3xl overflow-hidden shadow-xl md:p-[64px_76px_64px_83px] p-6 flex flex-col md:flex-row items-center md:gap-[101px] gap-8 bg-[#252525] md:h-[523px]">
             {/* Left Content */}
@@ -601,58 +584,13 @@ export default function Home() {
       </section>
 
       {/* FAQ SECTION */}
-      <section className="py-[60px] md:py-[80px] px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] bg-white min-h-[calc(100vh-80px)] flex items-center">
-        <div className="w-full max-w-[1224px] mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-            {/* LEFT SIDE */}
-            <div className="flex flex-col justify-between space-y-8 md:space-y-12">
-              <div>
-                <h2 className="text-[32px] md:text-[38px] lg:text-[46px] font-medium text-[#021165] leading-[120%] lg:leading-[100%] tracking-[-0.06em] font-['Inter']">
-                  FAQ
-                </h2>
-                <p className="mt-4 text-[#5C5C5C] font-['SF Pro'] text-[16px] md:text-[18px] font-normal leading-[150%] lg:leading-[100%] tracking-[-0.03em]">
-                  Know answers to all of your questions
-                </p>
-              </div>
-
-              {/* Still Have Questions Card */}
-              <div className="bg-[#F5F6FF] p-4 md:p-6 rounded-[12px] shadow-md border border-[#F0F0FC] space-y-3 md:space-y-4 w-full lg:w-3/4">
-                <h3 className="text-[18px] md:text-[22px] font-semibold text-[#021165] font-['Inter'] tracking-[-0.06em] leading-[120%] lg:leading-[100%]">
-                  Still have questions?
-                </h3>
-                <p className="text-[#252525] text-[11px] md:text-[12px] font-normal font-['SF Pro'] leading-[150%] lg:leading-[100%] tracking-[0%]">
-                  Can't find the answer to your questions? Send us an email and
-                  we'll get back to you as soon as possible.
-                </p>
-                <button className="mt-2 bg-[#042BFD] text-white rounded-[8px] px-4 py-2 font-medium text-[13px] md:text-[14px] font-['SF Pro'] hover:bg-[#021165] transition-colors w-full sm:w-auto">
-                  Ask Here
-                </button>
-              </div>
-            </div>
-
-            {/* RIGHT SIDE - Accordion */}
-            <div className="space-y-4">
-              {accordionData.map((item, index) => (
-                <AccordionItem
-                  key={index}
-                  question={item.question}
-                  answer={item.answer}
-                  isOpen={openIndex === index}
-                  onClick={() =>
-                    setOpenIndex(openIndex === index ? null : index)
-                  }
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      <FAQSection />
 
       {/* Trusted by Leaders Section - Single Image + Text + Rounded Container */}
-      <section className="py-[60px] md:py-[80px] px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] min-h-[calc(100vh-80px)] flex items-center justify-center bg-[linear-gradient(180deg,_#FFFFFF_0%,_#F8FAFF_40%,_#F5F8FF_60%,_#FFFFFF_100%)]">
+      <section className="py-12 md:py-14 lg:py-16 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] min-h-[calc(100vh-68px)] flex items-center justify-center bg-[linear-gradient(180deg,_#FFFFFF_0%,_#F8FAFF_40%,_#F5F8FF_60%,_#FFFFFF_100%)]">
         <div className="w-full max-w-[1224px] mx-auto rounded-3xl overflow-hidden shadow-lg relative">
           {/* Main Combined Image - 16:9 Aspect Ratio */}
-          <div className="relative w-full aspect-[16/9] overflow-hidden">
+          <div className="relative w-full aspect-[16/9] overflow-hidden max-h-[400px] lg:max-h-[500px]">
             <img
               src="/images/testimonals.png"
               alt="Trusted by Leaders from Diverse Educational Institutions and Industries"
@@ -663,8 +601,8 @@ export default function Home() {
           </div>
 
           {/* Content: Headline + Subtext + Button - Overlapping the image */}
-          <div className="relative -mt-20 md:-mt-24 lg:-mt-28 pt-0 pb-6 px-6 md:pb-8 md:px-8 lg:pb-12 lg:px-12 text-center bg-white">
-            <h2 className="text-[22px] md:text-[32px] lg:text-4xl font-bold text-gray-900 mb-2 md:mb-3">
+          <div className="relative -mt-8 sm:-mt-10 md:-mt-12 lg:-mt-16 pt-0 pb-4 px-4 sm:px-6 md:pb-6 md:px-8 lg:pb-8 lg:px-12 text-center bg-white">
+            <h2 className="text-[18px] sm:text-[22px] md:text-[26px] lg:text-3xl font-bold text-gray-900 mb-1 md:mb-2 leading-tight">
               Trusted by <span className="text-blue-600">Leaders</span> From
               Diverse
               <br className="hidden md:block" />
@@ -674,12 +612,12 @@ export default function Home() {
               </span>
             </h2>
 
-            <p className="text-gray-600 text-[14px] md:text-base max-w-full md:max-w-2xl mx-auto mb-6 md:mb-8 mt-3 md:mt-5">
+            <p className="text-gray-600 text-[12px] md:text-sm lg:text-base max-w-full md:max-w-2xl mx-auto mb-4 md:mb-5 lg:mb-6 mt-2 md:mt-3">
               Join a Thriving Community Dedicated to Academic Excellence
               Supported by Cutting-Edge Technology and Expert Mentorship.
             </p>
 
-            <button className="px-6 md:px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium w-full sm:w-auto text-[14px] md:text-base">
+            <button className="px-4 md:px-6 lg:px-8 py-2 md:py-2.5 lg:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium w-full sm:w-auto text-[12px] md:text-sm lg:text-base">
               Get Invested in Your Academic Success
             </button>
           </div>
