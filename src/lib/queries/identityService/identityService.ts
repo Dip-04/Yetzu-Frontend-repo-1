@@ -14,12 +14,13 @@ export const identityService = {
     const res = await authApi.get("/identityapi/v1/auth/me");
     return res?.data;
   },
-  signup: async ({ email, password, name, role }: SignupPayload) => {
+  signup: async ({ email, password, name, role, mobileno }: SignupPayload) => {
     const res = await api.post("/identityapi/v1/auth/signup", {
       email,
       password,
       name,
       role,
+      mobileno,
     });
     return res?.data;
   },
