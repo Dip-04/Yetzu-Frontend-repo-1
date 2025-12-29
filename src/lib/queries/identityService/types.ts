@@ -9,6 +9,7 @@ export type SignupPayload = {
   password: string;
   name: string;
   role: string;
+  mobileno: string;
 };
 
 export type BaseSuccessResponse = {

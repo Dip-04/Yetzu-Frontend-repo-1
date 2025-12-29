@@ -12,6 +12,7 @@ import {
   Settings,
   LogOut,
   User,
+  LayoutDashboard,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
@@ -19,7 +20,7 @@ import useSession from "@/hooks/useSession";
 import { useLogoutMutation } from "@/lib/queries/identityService/useIdentityService";
 
 const Navbar = () => {
-  const { user: { name, email, id = "" } = {} } = useSession();
+  const { user: { name, email, id = "", role = "" } = {} } = useSession();
   const { mutateAsync: logout } = useLogoutMutation();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -62,7 +63,17 @@ const Navbar = () => {
     { href: "/contact-us", label: "Contact Us" },
   ];
 
+  const getDashboardLink = () => {
+    switch (role?.toLowerCase()) {
+      case "admin": return "/a/dashboard";
+      case "educator": return "/e/dashboard";
+      case "student": return "/s/overview";
+      default: return "/s/dashboard";
+    }
+  };
+
   const userMenuItems = [
+    { href: getDashboardLink(), label: "Dashboard", icon: LayoutDashboard },
     { href: "/profile/courses", label: "My Courses", icon: FileText },
     { href: "/profile/submissions", label: "My Submissions", icon: FileText },
     { href: "/profile/awards", label: "Awards", icon: Award },

@@ -17,6 +17,10 @@ const SignupSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
+  phone: Yup.string()
+    .matches(/^[0-9]+$/, "Phone number must be digits only")
+    .min(10, "Phone number must be at least 10 digits")
+    .required("Phone number is required"),
   password: Yup.string()
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
@@ -76,11 +80,11 @@ export default function SignupForm() {
       </h1>
 
       <Formik
-        initialValues={{ name: "", email: "", password: "", confirmPassword: "" }}
+        initialValues={{ name: "", email: "", phone: "", password: "", confirmPassword: "" }}
         validationSchema={SignupSchema}
         onSubmit={async (values) => {
           try {
-            const payload = { ...values, role: "student" };
+            const payload = { ...values, mobileno: values.phone, role: "student" };
             const data = await signUp(payload);
             if (data.message === "User created") {
               toast.success("Signup successful! Redirecting...");
@@ -120,6 +124,19 @@ export default function SignupForm() {
               placeholder="Enter your email"
               error={touched.email && !!errors.email}
               helperText={touched.email && errors.email ? errors.email : ""}
+            />
+
+            <Input
+              name="phone"
+              label="Phone Number"
+              required
+              value={values.phone}
+              onChange={handleChange}
+              disabled={isPending}
+              onBlur={handleBlur}
+              placeholder="Enter your phone number"
+              error={touched.phone && !!errors.phone}
+              helperText={touched.phone && errors.phone ? errors.phone : ""}
             />
 
             <Input
