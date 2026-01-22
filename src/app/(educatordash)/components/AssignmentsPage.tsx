@@ -313,7 +313,7 @@ const AssignmentsPage: React.FC = () => {
         <div>
         <p
   className="
-    px-4 mt-1
+    px-1 mt-1
     font-inter text-[16px] font-medium
     leading-[16px] tracking-[0]
     text-gray-500

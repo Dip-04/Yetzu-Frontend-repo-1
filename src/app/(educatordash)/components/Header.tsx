@@ -54,7 +54,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="flex items-center justify-between pl-64 pr-6 h-[72px] bg-gray-50 sticky top-0 z-30 border-b border-gray-200/70">
-      <h1 className="font-inter text-[16px] font-medium px-4 leading-[24px] tracking-[0px] text-black align-middle">
+      <h1 className="font-inter text-[16px] font-medium px-7 leading-[24px] tracking-[0px] text-black align-middle">
         Welcome Back!
       </h1>
 
