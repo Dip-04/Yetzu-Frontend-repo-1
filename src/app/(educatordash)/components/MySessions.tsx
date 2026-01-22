@@ -319,7 +319,7 @@ const MySessions: React.FC = () => {
                       {item.description}
                     </p>
                   </div>
-                  <button className="bg-[#042BFD] text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg shadow-blue-500/30 hover:bg-blue-700 transition-all whitespace-nowrap shrink-0">
+                  <button className="bg-[#042BFD] text-white text-xs font-bold px-4 py-2 rounded-full shadow-none shadow-blue-500/30 hover:bg-blue-700 transition-all whitespace-nowrap shrink-0">
                     Join In
                   </button>
                 </div>

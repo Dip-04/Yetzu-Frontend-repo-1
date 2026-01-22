@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { PENDING_ASSIGNMENTS } from "../constants";
 import { Menu, ChevronDown } from "lucide-react";
 
@@ -13,7 +13,7 @@ const TypePill: React.FC<{ type: string }> = ({ type }) => {
 
   return (
     <span
-      className={`inline-flex items-center justify-center
+      className={`inline-flex items-center py-[2px] justify-center
         px-3 rounded-full
         font-nunito text-[12px] font-normal leading-[20px] tracking-[0]
         text-center align-middle
@@ -25,6 +25,18 @@ const TypePill: React.FC<{ type: string }> = ({ type }) => {
 };
 
 const AssignmentsTable: React.FC = () => {
+  const [checkedItems, setCheckedItems] = useState<Set<number>>(new Set());
+
+  const toggleCheck = (index: number) => {
+    const newChecked = new Set(checkedItems);
+    if (newChecked.has(index)) {
+      newChecked.delete(index);
+    } else {
+      newChecked.add(index);
+    }
+    setCheckedItems(newChecked);
+  };
+
   return (
     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden flex-1 flex flex-col">
       <div className="px-6 py-6 border-b border-gray-100 flex justify-between items-center">
@@ -42,26 +54,66 @@ const AssignmentsTable: React.FC = () => {
 
       <div className="overflow-x-auto">
         <table className="w-full min-w-[500px]">
-          <thead>
-            <tr className="border-b border-gray-100">
-              <th className="text-left py-4 px-5 text-sm font-medium text-gray-900 w-1/2">
-                Webinar/Cohort
-              </th>
-              <th className="text-left py-4 px-5 text-sm font-medium text-gray-900">
-                Type
-              </th>
-              <th className="text-left py-4 px-5 text-sm font-medium text-gray-900">
-                Deadline
-              </th>
-              <th className="w-12"></th>
-            </tr>
-          </thead>
+        <thead>
+  <tr className="border-b border-gray-100">
+    <th className="text-center py-4 px-5 w-12 align-middle">
+      <input
+        type="checkbox"
+        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer accent-blue-600"
+      />
+    </th>
+
+    <th
+      className="
+        text-left py-4 px-5 w-1/2
+        font-inter text-[16px] font-bold
+        leading-[20px] tracking-[0]
+        text-gray-900 align-middle
+      "
+    >
+      Webinar/Cohort
+    </th>
+
+    <th
+      className="
+        text-left py-4 px-5
+        font-inter text-[16px] font-bold
+        leading-[20px] tracking-[0]
+        text-gray-900 align-middle
+      "
+    >
+      Type
+    </th>
+
+    <th
+      className="
+        text-left py-4 px-5
+        font-inter text-[16px] font-bold
+        leading-[20px] tracking-[0]
+        text-gray-900 align-middle
+      "
+    >
+      Deadline
+    </th>
+
+    <th className="w-12"></th>
+  </tr>
+</thead>
+
           <tbody>
             {PENDING_ASSIGNMENTS.map((item, index) => (
               <tr
                 key={index}
                 className="border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors"
               >
+                <td className="py-3 px-5 text-center">
+                  <input
+                    type="checkbox"
+                    checked={checkedItems.has(index)}
+                    onChange={() => toggleCheck(index)}
+                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer accent-blue-600"
+                  />
+                </td>
                 <td className="py-3 px-5">
                   <div className="flex flex-col">
                     <span className="text-sm text-gray-900 font-normal">

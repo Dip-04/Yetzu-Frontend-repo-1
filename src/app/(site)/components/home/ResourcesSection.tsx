@@ -22,7 +22,7 @@ export default function ResourcesSection() {
           </button>
         </div>
 
-        <div className="bg-white rounded-[20px] shadow-lg overflow-hidden mb-[40px] md:mb-[52px] flex flex-col md:flex-row justify-between p-[16px] md:p-[19px] gap-4 md:gap-6 hover:shadow-xl transition-shadow">
+        <div className="bg-white rounded-[20px] shadow-none overflow-hidden mb-[40px] md:mb-[52px] flex flex-col md:flex-row justify-between p-[16px] md:p-[19px] gap-4 md:gap-6 hover:shadow-xl transition-shadow">
           <div className="w-full md:w-1/2 p-4 md:p-6 flex flex-col justify-between">
             <div>
               <span className="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full mb-3 md:mb-4">
@@ -96,7 +96,7 @@ export default function ResourcesSection() {
           ].map((item, index) => (
             <div
               key={index}
-              className="bg-white rounded-[20px] shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+              className="bg-white rounded-[20px] shadow-none overflow-hidden hover:shadow-xl transition-shadow"
             >
               <div className="h-40 md:h-48 overflow-hidden relative">
                 <Image

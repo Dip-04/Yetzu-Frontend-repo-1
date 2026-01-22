@@ -12,7 +12,7 @@ const TrendingSection: React.FC = () => {
         {TRENDING_SKILLS.map((item) => (
           <div
             key={item.id}
-            className="min-w-[300px] md:min-w-[377px] bg-white border border-gray-200 rounded-xl overflow-hidden snap-center flex-shrink-0 hover:shadow-lg transition-shadow duration-300"
+            className="min-w-[300px] md:min-w-[377px] bg-white border border-gray-200 rounded-xl overflow-hidden snap-center flex-shrink-0 hover:shadow-none transition-shadow duration-300"
           >
             {/* Gray placeholder area */}
             <div className="bg-gray-200 h-40 w-full relative"></div>
@@ -57,7 +57,7 @@ const TrendingSection: React.FC = () => {
       </div>
 
       {/* Right Scroll Arrow Button (Visual cue) */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 hidden lg:flex items-center justify-center w-8 h-8 rounded-full bg-gray-800/80 text-white cursor-pointer hover:bg-gray-900 shadow-lg">
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 hidden lg:flex items-center justify-center w-8 h-8 rounded-full bg-gray-800/80 text-white cursor-pointer hover:bg-gray-900 shadow-none">
         <ArrowRight size={16} />
       </div>
     </div>

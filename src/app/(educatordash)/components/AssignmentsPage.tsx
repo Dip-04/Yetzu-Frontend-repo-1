@@ -49,7 +49,7 @@ const EmptyState: React.FC<{ onCreate: () => void }> = ({ onCreate }) => (
     </p>
     <button
       onClick={onCreate}
-      className="bg-[#042BFD] hover:bg-blue-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg flex items-center gap-2 transition-all shadow-lg shadow-blue-600/20"
+      className="bg-[#042BFD] hover:bg-blue-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg flex items-center gap-2 transition-all shadow-none shadow-blue-600/20"
     >
       Create New <ChevronDown size={16} />
     </button>
@@ -69,9 +69,9 @@ const StatusPill: React.FC<{ status: string }> = ({ status }) => {
     <span
       className={`
         inline-flex items-center justify-center
-        px-3 rounded-md
+        px-3 rounded-full
         font-nunito text-[12px] font-normal
-        leading-[20px] tracking-[0]
+        leading-[20px] tracking-[0] py-[2px]
         text-center align-middle
         ${styles}
       `}
@@ -92,7 +92,7 @@ const AssignmentsTab: React.FC = () => {
                 <div className="flex items-center justify-center">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer accent-blue-600"
                   />
                 </div>
               </th>
@@ -120,7 +120,7 @@ const AssignmentsTab: React.FC = () => {
                   <div className="flex items-center justify-center">
                     <input
                       type="checkbox"
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer accent-blue-600"
                     />
                   </div>
                 </td>
@@ -311,9 +311,17 @@ const AssignmentsPage: React.FC = () => {
       {/* Header Area */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <p className="text-sm px-4 text-gray-500 mt-1">
-            Here&apos;s a list of your Assignments for this month
-          </p>
+        <p
+  className="
+    px-4 mt-1
+    font-inter text-[16px] font-medium
+    leading-[16px] tracking-[0]
+    text-gray-500
+  "
+>
+  Here&apos;s a list of your Assignments for this month
+</p>
+
         </div>
         {activeTab === "Assignments" ? (
           <button

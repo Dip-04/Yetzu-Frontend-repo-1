@@ -52,19 +52,27 @@ const Sidebar: React.FC<SidebarProps> = ({
         </nav>
       </div>
 
-      {/* Bottom Menu */}
-      <div className="px-3 py-6">
-        {BOTTOM_MENU_ITEMS.map((item) => (
-          <a
-            key={item.label}
-            href="#"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-black hover:bg-gray-100 transition-colors"
-          >
-            <item.icon className="w-5 h-5" strokeWidth={1.5} />
-            {item.label}
-          </a>
-        ))}
-      </div>
+    {/* Bottom Menu */}
+<div className="px-3 py-6">
+  {BOTTOM_MENU_ITEMS.map((item) => (
+    <a
+      key={item.label}
+      href="#"
+      className="
+        flex items-center gap-3
+        px-4 rounded-lg
+        font-inter text-[16px] font-normal
+        leading-tight tracking-[0]
+        text-black align-middle
+        hover:bg-gray-100 transition-colors
+      "
+    >
+      <item.icon className="w-5 h-5" strokeWidth={1.5} />
+      {item.label}
+    </a>
+  ))}
+</div>
+
     </aside>
   );
 };

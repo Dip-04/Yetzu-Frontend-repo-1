@@ -12,7 +12,7 @@ export default function VideoSection() {
 
       {/* Video Wrapper */}
       <div
-        className="w-full max-w-[1224px] rounded-xl lg:rounded-2xl overflow-hidden shadow-lg relative"
+        className="w-full max-w-[1224px] rounded-xl lg:rounded-2xl overflow-hidden shadow-none relative"
         style={{
           // Responsive 16:9 aspect ratio — fallback-friendly
           aspectRatio: "16/9",

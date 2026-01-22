@@ -32,7 +32,7 @@ export default function JoinCommunity() {
 
           {/* Right Image */}
           <div className="w-full md:w-[384px] md:h-[395px] flex justify-center md:justify-end">
-            <div className="rounded-xl overflow-hidden shadow-lg w-full max-w-[384px]">
+            <div className="rounded-xl overflow-hidden shadow-none w-full max-w-[384px]">
               <Image
                 src="/images/Success.png"
                 alt="Join Our Community"

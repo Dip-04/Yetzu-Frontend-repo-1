@@ -1,7 +1,7 @@
 export default function TrustedByLeaders() {
   return (
     <section className="py-12 md:py-14 lg:py-16 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] min-h-[calc(100vh-68px)] flex items-center justify-center bg-[linear-gradient(180deg,_#FFFFFF_0%,_#F8FAFF_40%,_#F5F8FF_60%,_#FFFFFF_100%)]">
-      <div className="w-full max-w-[1224px] mx-auto rounded-3xl overflow-hidden shadow-lg relative">
+      <div className="w-full max-w-[1224px] mx-auto rounded-3xl overflow-hidden shadow-none relative">
         {/* Main Combined Image - 16:9 Aspect Ratio */}
         <div className="relative w-full aspect-[16/9] overflow-hidden max-h-[400px] lg:max-h-[500px]">
           <img

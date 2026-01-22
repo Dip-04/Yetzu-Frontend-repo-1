@@ -61,7 +61,7 @@ export const CreateAssignmentModal: React.FC<ModalProps> = ({
               </button>
 
               {dropdownOpen && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-[320px] overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-none z-10 max-h-[320px] overflow-y-auto">
                   {WEBINARS_LIST.map((webinar) => (
                     <button
                       key={webinar.id}
@@ -136,7 +136,7 @@ export const CreateAssignmentModal: React.FC<ModalProps> = ({
         </div>
 
         <div className="flex justify-end px-8 pb-8 pt-6 border-t border-gray-200 flex-shrink-0 bg-white">
-          <button className="bg-[#042BFD] hover:bg-blue-700 text-white font-bold py-3.5 px-8 rounded-lg transition-colors shadow-lg shadow-blue-600/20 text-sm">
+          <button className="bg-[#042BFD] hover:bg-blue-700 text-white font-bold py-3.5 px-8 rounded-lg transition-colors shadow-none shadow-blue-600/20 text-sm">
             Create Assignment
           </button>
         </div>
@@ -179,7 +179,7 @@ export const UploadFeedbackModal: React.FC<ModalProps> = ({
           <p className="text-xs text-gray-400 mt-6">Supports PDF up to 500kb</p>
         </div>
 
-        <button className="w-full bg-[#042BFD] hover:bg-blue-700 text-white font-bold py-3.5 rounded-lg transition-colors shadow-lg shadow-blue-600/20 text-sm">
+        <button className="w-full bg-[#042BFD] hover:bg-blue-700 text-white font-bold py-3.5 rounded-lg transition-colors shadow-none shadow-blue-600/20 text-sm">
           Upload
         </button>
       </div>

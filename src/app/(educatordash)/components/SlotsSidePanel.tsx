@@ -103,10 +103,11 @@ const SlotsSidePanel: React.FC<SlotsSidePanelProps> = ({ onAddSession }) => {
             <button
               key={index}
               onClick={() => setSelectedDay(index)}
-              className={`flex flex-col items-center justify-center w-10 h-12 rounded-lg transition-all duration-200 text-[10px] font-semibold ${selectedDay === index
-                  ? "bg-gray-900 text-white shadow-lg scale-105"
+              className={`flex flex-col items-center justify-center w-10 h-12 rounded-lg transition-all duration-200 text-[10px] font-semibold ${
+                selectedDay === index
+                  ? "bg-gray-900 text-white shadow-none scale-105"
                   : "text-gray-600 hover:bg-gray-100"
-                }`}
+              }`}
             >
               <span className="font-medium opacity-80">{day.day}</span>
               <span className="font-bold">{day.date}</span>
@@ -247,7 +248,7 @@ const SlotsSidePanel: React.FC<SlotsSidePanelProps> = ({ onAddSession }) => {
               {slots.map((slot) => (
                 <div
                   key={slot.id}
-                  className="bg-[#042BFD] text-white rounded-lg px-3 py-2 flex items-center justify-between shadow-lg shadow-blue-600/25 relative group shrink-0"
+                  className="bg-[#042BFD] text-white rounded-lg px-3 py-2 flex items-center justify-between shadow-none shadow-blue-600/25 relative group shrink-0"
                 >
                   <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide">
                     <span>{slot.startTime}</span>
@@ -267,7 +268,7 @@ const SlotsSidePanel: React.FC<SlotsSidePanelProps> = ({ onAddSession }) => {
               ))}
               {slots.length < 2 && (
                 <>
-                  <div className="bg-[#042BFD] text-white rounded-lg px-3 py-2 flex items-center justify-between shadow-lg shadow-blue-600/25 shrink-0">
+                  <div className="bg-[#042BFD] text-white rounded-lg px-3 py-2 flex items-center justify-between shadow-none shadow-blue-600/25 shrink-0">
                     <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide">
                       <span>10:30 AM</span>
                       <span className="opacity-70">→</span>
@@ -280,7 +281,7 @@ const SlotsSidePanel: React.FC<SlotsSidePanelProps> = ({ onAddSession }) => {
                       <X size={14} />
                     </button>
                   </div>
-                  <div className="bg-[#042BFD] text-white rounded-lg px-3 py-2 flex items-center justify-between shadow-lg shadow-blue-600/25 shrink-0">
+                  <div className="bg-[#042BFD] text-white rounded-lg px-3 py-2 flex items-center justify-between shadow-none shadow-blue-600/25 shrink-0">
                     <div className="flex items-center gap-1.5 text-xs font-bold tracking-wide">
                       <span>10:30 AM</span>
                       <span className="opacity-70">→</span>

@@ -226,7 +226,7 @@ export default function AssignmentsTable({ data = [] }: AssignmentsTableProps) {
                     {activeMenuId === assignment._id && (
                       <div
                         ref={menuRef}
-                        className="absolute right-8 top-8 w-56 bg-white rounded-lg shadow-lg border border-gray-100 z-50 text-left overflow-hidden ring-1 ring-black ring-opacity-5 animate-in fade-in zoom-in-95 duration-100 origin-top-right"
+                        className="absolute right-8 top-8 w-56 bg-white rounded-lg shadow-none border border-gray-100 z-50 text-left overflow-hidden ring-1 ring-black ring-opacity-5 animate-in fade-in zoom-in-95 duration-100 origin-top-right"
                         onClick={(e) => e.stopPropagation()}
                       >
                         <div className="py-1">

@@ -43,7 +43,7 @@ export default function CertificationSection() {
           <div className="space-y-12">
             {steps.map((step) => (
               <div key={step.id} className="flex gap-6">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#042BFD] text-white flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-[#042BFD] text-white flex items-center justify-center shadow-none shadow-blue-500/20">
                   <Figma className="w-6 h-6" />
                 </div>
                 <div>
