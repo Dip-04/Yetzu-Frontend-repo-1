@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { MessageCircle, Bell, ChevronDown, X } from "lucide-react";
+import { MessageCircle, Bell, ChevronDown, X, Menu } from "lucide-react";
 import ChatWidget from "./ChatWidget";
 import { NOTIFICATIONS } from "../constants";
 
@@ -35,7 +35,11 @@ const STATUS_CONFIG: Record<StatusType, StatusConfig> = {
   },
 };
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  onMenuClick?: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const [activePopup, setActivePopup] = useState<
     "chat" | "notifications" | "status" | null
   >(null);
@@ -53,12 +57,22 @@ const Header: React.FC = () => {
   const status = STATUS_CONFIG[currentStatus];
 
   return (
-    <header className="flex items-center justify-between pl-64 pr-6 h-[72px] bg-gray-50 sticky top-0 z-30 border-b border-gray-200/70">
-      <h1 className="font-inter text-[16px] font-medium px-7 leading-[24px] tracking-[0px] text-black align-middle">
-        Welcome Back!
-      </h1>
+    <header className="flex items-center justify-between px-4 sm:px-6 lg:pl-64 lg:pr-6 h-[72px] bg-gray-50 sticky top-0 z-30 border-b border-gray-200/70">
+      <div className="flex items-center gap-3">
+        {/* Mobile hamburger menu button */}
+        <button
+          onClick={onMenuClick}
+          className="lg:hidden p-2 rounded-lg hover:bg-gray-200 transition-colors"
+          aria-label="Open menu"
+        >
+          <Menu size={24} className="text-gray-700" />
+        </button>
+        <h1 className="font-inter text-[14px] sm:text-[16px] font-medium lg:px-7 leading-[24px] tracking-[0px] text-black align-middle">
+          Welcome Back!
+        </h1>
+      </div>
 
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
         {/* Icons */}
         <div className="flex items-center gap-4 relative">
           {/* Chat Button */}
@@ -87,9 +101,9 @@ const Header: React.FC = () => {
 
           {/* Notifications Popup */}
           {activePopup === "notifications" && (
-            <div className="absolute top-14 right-[-80px] w-80 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
-              <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 className="text-lg font-medium text-gray-800">
+            <div className="absolute top-14 right-[-40px] sm:right-[-80px] w-[calc(100vw-48px)] sm:w-80 max-w-80 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden flex flex-col z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-100 flex items-center justify-between">
+                <h3 className="text-base sm:text-lg font-medium text-gray-800">
                   Notifications
                 </h3>
                 <button
@@ -99,19 +113,23 @@ const Header: React.FC = () => {
                   <X size={18} />
                 </button>
               </div>
-              <div className="max-h-[400px] overflow-y-auto">
+              <div className="max-h-[350px] sm:max-h-[400px] overflow-y-auto">
                 {NOTIFICATIONS.map((note) => (
                   <div
                     key={note.id}
-                    className="p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer"
+                    className="p-3 sm:p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <div className="flex justify-between items-start mb-1">
-                      <h4 className="text-sm font-semibold text-gray-900">
+                      <h4 className="text-xs sm:text-sm font-semibold text-gray-900">
                         {note.title}
                       </h4>
-                      <span className="text-xs text-gray-400">{note.time}</span>
+                      <span className="text-[10px] sm:text-xs text-gray-400">
+                        {note.time}
+                      </span>
                     </div>
-                    <p className="text-sm text-gray-500">{note.message}</p>
+                    <p className="text-xs sm:text-sm text-gray-500">
+                      {note.message}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -120,13 +138,15 @@ const Header: React.FC = () => {
         </div>
 
         {/* Available Toggle */}
-        <div className="relative">
+        <div className="relative hidden sm:block">
           <div className="flex items-center bg-white rounded-lg border border-gray-200 shadow-none h-9 overflow-hidden">
             <div
-              className={`${status.bgColor} px-3 h-full flex items-center gap-2 border-r border-gray-200 transition-colors duration-200 min-w-[130px]`}
+              className={`${status.bgColor} px-2 sm:px-3 h-full flex items-center gap-1.5 sm:gap-2 border-r border-gray-200 transition-colors duration-200 min-w-[100px] sm:min-w-[130px]`}
             >
               <div className={`w-2 h-2 rounded-full ${status.dotColor}`}></div>
-              <span className={`text-xs font-medium ${status.textColor}`}>
+              <span
+                className={`text-[10px] sm:text-xs font-medium ${status.textColor}`}
+              >
                 {status.label}
               </span>
             </div>
@@ -170,13 +190,13 @@ const Header: React.FC = () => {
         </div>
 
         {/* User Profile */}
-        <div className="flex items-center gap-3 pl-2">
+        <div className="flex items-center gap-2 sm:gap-3 pl-1 sm:pl-2">
           <img
             src="https://picsum.photos/40/40"
             alt="Profile"
-            className="w-10 h-10 rounded-full object-cover"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
           />
-          <div className="hidden text-right sm:block">
+          <div className="hidden text-right md:block">
             <p className="font-sfpro text-[14px] font-bold leading-[14px] tracking-[0] text-gray-900">
               Alan Wake
             </p>

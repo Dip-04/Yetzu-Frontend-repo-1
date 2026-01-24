@@ -8,7 +8,7 @@ const SchedulePanel: React.FC = () => {
   return (
     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden w-full lg:w-[350px] flex-shrink-0 flex flex-col">
       {/* Header */}
-      <div className="px-6 py-6 flex justify-between items-center border-b border-gray-100">
+      <div className="px-4 sm:px-6 py-4 sm:py-6 flex justify-between items-center border-b border-gray-100">
         <div className="flex items-center gap-2">
           <Calendar size={18} className="text-gray-400" />
           <h3 className="text-base font-semibold text-gray-900">Slots</h3>
@@ -19,20 +19,23 @@ const SchedulePanel: React.FC = () => {
       </div>
 
       {/* Calendar Strip */}
-      <div className="px-3 py-3 border-b border-gray-100">
-        <div className="flex justify-between items-center">
+      <div className="px-2 sm:px-3 py-3 border-b border-gray-100">
+        <div className="flex justify-between items-center gap-1">
           {SCHEDULE_DAYS.map((day, index) => (
             <div
               key={index}
-              className={`flex flex-col items-center justify-center w-10 h-10 rounded-lg cursor-pointer transition-colors ${day.active
+              className={`flex flex-col items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-lg cursor-pointer transition-colors ${
+                day.active
                   ? "bg-black text-white"
                   : "text-gray-500 hover:bg-gray-100"
-                }`}
+              }`}
             >
-              <span className="text-[10px] font-semibold uppercase">
+              <span className="text-[8px] sm:text-[10px] font-semibold uppercase">
                 {day.day}
               </span>
-              <span className="text-xs font-semibold">{day.date}</span>
+              <span className="text-[10px] sm:text-xs font-semibold">
+                {day.date}
+              </span>
             </div>
           ))}
         </div>
@@ -43,13 +46,17 @@ const SchedulePanel: React.FC = () => {
         {SLOTS.map((slot, index) => (
           <div
             key={index}
-            className="flex items-center justify-between p-4 border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors"
+            className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-50 last:border-0 hover:bg-gray-50 transition-colors"
           >
-            <div>
-              <h4 className="text-sm font-medium text-gray-900">{slot.name}</h4>
-              <p className="text-xs text-gray-400 mt-1">{slot.type}</p>
+            <div className="min-w-0 flex-1">
+              <h4 className="text-xs sm:text-sm font-medium text-gray-900 truncate">
+                {slot.name}
+              </h4>
+              <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5 sm:mt-1">
+                {slot.type}
+              </p>
             </div>
-            <button className="bg-[#042BFD] hover:bg-blue-700 text-white text-[10px] font-bold px-3 py-2 rounded-md transition-colors shadow-none">
+            <button className="bg-[#042BFD] hover:bg-blue-700 text-white text-[9px] sm:text-[10px] font-bold px-2 sm:px-3 py-1.5 sm:py-2 rounded-md transition-colors shadow-none ml-2 flex-shrink-0">
               {slot.time}
             </button>
           </div>

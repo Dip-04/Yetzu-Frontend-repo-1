@@ -307,54 +307,53 @@ const AssignmentsPage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-[1600px] mx-auto p-6 flex flex-col gap-6">
+    <div className="max-w-[1600px] mx-auto p-4 sm:p-6 flex flex-col gap-4 sm:gap-6">
       {/* Header Area */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
         <div>
-        <p
-  className="
+          <p
+            className="
     px-1 mt-1
-    font-inter text-[16px] font-medium
+    font-inter text-[14px] sm:text-[16px] font-medium
     leading-[16px] tracking-[0]
     text-gray-500
   "
->
-  Here&apos;s a list of your Assignments for this month
-</p>
-
+          >
+            Here&apos;s a list of your Assignments for this month
+          </p>
         </div>
         {activeTab === "Assignments" ? (
           <button
             onClick={() => setShowCreateModal(true)}
-            className="bg-[#042BFD] hover:bg-blue-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg flex items-center gap-2 transition-all shadow-md shadow-blue-600/20"
+            className="bg-[#042BFD] hover:bg-blue-700 text-white text-xs sm:text-sm font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg flex items-center gap-2 transition-all shadow-md shadow-blue-600/20 w-full sm:w-auto justify-center"
           >
             Create New <ChevronDown size={16} />
           </button>
         ) : (
-          <button className="bg-[#042BFD] hover:bg-blue-700 text-white text-sm font-bold px-6 py-2.5 rounded-lg flex items-center gap-2 transition-all shadow-md shadow-blue-600/20">
+          <button className="bg-[#042BFD] hover:bg-blue-700 text-white text-xs sm:text-sm font-bold px-4 sm:px-6 py-2 sm:py-2.5 rounded-lg flex items-center gap-2 transition-all shadow-md shadow-blue-600/20 w-full sm:w-auto justify-center">
             Download Excel <Download size={16} />
           </button>
         )}
       </div>
 
       {/* Controls Bar */}
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="relative w-full md:w-[320px]">
+      <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
+        <div className="relative w-full sm:w-[280px] md:w-[320px]">
           <Search
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
-            size={18}
+            className="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+            size={16}
           />
           <input
             type="text"
             placeholder="Filter tasks..."
-            className="w-full pl-10 pr-4 py-2.5 border border-blue-200 rounded-lg outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all text-sm text-gray-700 placeholder:text-gray-400"
+            className="w-full pl-9 sm:pl-10 pr-4 py-2 sm:py-2.5 border border-blue-200 rounded-lg outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all text-sm text-gray-700 placeholder:text-gray-400"
           />
         </div>
 
         <div className="flex bg-white border border-gray-200 rounded-lg p-1">
           <button
             onClick={() => setActiveTab("Assignments")}
-            className={`px-6 py-2 rounded-md text-sm font-semibold transition-all duration-200 ${
+            className={`flex-1 sm:flex-none px-4 sm:px-6 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-semibold transition-all duration-200 ${
               activeTab === "Assignments"
                 ? "bg-[#042BFD] text-white shadow-none"
                 : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
@@ -364,7 +363,7 @@ const AssignmentsPage: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab("Submissions")}
-            className={`px-6 py-2 rounded-md text-sm font-semibold transition-all duration-200 ${
+            className={`flex-1 sm:flex-none px-4 sm:px-6 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-semibold transition-all duration-200 ${
               activeTab === "Submissions"
                 ? "bg-[#042BFD] text-white shadow-none"
                 : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"

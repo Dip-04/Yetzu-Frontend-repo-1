@@ -19,29 +19,29 @@ export const CreateAssignmentModal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] animate-in fade-in duration-200 p-4">
-      <div className="bg-white rounded-xl w-full max-w-[600px] max-h-[calc(100vh-40px)] flex flex-col relative shadow-2xl animate-in zoom-in-95 duration-200">
-        <div className="flex justify-between items-center mb-6 px-8 pt-8 flex-shrink-0">
-          <h2 className="text-2xl font-bold text-gray-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] animate-in fade-in duration-200 p-3 sm:p-4">
+      <div className="bg-white rounded-xl w-full max-w-[600px] max-h-[calc(100vh-24px)] sm:max-h-[calc(100vh-40px)] flex flex-col relative shadow-2xl animate-in zoom-in-95 duration-200">
+        <div className="flex justify-between items-center mb-4 sm:mb-6 px-4 sm:px-8 pt-4 sm:pt-8 flex-shrink-0">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
             Create Assignment
           </h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-900 transition-colors p-1 rounded-full hover:bg-gray-100"
           >
-            <X size={24} />
+            <X size={20} className="sm:w-6 sm:h-6" />
           </button>
         </div>
 
-        <div className="flex flex-col gap-6 px-8 overflow-y-auto flex-1">
-          <div className="flex flex-col gap-2">
-            <label className="text-base font-bold text-gray-900">
+        <div className="flex flex-col gap-4 sm:gap-6 px-4 sm:px-8 overflow-y-auto flex-1">
+          <div className="flex flex-col gap-1.5 sm:gap-2">
+            <label className="text-sm sm:text-base font-bold text-gray-900">
               Select Webinar
             </label>
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="w-full border border-gray-200 rounded-lg px-4 py-3.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 transition-all text-gray-700 text-sm placeholder:text-gray-400 bg-white flex items-center justify-between hover:border-gray-300"
+                className="w-full border border-gray-200 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 transition-all text-gray-700 text-xs sm:text-sm placeholder:text-gray-400 bg-white flex items-center justify-between hover:border-gray-300"
               >
                 <span
                   className={
@@ -53,15 +53,15 @@ export const CreateAssignmentModal: React.FC<ModalProps> = ({
                     : "Choose a webinar"}
                 </span>
                 <ChevronDown
-                  size={18}
-                  className={`text-gray-400 transition-transform ${
+                  size={16}
+                  className={`text-gray-400 transition-transform sm:w-[18px] sm:h-[18px] ${
                     dropdownOpen ? "rotate-180" : ""
                   }`}
                 />
               </button>
 
               {dropdownOpen && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-none z-10 max-h-[320px] overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-none z-10 max-h-[240px] sm:max-h-[320px] overflow-y-auto">
                   {WEBINARS_LIST.map((webinar) => (
                     <button
                       key={webinar.id}
@@ -69,13 +69,13 @@ export const CreateAssignmentModal: React.FC<ModalProps> = ({
                         setSelectedWebinar(webinar.id);
                         setDropdownOpen(false);
                       }}
-                      className="w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors border-b border-gray-50 last:border-0 flex items-center justify-between group"
+                      className="w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 hover:bg-blue-50 transition-colors border-b border-gray-50 last:border-0 flex items-center justify-between group"
                     >
                       <div className="flex flex-col gap-0.5">
-                        <span className="text-sm font-medium text-gray-900 group-hover:text-blue-600">
+                        <span className="text-xs sm:text-sm font-medium text-gray-900 group-hover:text-blue-600">
                           {webinar.name}
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-[10px] sm:text-xs text-gray-500">
                           {webinar.type}
                         </span>
                       </div>
@@ -89,54 +89,56 @@ export const CreateAssignmentModal: React.FC<ModalProps> = ({
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-base font-bold text-gray-900">Title</label>
+          <div className="flex flex-col gap-1.5 sm:gap-2">
+            <label className="text-sm sm:text-base font-bold text-gray-900">
+              Title
+            </label>
             <input
               type="text"
               placeholder="Enter Title"
-              className="w-full border border-gray-200 rounded-lg px-4 py-3.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 transition-all text-gray-700 text-sm placeholder:text-gray-400"
+              className="w-full border border-gray-200 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 transition-all text-gray-700 text-xs sm:text-sm placeholder:text-gray-400"
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-base font-bold text-gray-900">
+          <div className="flex flex-col gap-1.5 sm:gap-2">
+            <label className="text-sm sm:text-base font-bold text-gray-900">
               Description
             </label>
             <textarea
               placeholder="Enter your Message"
-              className="w-full border border-gray-200 rounded-lg px-4 py-3.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 transition-all text-gray-700 min-h-[140px] resize-none text-sm placeholder:text-gray-400"
+              className="w-full border border-gray-200 rounded-lg px-3 sm:px-4 py-2.5 sm:py-3.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 transition-all text-gray-700 min-h-[100px] sm:min-h-[140px] resize-none text-xs sm:text-sm placeholder:text-gray-400"
             />
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-base font-bold text-gray-900">
+          <div className="flex flex-col gap-1.5 sm:gap-2">
+            <label className="text-sm sm:text-base font-bold text-gray-900">
               Add Attachment
             </label>
-            <div className="border border-gray-200 rounded-xl p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-50 transition-colors border-dashed bg-white">
+            <div className="border border-gray-200 rounded-xl p-6 sm:p-10 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-50 transition-colors border-dashed bg-white">
               <Upload
-                size={24}
-                className="text-gray-900 mb-3"
+                size={20}
+                className="sm:w-6 sm:h-6 text-gray-900 mb-2 sm:mb-3"
                 strokeWidth={2}
               />
-              <p className="text-base font-bold text-gray-900 mb-1">
+              <p className="text-sm sm:text-base font-bold text-gray-900 mb-1">
                 Drop your file here
               </p>
-              <p className="text-sm text-gray-500">
+              <p className="text-xs sm:text-sm text-gray-500">
                 or{" "}
                 <span className="text-blue-600 font-bold hover:underline">
                   browse file
                 </span>{" "}
                 in your computer
               </p>
-              <p className="text-xs text-gray-400 mt-4">
+              <p className="text-[10px] sm:text-xs text-gray-400 mt-3 sm:mt-4">
                 Supports PDF up to 500kb
               </p>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end px-8 pb-8 pt-6 border-t border-gray-200 flex-shrink-0 bg-white">
-          <button className="bg-[#042BFD] hover:bg-blue-700 text-white font-bold py-3.5 px-8 rounded-lg transition-colors shadow-none shadow-blue-600/20 text-sm">
+        <div className="flex justify-end px-4 sm:px-8 pb-4 sm:pb-8 pt-4 sm:pt-6 border-t border-gray-200 flex-shrink-0 bg-white">
+          <button className="bg-[#042BFD] hover:bg-blue-700 text-white font-bold py-2.5 sm:py-3.5 px-6 sm:px-8 rounded-lg transition-colors shadow-none shadow-blue-600/20 text-xs sm:text-sm w-full sm:w-auto">
             Create Assignment
           </button>
         </div>
@@ -152,34 +154,42 @@ export const UploadFeedbackModal: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] animate-in fade-in duration-200">
-      <div className="bg-white rounded-xl w-[500px] p-8 relative shadow-2xl animate-in zoom-in-95 duration-200">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">Upload Feedbacks</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px] animate-in fade-in duration-200 p-3 sm:p-4">
+      <div className="bg-white rounded-xl w-full max-w-[500px] p-4 sm:p-8 relative shadow-2xl animate-in zoom-in-95 duration-200">
+        <div className="flex justify-between items-center mb-4 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+            Upload Feedbacks
+          </h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-900 transition-colors p-1 rounded-full hover:bg-gray-100"
           >
-            <X size={24} />
+            <X size={20} className="sm:w-6 sm:h-6" />
           </button>
         </div>
 
-        <div className="border-[1.5px] border-blue-600 rounded-xl p-12 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-blue-50/30 transition-colors border-dashed mb-8 bg-white">
-          <Upload size={32} className="text-gray-900 mb-4" strokeWidth={2} />
-          <p className="text-lg font-bold text-gray-900 mb-1">
+        <div className="border-[1.5px] border-blue-600 rounded-xl p-6 sm:p-12 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-blue-50/30 transition-colors border-dashed mb-4 sm:mb-8 bg-white">
+          <Upload
+            size={24}
+            className="sm:w-8 sm:h-8 text-gray-900 mb-3 sm:mb-4"
+            strokeWidth={2}
+          />
+          <p className="text-base sm:text-lg font-bold text-gray-900 mb-1">
             Drop your file here
           </p>
-          <p className="text-sm text-gray-500">
+          <p className="text-xs sm:text-sm text-gray-500">
             or{" "}
             <span className="text-blue-600 font-bold hover:underline">
               browse file
             </span>{" "}
             in your computer
           </p>
-          <p className="text-xs text-gray-400 mt-6">Supports PDF up to 500kb</p>
+          <p className="text-[10px] sm:text-xs text-gray-400 mt-4 sm:mt-6">
+            Supports PDF up to 500kb
+          </p>
         </div>
 
-        <button className="w-full bg-[#042BFD] hover:bg-blue-700 text-white font-bold py-3.5 rounded-lg transition-colors shadow-none shadow-blue-600/20 text-sm">
+        <button className="w-full bg-[#042BFD] hover:bg-blue-700 text-white font-bold py-2.5 sm:py-3.5 rounded-lg transition-colors shadow-none shadow-blue-600/20 text-xs sm:text-sm">
           Upload
         </button>
       </div>
