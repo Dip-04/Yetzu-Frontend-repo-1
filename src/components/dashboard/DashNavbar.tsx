@@ -18,6 +18,7 @@ export default function DashNavbar({ role, onMenuClick }: DashNavbarProps) {
 
     const getPageTitle = (path: string) => {
         if (path.includes("/overview")) return "Overview";
+        if (path.includes("/dashboard")) return "Welcome Back!"
         if (path.includes("/webinars")) return "Webinar & Cohorts";
         if (path.includes("/settings")) return "Settings";
         if (path.includes("/courses")) return "My Courses";
@@ -42,7 +43,7 @@ export default function DashNavbar({ role, onMenuClick }: DashNavbarProps) {
                     </button>
 
                     {/* Page Title */}
-                    <h1 className="text-3xl font-medium text-gray-800">{title}</h1>
+                    <h1 className="text-base font-medium text-gray-800">{title}</h1>
                 </div>
 
                 <div className="flex items-center gap-6">
