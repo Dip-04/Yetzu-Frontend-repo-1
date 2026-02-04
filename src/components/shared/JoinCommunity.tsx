@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Button from "../ui/Button";
 
 export default function JoinCommunity() {
   return (
@@ -24,9 +25,12 @@ export default function JoinCommunity() {
             </div>
 
             <div className="md:h-[52px]">
-              <button className="px-4 py-3 bg-[#E6EAFF] text-[#021165] rounded-[12px] border-2 border-[#0325D7] hover:bg-[#d9e0ff] transition-colors font-[SF Pro] text-[18px] leading-[21px] tracking-[-0.03em] flex items-center justify-center gap-2 mx-auto md:mx-0 w-full sm:w-auto md:w-[172px] md:h-[52px]">
+              <Button
+                variant="secondary"
+                className="!bg-[#E6EAFF] !text-[#021165] !border-[#0325D7] hover:!bg-[#d9e0ff] !w-full sm:!w-[172px]"
+              >
                 Get started today
-              </button>
+              </Button>
             </div>
           </div>
 

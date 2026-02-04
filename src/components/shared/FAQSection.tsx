@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
 import SubHeading from "@/components/Typography/SubHeading";
 import Paragraph from "@/components/Typography/Paragraph";
+import Button from "../ui/Button";
 
 const faqs = [
   {
@@ -66,9 +67,9 @@ export default function FAQSection() {
               Can't find the answer to your questions? Send us an email and
               we'll get back to you as soon as possible.
             </p>
-            <button className="bg-[#164CFF] text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition">
+            <Button variant="primary" className="!w-fit !h-[40px] px-6">
               Ask Here
-            </button>
+            </Button>
           </div>
         </div>
 

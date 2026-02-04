@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function FounderStory() {
   return (
-    <section className="w-full flex justify-center px-4 sm:px-6 md:px-12 lg:px-[108px] py-12 md:py-14 lg:py-16">
+    <section className="w-full flex justify-center px-4 sm:px-6 md:px-12 lg:px-[108px] py-4 md:py-14 lg:py-16">
       <div className="max-w-[1440px] w-full mx-auto text-center lg:text-left">
         <div className="flex flex-col lg:flex-row items-start justify-between gap-8 lg:gap-12">
           {/* Left Content */}

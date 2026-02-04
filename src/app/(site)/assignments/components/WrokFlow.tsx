@@ -67,67 +67,69 @@ export default function AssignmentWorkflow() {
         ))}
       </div>
 
-      <div className="relative w-full overflow-hidden mt-5 py-6">
-        <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+      <div className="relative w-full overflow-hidden mt-5 py-6 flex justify-center">
+        <div className="w-full max-w-7xl px-4 sm:px-6 lg:px-10 relative overflow-hidden">
+          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
-        <motion.div
-          className="flex items-center gap-6 w-max mb-5"
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{
-            repeat: Infinity,
-            ease: "linear",
-            duration: 40,
-          }}
-        >
-          {[...chipData, ...chipData].map((label, index) => (
-            <div
-              key={`row1-${index}`}
-              className={`flex items-center gap-2 px-6 md:px-7 py-2.5 md:py-3 rounded-xl text-sm md:text-base font-medium shadow-none border transition min-w-max ${
-                index % 2 === 1
-                  ? "bg-[#164CFF] text-white"
-                  : "bg-white text-gray-700 hover:bg-blue-50"
-              }`}
-            >
-              <Activity
-                size={18}
-                className={`${
-                  index % 2 === 1 ? "text-white" : "text-blue-600"
-                } transition-colors`}
-              />
-              {label}
-            </div>
-          ))}
-        </motion.div>
+          <motion.div
+            className="flex items-center gap-6 w-max mb-5"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{
+              repeat: Infinity,
+              ease: "linear",
+              duration: 40,
+            }}
+          >
+            {[...chipData, ...chipData].map((label, index) => (
+              <div
+                key={`row1-${index}`}
+                className={`flex items-center gap-2 px-6 md:px-7 py-2.5 md:py-3 rounded-xl text-sm md:text-base font-medium shadow-none border transition min-w-max ${
+                  index % 2 === 1
+                    ? "bg-[#164CFF] text-white"
+                    : "bg-white text-gray-700 hover:bg-blue-50"
+                }`}
+              >
+                <Activity
+                  size={18}
+                  className={`${
+                    index % 2 === 1 ? "text-white" : "text-blue-600"
+                  } transition-colors`}
+                />
+                {label}
+              </div>
+            ))}
+          </motion.div>
 
-        <motion.div
-          className="flex items-center gap-6 w-max"
-          animate={{ x: ["-50%", "0%"] }}
-          transition={{
-            repeat: Infinity,
-            ease: "linear",
-            duration: 30,
-          }}
-        >
-          {[...chipData, ...chipData].map((label, index) => (
-            <div
-              key={`row2-${index}`}
-              className={`flex items-center gap-2 px-6 md:px-7 py-2.5 md:py-3 rounded-xl text-sm md:text-base font-medium shadow-none border transition min-w-max ${
-                index % 2 === 1
-                  ? "bg-[#164CFF] text-white"
-                  : "bg-white text-gray-700 hover:bg-blue-50"
-              }`}
-            >
-              <Activity
-                size={18}
-                className={`${
-                  index % 2 === 1 ? "text-white" : "text-blue-600"
-                } transition-colors`}
-              />
-              {label}
-            </div>
-          ))}
-        </motion.div>
+          <motion.div
+            className="flex items-center gap-6 px-4 sm:px-6 lg:px-10 w-max"
+            animate={{ x: ["-50%", "0%"] }}
+            transition={{
+              repeat: Infinity,
+              ease: "linear",
+              duration: 30,
+            }}
+          >
+            {[...chipData, ...chipData].map((label, index) => (
+              <div
+                key={`row2-${index}`}
+                className={`flex items-center gap-2 px-4 sm:px-6 lg:px-10 px-6 md:px-7 py-2.5 md:py-3 rounded-xl text-sm md:text-base font-medium shadow-none border transition min-w-max ${
+                  index % 2 === 1
+                    ? "bg-[#164CFF] text-white"
+                    : "bg-white text-gray-700 hover:bg-blue-50"
+                }`}
+              >
+                <Activity
+                  size={18}
+                  className={`${
+                    index % 2 === 1 ? "text-white" : "text-blue-600"
+                  } transition-colors`}
+                />
+                {label}
+              </div>
+            ))}
+          </motion.div>
+        </div>
       </div>
     </section>
   );

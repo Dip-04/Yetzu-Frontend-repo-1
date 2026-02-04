@@ -11,6 +11,7 @@ const useGetCourses = (params?: { search?: string; minCost?: number; maxCost?: n
     refetchInterval: false,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
+    initialData: [],
   });
 };
 
