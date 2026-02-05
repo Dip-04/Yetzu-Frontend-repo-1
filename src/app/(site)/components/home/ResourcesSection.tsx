@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Button from "@/components/ui/Button";
 
 export default function ResourcesSection() {
   return (
@@ -17,9 +18,9 @@ export default function ResourcesSection() {
               academic growth.
             </p>
           </div>
-          <button className="mt-4 md:mt-0 px-4 md:px-6 py-3 bg-[#042BFD] text-white rounded-[12px] hover:bg-[#021DC0] transition-colors font-medium w-full sm:w-auto">
+          <Button variant="primary" className="mt-4 md:mt-0 !w-fit px-6">
             Check the Resource
-          </button>
+          </Button>
         </div>
 
         <div className="bg-white rounded-[20px] shadow-none overflow-hidden mb-[40px] md:mb-[52px] flex flex-col md:flex-row justify-between p-[16px] md:p-[19px] gap-4 md:gap-6 hover:shadow-xl transition-shadow">

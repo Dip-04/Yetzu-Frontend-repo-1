@@ -1,3 +1,5 @@
+import Button from "../ui/Button";
+
 export default function TrustedByLeaders() {
   return (
     <section className="py-12 md:py-14 lg:py-16 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] min-h-[calc(100vh-68px)] flex items-center justify-center bg-[linear-gradient(180deg,_#FFFFFF_0%,_#F8FAFF_40%,_#F5F8FF_60%,_#FFFFFF_100%)]">
@@ -28,9 +30,9 @@ export default function TrustedByLeaders() {
             by Cutting-Edge Technology and Expert Mentorship.
           </p>
 
-          <button className="px-4 md:px-6 lg:px-8 py-2 md:py-2.5 lg:py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium w-full sm:w-auto text-[12px] md:text-sm lg:text-base">
+          <Button className="w-full sm:w-auto">
             Get Invested in Your Academic Success
-          </button>
+          </Button>
         </div>
       </div>
     </section>

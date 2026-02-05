@@ -5,6 +5,14 @@ const nextConfig: NextConfig = {
   env: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/proxy/:path*",
+        destination: "https://productionyetzuapi.yetzu.com/api/:path*",
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

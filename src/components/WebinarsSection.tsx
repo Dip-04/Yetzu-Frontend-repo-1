@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useGetCourses } from "@/lib/queries/courses/useCoursesService";
+import Button from "./ui/Button";
 
 // Demo fallback data for frontend showcase
 const DEMO_COURSES = [
@@ -88,9 +89,9 @@ export default function WebinarsSection() {
               Academic Journey.
             </p>
           </div>
-          <button className="flex flex-row justify-center items-center gap-[8px] px-[14px] py-[6px] w-[160px] h-[48px] bg-[var(--Colors-Blue-600,#042BFD)] shadow-[0px_2px_4px_0px_#1F1E820A] rounded-[12px] font-sfpro text-[14px] md:text-[18px] leading-[21px] tracking-[-0.03em] text-white hover:bg-[#021DC0] transition-colors whitespace-nowrap md:w-auto">
-            Button
-          </button>
+          <div className="w-full sm:w-auto">
+            <Button className="!w-full sm:!w-[160px]">Explore All</Button>
+          </div>
         </div>
       </div>
 

@@ -18,6 +18,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import useSession from "@/hooks/useSession";
 import { useLogoutMutation } from "@/lib/queries/identityService/useIdentityService";
+import Button from "./ui/Button";
 
 const Navbar = () => {
   const { user: { name, email, id = "", role = "" } = {} } = useSession();
@@ -187,11 +188,10 @@ const Navbar = () => {
                 )}
               </div>
             ) : (
-              <Link
-                href="/login"
-                className="hidden lg:block bg-[#2563eb] hover:bg-[#1d4ed8] text-white px-6 py-2.5 rounded-lg transition-all duration-200 font-medium shadow-none hover:shadow-md"
-              >
-                Log In
+              <Link href="/login" className="hidden lg:block">
+                <Button variant="primary" className="!w-fit !h-[38px] px-6">
+                  Log In
+                </Button>
               </Link>
             )}
 
@@ -312,21 +312,24 @@ const Navbar = () => {
                 </div>
 
                 {/* Logout Button */}
-                <button
+                <Button
                   onClick={async () => await logout({ userId: id })}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors duration-200 font-medium"
+                  variant="secondary"
+                  className="!w-full !h-[44px] text-red-600 !bg-red-50 hover:!bg-red-100 border-none"
                 >
                   <LogOut size={18} />
                   Log Out
-                </button>
+                </Button>
               </div>
             ) : (
               <Link
                 href="/login"
-                className="block w-full text-center bg-[#2563eb] hover:bg-[#1d4ed8] text-white px-6 py-3 rounded-lg transition-all duration-200 font-medium shadow-none hover:shadow-md"
+                className="block w-full"
                 onClick={() => setIsSidebarOpen(false)}
               >
-                Log In
+                <Button variant="primary" className="!w-full !h-[48px]">
+                  Log In
+                </Button>
               </Link>
             )}
           </div>

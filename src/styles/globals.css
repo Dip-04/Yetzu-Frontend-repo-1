@@ -49,6 +49,16 @@ html {
   scroll-padding-top: var(--navbar-height);
 }
 
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
 /* Hide scrollbar utility class */
 .no-scrollbar::-webkit-scrollbar {
   display: none;

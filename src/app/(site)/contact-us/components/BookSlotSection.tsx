@@ -2,6 +2,7 @@
 
 import MainHeading from "@/components/Typography/MainHeading";
 import Paragraph from "@/components/Typography/Paragraph";
+import Button from "@/components/ui/Button";
 
 export default function BookSlotSection() {
   return (
@@ -32,9 +33,12 @@ export default function BookSlotSection() {
           by Cutting-Edge Technology and Expert Mentorship.
         </p>
 
-        <button className="bg-[#042BFD] hover:bg-blue-700 text-white font-medium py-4 px-8 rounded-xl shadow-none shadow-blue-500/30 transition-all duration-300 transform hover:-translate-y-1 text-base md:text-lg">
+        <Button
+          variant="primary"
+          className="!w-fit px-8 !h-[56px] text-base md:text-lg"
+        >
           Get Invested in Your Academic Success
-        </button>
+        </Button>
       </div>
     </section>
   );

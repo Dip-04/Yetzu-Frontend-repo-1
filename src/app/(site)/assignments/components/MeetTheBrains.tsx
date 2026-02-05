@@ -56,9 +56,9 @@ export default function MeetTheBrains() {
                     viewport={{ once: true }}
                     className="mt-12 w-full flex justify-center relative"
                 >
-                    <div className="rounded-2xl overflow-hidden w-full max-w-5xl">
+                    <div className="rounded-2xl overflow-hidden w-full ">
                         <Image
-                            src="https://placehold.co/1200x700"
+                            src="/images/assg.png"
                             alt="Yetzu Team Dashboard"
                             width={1200}
                             height={700}

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
+import Button from "./ui/Button";
 
 const footerLinks = [
   {
@@ -58,9 +59,7 @@ export default function Footer() {
                   placeholder="Enter Input"
                   className="px-3 py-2 rounded-md border border-gray-300 bg-gray-100 focus:outline-none w-60"
                 />
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-all">
-                  Subscribe now
-                </button>
+                <Button className="!w-fit px-6">Subscribe now</Button>
               </div>
             </div>
           </div>

@@ -1,3 +1,5 @@
+import Button from "@/components/ui/Button";
+
 export default function AssignmentSupportSection() {
   return (
     <section className="flex justify-center bg-[linear-gradient(180deg,#FFFFFF_0%,#E2E7FF_45%,#FFFFFF_100%)] py-12 md:py-14 lg:py-16 px-4 sm:px-6 md:px-12 lg:px-[108px]">
@@ -7,9 +9,12 @@ export default function AssignmentSupportSection() {
           <h2 className="font-inter font-semibold text-[#021165] text-[38px] sm:text-[38px] md:text-[40px] lg:text-[46px] leading-[100%] md:leading-[56px] tracking-[-0.7%] max-w-full md:max-w-[640px]">
             How Yetzu Supports Your Academic Assignments
           </h2>
-          <button className="mt-2 px-[14px] py-[6px] w-[160px] h-[48px] bg-[var(--Colors-Blue-600,#042BFD)] text-white rounded-[12px] text-[14px] md:text-[16px] font-medium shadow-[0px_2px_4px_0px_#1F1E820A] hover:bg-[#001EE5] transition-all sm:w-auto md:w-auto md:h-auto flex items-center justify-center">
+          <Button
+            variant="primary"
+            className="!w-fit px-8 !h-[48px] whitespace-nowrap"
+          >
             Submit Now
-          </button>
+          </Button>
         </div>
 
         {/* ===== Cards Grid ===== */}
