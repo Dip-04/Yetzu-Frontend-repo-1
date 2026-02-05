@@ -79,12 +79,18 @@ const SlotsSidePanel: React.FC<SlotsSidePanelProps> = ({ onAddSession }) => {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl w-full h-full flex flex-col shadow-none">
+    <div className="bg-white border border-gray-200 rounded-xl sm:rounded-2xl w-full h-full flex flex-col shadow-none">
       {/* Header */}
-      <div className="px-6 py-6 flex justify-between items-center border-b border-gray-200 shrink-0 bg-white">
-        <div className="flex items-center gap-2.5">
-          <Calendar size={20} className="text-gray-900" strokeWidth={2} />
-          <h3 className="text-lg font-bold text-gray-900">Slots</h3>
+      <div className="px-4 sm:px-6 py-4 sm:py-6 flex justify-between items-center border-b border-gray-200 shrink-0 bg-white">
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          <Calendar
+            size={18}
+            className="sm:w-5 sm:h-5 text-gray-900"
+            strokeWidth={2}
+          />
+          <h3 className="text-base sm:text-lg font-bold text-gray-900">
+            Slots
+          </h3>
         </div>
         {view === "list" && (
           <button
@@ -97,13 +103,13 @@ const SlotsSidePanel: React.FC<SlotsSidePanelProps> = ({ onAddSession }) => {
       </div>
 
       {/* Date Strip */}
-      <div className="px-6 py-4 border-b border-gray-200 shrink-0 bg-gray-50/50">
-        <div className="flex justify-between items-center gap-1">
+      <div className="px-3 sm:px-6 py-3 sm:py-4 border-b border-gray-200 shrink-0 bg-gray-50/50">
+        <div className="flex justify-between items-center gap-0.5 sm:gap-1">
           {DAYS.map((day, index) => (
             <button
               key={index}
               onClick={() => setSelectedDay(index)}
-              className={`flex flex-col items-center justify-center w-10 h-12 rounded-lg transition-all duration-200 text-[10px] font-semibold ${
+              className={`flex flex-col items-center justify-center w-8 h-10 sm:w-10 sm:h-12 rounded-lg transition-all duration-200 text-[8px] sm:text-[10px] font-semibold ${
                 selectedDay === index
                   ? "bg-gray-900 text-white shadow-none scale-105"
                   : "text-gray-600 hover:bg-gray-100"
@@ -117,23 +123,26 @@ const SlotsSidePanel: React.FC<SlotsSidePanelProps> = ({ onAddSession }) => {
       </div>
 
       {/* Content Area */}
-      <div className="flex flex-col flex-1 p-6 overflow-hidden min-h-0">
+      <div className="flex flex-col flex-1 p-4 sm:p-6 overflow-hidden min-h-0">
         {view === "empty" && (
-          <div className="flex flex-col items-center justify-center py-6 text-center">
-            <div className="w-14 h-14 bg-blue-50/80 rounded-full flex items-center justify-center mb-3 relative">
-              <Calendar size={24} className="text-blue-600 relative z-10" />
-              <div className="absolute top-4 right-5 w-1 h-1 bg-blue-300 rounded-full"></div>
-              <div className="absolute bottom-4 left-5 w-1 h-1 bg-blue-300 rounded-full"></div>
+          <div className="flex flex-col items-center justify-center py-4 sm:py-6 text-center">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-blue-50/80 rounded-full flex items-center justify-center mb-2 sm:mb-3 relative">
+              <Calendar
+                size={20}
+                className="sm:w-6 sm:h-6 text-blue-600 relative z-10"
+              />
+              <div className="absolute top-3 sm:top-4 right-4 sm:right-5 w-1 h-1 bg-blue-300 rounded-full"></div>
+              <div className="absolute bottom-3 sm:bottom-4 left-4 sm:left-5 w-1 h-1 bg-blue-300 rounded-full"></div>
             </div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-1">
+            <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-1">
               No Slots For Today?
             </h3>
-            <p className="text-[9px] text-gray-400 mb-4 max-w-[160px] leading-snug">
+            <p className="text-[8px] sm:text-[9px] text-gray-400 mb-3 sm:mb-4 max-w-[140px] sm:max-w-[160px] leading-snug">
               Please create slots for Class Schedule
             </p>
             <button
               onClick={() => setView("create")}
-              className="bg-[#042BFD] hover:bg-blue-700 text-white text-xs font-semibold px-5 py-2 rounded-lg w-fit transition-all shadow-md shadow-blue-600/20"
+              className="bg-[#042BFD] hover:bg-blue-700 text-white text-[10px] sm:text-xs font-semibold px-4 sm:px-5 py-1.5 sm:py-2 rounded-lg w-fit transition-all shadow-md shadow-blue-600/20"
             >
               Create Slot
             </button>

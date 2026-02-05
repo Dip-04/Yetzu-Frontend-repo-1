@@ -1,7 +1,7 @@
 import React from "react";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "outline";
   trailingIcon?: React.ReactNode;
   loading?: boolean;
 };
@@ -40,13 +40,15 @@ const Button: React.FC<ButtonProps> = ({
   const isDisabled = disabled || loading;
 
   const base =
-    "flex items-center justify-center px-10 py-1 rounded-md text-sm sm:text-base font-medium h-[44px] w-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 gap-2 select-none";
+    "flex items-center justify-center px-6 py-1 rounded-[12px] text-sm sm:text-base font-medium h-[48px] w-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 gap-2 select-none";
 
   const styles = {
     primary:
-      "bg-[#0047FF] text-white hover:bg-[#0038cc] active:scale-[0.98] shadow-none cursor-pointer",
+      "bg-[#042BFD] text-white hover:bg-[#021DC0] active:scale-[0.98] shadow-none cursor-pointer",
     secondary:
-      "bg-transparent text-[#0047FF] border border-[#0047FF] hover:bg-[#0047FF] hover:text-white active:scale-[0.98] cursor-pointer transition-all duration-300",
+      "bg-transparent text-[#042BFD] border border-[#042BFD] hover:bg-[#042BFD] hover:text-white active:scale-[0.98] cursor-pointer transition-all duration-300",
+    outline:
+      "bg-transparent text-[#000000] border border-[#000000] hover:bg-gray-50 active:scale-[0.98] cursor-pointer transition-all duration-300",
     disabled: "bg-gray-200 text-gray-400 border-gray-200 cursor-not-allowed",
   };
 
@@ -54,7 +56,9 @@ const Button: React.FC<ButtonProps> = ({
     ? styles.disabled
     : variant === "primary"
       ? styles.primary
-      : styles.secondary;
+      : variant === "secondary"
+        ? styles.secondary
+        : styles.outline;
 
   return (
     <button

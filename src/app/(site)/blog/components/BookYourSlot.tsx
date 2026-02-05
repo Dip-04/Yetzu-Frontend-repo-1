@@ -1,5 +1,7 @@
 "use client";
 
+import Button from "@/components/ui/Button";
+
 export default function BookYourSlot() {
   return (
     <section className="w-full bg-gradient-to-b from-white via-[#E2E7FF] to-white px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12 md:py-16">
@@ -17,9 +19,9 @@ export default function BookYourSlot() {
           </p>
 
           {/* Button */}
-          <button className="px-8 py-3.5 bg-[#042BFD] text-white rounded-[12px] hover:bg-[#0325D7] transition-all duration-300 font-[SF Pro] text-[16px] md:text-[18px] font-medium shadow-md hover:shadow-none">
+          <Button variant="primary" className="!w-fit px-8 !h-[52px]">
             Get Invested In Your Academic Success
-          </button>
+          </Button>
         </div>
       </div>
     </section>

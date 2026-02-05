@@ -1,5 +1,7 @@
 "use client";
 
+import Button from "@/components/ui/Button";
+
 export default function TeamSection() {
   return (
     <div className="w-full bg-gradient-to-b from-white via-[#E2E7FF] to-white">
@@ -28,17 +30,12 @@ export default function TeamSection() {
               </p>
             </div>
 
-            <button className="flex items-center justify-center px-[16px] h-[40px] bg-[#294BFD] border-2 border-[#0325D7] rounded-[8px] transition-all hover:opacity-90 flex-shrink-0 mt-4 lg:mt-0">
-              <span
-                className="text-[16px] font-normal leading-[19px] tracking-[-0.03em] text-transparent bg-clip-text bg-gradient-to-r from-[#F9F9F9] via-[#F0F0FC] to-[#F9F9F9]"
-                style={{
-                  fontFamily:
-                    "SF Pro, -apple-system, BlinkMacSystemFont, sans-serif",
-                }}
-              >
-                View All
-              </span>
-            </button>
+            <Button
+              variant="primary"
+              className="!w-fit !h-[40px] px-6 !rounded-[8px] mt-4 lg:mt-0"
+            >
+              View All
+            </Button>
           </div>
 
           {/* First Row of Cards */}

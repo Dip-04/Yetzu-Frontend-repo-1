@@ -22,7 +22,12 @@ const authRoutes = [
 
 const publicRoutes = [
   "/e/dashboard",
-   
+  "/assignments",
+  "/about",
+  "/courses",
+  "/blog",
+  "/contact-us",
+  "/legal",
 ];
 
 export function middleware(request: NextRequest) {

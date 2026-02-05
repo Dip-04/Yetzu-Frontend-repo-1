@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Button from "@/components/ui/Button";
 
 const heroImages = [
   "/images/Hero Section.png",
@@ -13,14 +14,9 @@ const heroImages = [
 
 export default function AboutHeroSection() {
   return (
-    <section
-      className="relative w-full bg-white overflow-hidden"
-      style={{
-        minHeight: "calc(100vh - 68px)",
-      }}
-    >
+    <section className="relative w-full bg-white overflow-hidden lg:min-h-[calc(100vh-68px)]">
       {/* Main Content Container */}
-      <div className="w-full h-full flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-12 md:py-14 lg:py-16">
+      <div className="w-full h-full flex flex-col items-center lg:justify-center px-4 sm:px-6 lg:px-8 pt-20 pb-6 md:py-14 lg:py-16">
         {/* Headings and Buttons Container */}
         <div className="w-full max-w-[884px] mx-auto mb-6 sm:mb-8 lg:mb-10">
           {/* Headings Section */}
@@ -58,74 +54,34 @@ export default function AboutHeroSection() {
 
           {/* Buttons */}
           <div className="flex flex-row items-center justify-center gap-2 sm:gap-[18px] flex-wrap">
-            <button
-              className="flex-1 sm:flex-none transition-all hover:bg-gray-50"
-              style={{
-                minWidth: "auto",
-                height: "44px",
-                padding: "10px 20px",
-                background: "#FFFFFF",
-                border: "2px solid #000000",
-                boxShadow: "0px 2px 4px rgba(31, 30, 130, 0.04)",
-                borderRadius: "12px",
-                fontFamily:
-                  "SF Pro, -apple-system, BlinkMacSystemFont, sans-serif",
-                fontWeight: 400,
-                fontSize: "clamp(14px, 2vw, 18px)",
-                lineHeight: "21px",
-                letterSpacing: "-0.03em",
-                color: "#021165",
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-              }}
+            <Button
+              variant="outline"
+              className="flex-1 sm:flex-none !w-auto !h-[44px] !border-2 !border-black"
             >
               Get in Touch
-            </button>
+            </Button>
 
-            <button
-              className="flex-1 sm:flex-none transition-all hover:opacity-90"
-              style={{
-                minWidth: "auto",
-                height: "44px",
-                padding: "10px 20px",
-                background: "#042BFD",
-                boxShadow: "0px 2px 4px rgba(31, 30, 130, 0.04)",
-                borderRadius: "12px",
-                border: "none",
-                fontFamily:
-                  "SF Pro, -apple-system, BlinkMacSystemFont, sans-serif",
-                fontWeight: 400,
-                fontSize: "clamp(14px, 2vw, 18px)",
-                lineHeight: "21px",
-                letterSpacing: "-0.03em",
-                color: "#FFFFFF",
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-              }}
+            <Button
+              variant="primary"
+              className="flex-1 sm:flex-none !w-auto !h-[44px]"
             >
               Join Us
-            </button>
+            </Button>
           </div>
         </div>
 
         {/* Cards Section */}
-        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-6 gap-4 sm:gap-5 lg:gap-7">
+        <div className="w-full max-w-full lg:max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden lg:overflow-visible">
+          <div className="flex lg:grid lg:grid-cols-6 overflow-x-auto lg:overflow-x-visible gap-4 sm:gap-5 lg:gap-7 pb-6 lg:pb-0 scrollbar-hide snap-x snap-mandatory">
             {heroImages.map((img, index) => {
               const isBlue = index === 1 || index === 3 || index === 5;
-              const isHidden = index > 1; // Hide cards 3-6 on mobile (only show first 2)
 
               return (
                 <div
                   key={index}
-                  className={`relative flex flex-col justify-end overflow-hidden ${
-                    isHidden ? "hidden sm:hidden lg:flex" : ""
-                  }`}
+                  className="relative flex flex-col justify-end overflow-hidden flex-shrink-0 w-[calc((100vw-64px)/2.25)] sm:w-[calc((100vw-108px)/3.25)] lg:w-full snap-start"
                   style={{
                     aspectRatio: "208 / 268.34",
-                    width: "100%",
-                    minHeight: "200px",
-                    maxHeight: "400px",
                     boxShadow:
                       "0px 11.3584px 22.7167px -8.51877px rgba(31, 30, 130, 0.1)",
                   }}

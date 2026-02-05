@@ -48,30 +48,30 @@ const WeekView: React.FC<WeekViewProps> = ({ onDateClick, sessions }) => {
     const heightHours = durationM / 60;
 
     return {
-      top: `${startOffsetHours * 100}px`,
-      height: `${heightHours * 100}px`,
+      top: `${startOffsetHours * 80}px`,
+      height: `${heightHours * 80}px`,
       position: "absolute" as const,
-      left: "4px",
-      right: "4px",
+      left: "2px",
+      right: "2px",
       zIndex: 10,
     };
   };
 
   return (
-    <div className="w-full bg-gray-50/30 flex flex-col">
+    <div className="w-full bg-gray-50/30 flex flex-col overflow-x-auto">
       {/* Header Row */}
-      <div className="flex border-b border-gray-200 sticky top-0 bg-white z-20">
-        <div className="w-[70px] shrink-0 py-4 border-r border-gray-200"></div>
+      <div className="flex border-b border-gray-200 sticky top-0 bg-white z-20 min-w-[600px]">
+        <div className="w-[50px] sm:w-[70px] shrink-0 py-3 sm:py-4 border-r border-gray-200"></div>
         {WEEK_DAYS.map((day) => (
           <div
             key={day.name}
             onClick={() => onDateClick?.(day.date)}
-            className="flex-1 py-4 text-center border-r border-gray-200 last:border-0 cursor-pointer hover:bg-blue-50/80 transition-colors"
+            className="flex-1 py-3 sm:py-4 text-center border-r border-gray-200 last:border-0 cursor-pointer hover:bg-blue-50/80 transition-colors min-w-[100px]"
           >
-            <div className="text-xl font-bold text-gray-900 mb-1">
+            <div className="text-lg sm:text-xl font-bold text-gray-900 mb-0.5 sm:mb-1">
               {day.date}
             </div>
-            <div className="text-[11px] text-gray-500 uppercase font-semibold tracking-wider">
+            <div className="text-[9px] sm:text-[11px] text-gray-500 uppercase font-semibold tracking-wider truncate px-1">
               {day.name}
             </div>
           </div>
@@ -79,13 +79,13 @@ const WeekView: React.FC<WeekViewProps> = ({ onDateClick, sessions }) => {
       </div>
 
       {/* Grid Body */}
-      <div className="flex relative overflow-y-auto">
+      <div className="flex relative overflow-y-auto min-w-[600px]">
         {/* Time Sidebar */}
-        <div className="w-[70px] shrink-0 bg-white/50 border-r border-gray-200">
+        <div className="w-[50px] sm:w-[70px] shrink-0 bg-white/50 border-r border-gray-200">
           {HOURS.map((hour) => (
             <div
               key={hour}
-              className="h-[100px] border-b border-gray-200 p-2 text-xs text-gray-500 text-right pr-3 font-medium"
+              className="h-[80px] border-b border-gray-200 p-1 sm:p-2 text-[10px] sm:text-xs text-gray-500 text-right pr-2 sm:pr-3 font-medium"
             >
               {formatTime(hour)}
             </div>
@@ -101,13 +101,13 @@ const WeekView: React.FC<WeekViewProps> = ({ onDateClick, sessions }) => {
           return (
             <div
               key={dayIndex}
-              className="flex-1 relative border-r border-gray-200 last:border-0 min-h-[900px]"
+              className="flex-1 relative border-r border-gray-200 last:border-0 min-h-[720px] min-w-[100px]"
             >
               {/* Background Lines */}
               {HOURS.map((hour) => (
                 <div
                   key={hour}
-                  className="h-[100px] border-b border-gray-200 w-full"
+                  className="h-[80px] border-b border-gray-200 w-full"
                 />
               ))}
 
@@ -117,14 +117,14 @@ const WeekView: React.FC<WeekViewProps> = ({ onDateClick, sessions }) => {
                   key={session.id}
                   style={getSessionStyle(session)}
                   className={`
-                    rounded-lg p-2.5 flex flex-col gap-1 border-l-4 shadow-sm hover:shadow-md transition-all overflow-hidden
+                    rounded-md sm:rounded-lg p-1.5 sm:p-2.5 flex flex-col gap-0.5 sm:gap-1 border-l-2 sm:border-l-4 shadow-sm hover:shadow-md transition-all overflow-hidden
                     ${session.color === "blue" ? "bg-blue-50/90 border-blue-500" : ""}
                     ${session.color === "purple" ? "bg-purple-50/90 border-purple-500" : ""}
                     ${session.color === "green" ? "bg-green-50/90 border-green-500" : ""}
                   `}
                 >
                   <h4
-                    className={`text-xs font-bold leading-tight truncate ${
+                    className={`text-[10px] sm:text-xs font-bold leading-tight truncate ${
                       session.color === "blue"
                         ? "text-blue-900"
                         : session.color === "purple"
@@ -135,7 +135,7 @@ const WeekView: React.FC<WeekViewProps> = ({ onDateClick, sessions }) => {
                     {session.title}
                   </h4>
                   <div
-                    className={`flex items-center gap-1 text-[10px] font-medium truncate ${
+                    className={`flex items-center gap-1 text-[8px] sm:text-[10px] font-medium truncate ${
                       session.color === "blue"
                         ? "text-blue-700"
                         : session.color === "purple"
@@ -175,8 +175,8 @@ const DayView: React.FC<DayViewProps> = ({
     const heightHours = durationM / 60;
 
     return {
-      top: `${startOffsetHours * 100}px`,
-      height: `${heightHours * 100}px`,
+      top: `${startOffsetHours * 80}px`,
+      height: `${heightHours * 80}px`,
       position: "absolute" as const,
       left: "4px",
       right: "4px",
@@ -186,20 +186,20 @@ const DayView: React.FC<DayViewProps> = ({
 
   return (
     <div className="w-full h-full p-0 flex flex-col">
-      <div className="py-4 px-6 border-b border-gray-200 bg-white sticky top-0 z-20">
-        <h3 className="text-lg font-bold text-gray-900">
+      <div className="py-3 sm:py-4 px-4 sm:px-6 border-b border-gray-200 bg-white sticky top-0 z-20">
+        <h3 className="text-base sm:text-lg font-bold text-gray-900">
           {WEEK_DAYS.find((d) => d.date === selectedDate)?.name || "Monday"},
           January {selectedDate}
         </h3>
       </div>
 
-      <div className="flex relative flex-1 min-h-[600px]">
+      <div className="flex relative flex-1 min-h-[500px] sm:min-h-[600px]">
         {/* Time Sidebar */}
-        <div className="w-[70px] shrink-0 border-r border-gray-200 bg-white/50">
+        <div className="w-[50px] sm:w-[70px] shrink-0 border-r border-gray-200 bg-white/50">
           {HOURS.map((hour) => (
             <div
               key={hour}
-              className="h-[100px] border-b border-gray-200 p-2 text-xs text-gray-500 text-right pr-3 font-medium"
+              className="h-[80px] border-b border-gray-200 p-1 sm:p-2 text-[10px] sm:text-xs text-gray-500 text-right pr-2 sm:pr-3 font-medium"
             >
               {formatTime(hour)}
             </div>
@@ -212,7 +212,7 @@ const DayView: React.FC<DayViewProps> = ({
           {HOURS.map((hour) => (
             <div
               key={hour}
-              className="h-[100px] border-b border-gray-200 w-full"
+              className="h-[80px] border-b border-gray-200 w-full"
             />
           ))}
 
@@ -222,14 +222,14 @@ const DayView: React.FC<DayViewProps> = ({
               key={session.id}
               style={getSessionStyle(session)}
               className={`
-                rounded-lg p-4 flex flex-col justify-center gap-1 border-l-4 shadow-sm hover:shadow-md transition-all overflow-hidden
+                rounded-lg p-3 sm:p-4 flex flex-col justify-center gap-0.5 sm:gap-1 border-l-4 shadow-sm hover:shadow-md transition-all overflow-hidden
                 ${session.color === "blue" ? "bg-blue-50/90 border-blue-500" : ""}
                 ${session.color === "purple" ? "bg-purple-50/90 border-purple-500" : ""}
                 ${session.color === "green" ? "bg-green-50/90 border-green-500" : ""}
               `}
             >
               <h4
-                className={`text-sm font-bold ${
+                className={`text-xs sm:text-sm font-bold ${
                   session.color === "blue"
                     ? "text-blue-900"
                     : session.color === "purple"
@@ -240,7 +240,7 @@ const DayView: React.FC<DayViewProps> = ({
                 {session.title}
               </h4>
               <p
-                className={`text-xs font-medium flex items-center gap-2 ${
+                className={`text-[10px] sm:text-xs font-medium flex items-center gap-2 ${
                   session.color === "blue"
                     ? "text-blue-700"
                     : session.color === "purple"
@@ -267,12 +267,12 @@ interface MonthViewProps {
 const MonthView: React.FC<MonthViewProps> = ({ onDateClick, selectedDate }) => {
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-2 sm:p-4">
       <div className="grid grid-cols-7 gap-px bg-gray-200 border border-gray-200 rounded-lg overflow-hidden shadow-none">
         {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
           <div
             key={d}
-            className="bg-gray-50 p-2 text-center text-[10px] font-bold text-gray-500 uppercase tracking-wider"
+            className="bg-gray-50 p-1 sm:p-2 text-center text-[8px] sm:text-[10px] font-bold text-gray-500 uppercase tracking-wider"
           >
             {d}
           </div>
@@ -281,29 +281,29 @@ const MonthView: React.FC<MonthViewProps> = ({ onDateClick, selectedDate }) => {
           <div
             key={day}
             onClick={() => onDateClick?.(day)}
-            className={`bg-white min-h-[60px] p-2 hover:bg-blue-50 transition-colors flex flex-col gap-1 cursor-pointer ${
+            className={`bg-white min-h-[40px] sm:min-h-[60px] p-1 sm:p-2 hover:bg-blue-50 transition-colors flex flex-col gap-0.5 sm:gap-1 cursor-pointer ${
               selectedDate === day ? "ring-2 ring-blue-500 ring-inset" : ""
             }`}
           >
             <span
-              className={`text-xs font-semibold p-0.5 ${
+              className={`text-[10px] sm:text-xs font-semibold p-0.5 ${
                 selectedDate === day ? "text-blue-600" : "text-gray-700"
               }`}
             >
               {day}
             </span>
             {day === 7 && (
-              <div className="mt-0.5 text-[8px] bg-blue-50 text-blue-700 px-1 py-0.5 rounded font-medium truncate border border-blue-100">
+              <div className="mt-0.5 text-[6px] sm:text-[8px] bg-blue-50 text-blue-700 px-0.5 sm:px-1 py-0.5 rounded font-medium truncate border border-blue-100">
                 Webinar
               </div>
             )}
             {day === 8 && (
-              <div className="mt-0.5 text-[8px] bg-blue-50 text-blue-700 px-1 py-0.5 rounded font-medium truncate border border-blue-100">
+              <div className="mt-0.5 text-[6px] sm:text-[8px] bg-blue-50 text-blue-700 px-0.5 sm:px-1 py-0.5 rounded font-medium truncate border border-blue-100">
                 2 Sessions
               </div>
             )}
             {day === 10 && (
-              <div className="mt-0.5 text-[8px] bg-purple-50 text-purple-700 px-1 py-0.5 rounded font-medium truncate border border-purple-100">
+              <div className="mt-0.5 text-[6px] sm:text-[8px] bg-purple-50 text-purple-700 px-0.5 sm:px-1 py-0.5 rounded font-medium truncate border border-purple-100">
                 Mentorship
               </div>
             )}

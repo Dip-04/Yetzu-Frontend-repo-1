@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Button from "./ui/Button";
 
 export default function ProgramsWebinarsSection() {
   return (
@@ -85,12 +86,12 @@ export default function ProgramsWebinarsSection() {
             </h3>
 
             {/* Button */}
-            <button
-              className="w-full h-[52px] bg-[#0E66FE] hover:bg-[#0d5ce6] text-white rounded-[12px] font-['SF_Pro'] text-[18px] leading-[21px] transition-colors"
-              style={{ fontFamily: "var(--font-sfpro)" }}
+            <Button
+              variant="primary"
+              className="w-full !h-[52px] !rounded-[12px] text-[18px]"
             >
-              Button
-            </button>
+              Learn More
+            </Button>
           </div>
         </div>
 

@@ -72,11 +72,10 @@ export default function CourseDetailPage() {
           We couldn't find the course you're looking for. It may have been
           removed or doesn't exist.
         </p>
-        <Link
-          href="/courses"
-          className="px-6 py-3 bg-[#042BFD] text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
-        >
-          Back to Courses
+        <Link href="/courses">
+          <Button variant="primary" className="!w-fit px-8">
+            Back to Courses
+          </Button>
         </Link>
       </div>
     );

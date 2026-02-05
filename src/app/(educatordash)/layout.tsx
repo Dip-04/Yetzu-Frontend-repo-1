@@ -16,22 +16,39 @@ export default function EducatorDashLayout({
   children: React.ReactNode;
 }) {
   const [activeView, setActiveView] = useState("dashboard");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-white text-gray-900 font-sans">
-      <Sidebar activeView={activeView} onNavigate={setActiveView} />
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <Sidebar
+        activeView={activeView}
+        onNavigate={(view) => {
+          setActiveView(view);
+          setSidebarOpen(false);
+        }}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
 
       <div className="min-h-screen bg-white">
-        <Header />
+        <Header onMenuClick={() => setSidebarOpen(true)} />
 
-        <div className="pl-64">
+        <div className="lg:pl-64">
           {activeView === "dashboard" && (
-            <main className="p-6 max-w-[1600px] mx-auto flex flex-col gap-6">
+            <main className="p-4 sm:p-6 max-w-[1600px] mx-auto flex flex-col gap-4 sm:gap-6">
               <StatsGrid />
 
               <TrendingSection />
 
-              <div className="flex flex-col lg:flex-row gap-6">
+              <div className="flex flex-col lg:flex-row gap-4 sm:gap-6">
                 <AssignmentsTable />
                 <SchedulePanel />
               </div>

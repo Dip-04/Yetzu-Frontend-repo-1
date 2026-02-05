@@ -3,11 +3,21 @@ import { Course } from "./types";
 
 export const coursesService = {
   getCourses: async (params?: { search?: string; minCost?: number; maxCost?: number }) => {
-    const res = await api.get("course/v1/courselist", { params });
-    return res?.data?.courses as Course[];
+    try {
+      const res = await api.get("course/v1/courselist", { params });
+      return res?.data?.courses || [];
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      return [];
+    }
   },
   getCourseById: async (id: string) => {
-    const res = await api.get(`course/v1/get/${id}`);
-    return res?.data?.course as Course;
+    try {
+      const res = await api.get(`course/v1/get/${id}`);
+      return res?.data?.course;
+    } catch (error) {
+      console.error("Error fetching course:", error);
+      return null;
+    }
   },
 };
