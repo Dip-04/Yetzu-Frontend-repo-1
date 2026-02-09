@@ -93,61 +93,72 @@ export default function MySessionsPage() {
         
         {/* ================= WEBINAR TAB ================= */}
         {activeTab === "Webinar" && (
-          hasWebinars ? (
-            <div className="flex flex-col gap-6">
-              {ASSIGNMENTS_DATA.map((item) => (
-                <div 
-                  key={item.id} 
-                  className="bg-white border border-gray-200 rounded-[20px] p-6 flex flex-col-reverse md:flex-row gap-8 shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <div className="flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center -space-x-2 mb-4">
-                         {[1,2,3].map(i => (
-                           <div key={i} className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white"></div>
-                         ))}
-                         <div className="w-8 h-8 rounded-full bg-blue-50 border-2 border-white flex items-center justify-center text-xs font-bold text-[#042BFD]">
-                           +4
-                         </div>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                      <p className="text-sm text-gray-500 leading-relaxed mb-4 line-clamp-2">
-                        {item.webinar.description}
-                      </p>
-                      <div className="flex items-center text-xs text-gray-500 font-medium mb-6">
-                        <Clock size={16} className="mr-2 text-gray-400" />
-                        <span>{item.webinar.date}</span>
-                        <span className="mx-2 text-gray-300">|</span>
-                        <span>{item.webinar.time}</span>
-                      </div>
-                    </div>
-                    <div className="flex gap-4 mt-auto">
-                      <button className="bg-[#042BFD] text-white text-sm font-medium px-8 py-2.5 rounded-lg shadow-md shadow-blue-500/20 hover:bg-[#0325D7] transition-colors">
-                        Join
-                      </button>
-                      <button 
-                        onClick={() => router.push(`/s/assignments/${item.slug}`)}
-                        className="bg-white border border-gray-300 text-gray-600 text-sm font-medium px-6 py-2.5 rounded-lg hover:bg-gray-50 hover:text-[#021165] hover:border-[#021165] transition-all flex items-center gap-2"
-                      >
-                        View More <ArrowRight size={16} />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="w-full md:w-[350px] h-48 md:h-[220px] shrink-0 relative rounded-xl overflow-hidden bg-gray-100">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src={item.webinar.heroImage} 
-                      alt={item.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
+  hasWebinars ? (
+    <div className="flex flex-col gap-6">
+      {ASSIGNMENTS_DATA.map((item) => (
+        <div 
+          key={item.id} 
+          /* CHANGED: flex-col on mobile, md:flex-row on desktop. 
+             Padded correctly for mobile.
+          */
+          className="bg-white border border-gray-200 rounded-[20px] p-4 md:p-6 flex flex-col md:flex-row gap-6 md:gap-8 shadow-sm hover:shadow-md transition-shadow"
+        >
+          {/* Content Container */}
+          <div className="flex-1 flex flex-col justify-between order-2 md:order-1">
+            <div>
+              <div className="flex items-center -space-x-2 mb-4">
+                 {[1,2,3].map(i => (
+                   <div key={i} className="w-8 h-8 rounded-full bg-gray-200 border-2 border-white"></div>
+                 ))}
+                 <div className="w-8 h-8 rounded-full bg-blue-50 border-2 border-white flex items-center justify-center text-xs font-bold text-[#042BFD]">
+                   +4
+                 </div>
+              </div>
+              <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
+              <p className="text-sm text-gray-500 leading-relaxed mb-4 line-clamp-2 md:line-clamp-none">
+                {item.webinar.description}
+              </p>
+              <div className="flex flex-wrap items-center text-xs text-gray-500 font-medium mb-6 gap-y-2">
+                <div className="flex items-center">
+                  <Clock size={16} className="mr-2 text-gray-400" />
+                  <span>{item.webinar.date}</span>
                 </div>
-              ))}
+                <span className="mx-2 text-gray-300 hidden sm:inline">|</span>
+                <span className="w-full sm:w-auto mt-1 sm:mt-0">{item.webinar.time}</span>
+              </div>
             </div>
-          ) : (
-            <EmptyState type="Webinar" />
-          )
-        )}
+
+            {/* Buttons: Stacked on mobile, side-by-side on desktop */}
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mt-auto">
+              <button className="w-full sm:w-auto bg-[#042BFD] text-white text-sm font-medium px-8 py-2.5 rounded-lg shadow-md shadow-blue-500/20 hover:bg-[#0325D7] transition-colors">
+                Join
+              </button>
+              <button 
+                onClick={() => router.push(`/s/assignments/${item.slug}`)}
+                className="w-full sm:w-auto justify-center bg-white border border-gray-300 text-gray-600 text-sm font-medium px-6 py-2.5 rounded-lg hover:bg-gray-50 hover:text-[#021165] hover:border-[#021165] transition-all flex items-center gap-2"
+              >
+                View More <ArrowRight size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* Image Container */}
+          {/* CHANGED: Fixed aspect ratio on mobile (h-48), specific sizing on desktop */}
+          <div className="w-full md:w-[350px] h-48 md:h-[220px] shrink-0 order-1 md:order-2 relative rounded-xl overflow-hidden bg-gray-100">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src={item.webinar.heroImage} 
+              alt={item.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <EmptyState type="Webinar" />
+  )
+)}
 
         {/* ================= MENTORSHIP TAB ================= */}
         {activeTab === "Mentorship" && (
@@ -159,27 +170,42 @@ export default function MySessionsPage() {
               <div className="flex-1 flex flex-col gap-8 w-full min-w-0">
                 
                 {/* 1. SEPARATE BLUE BANNER */}
-                <div className="bg-[#042BFD] rounded-[20px] p-8 text-white relative overflow-hidden flex flex-col md:flex-row items-center justify-between shadow-lg shadow-blue-200 w-full">
-                   <div className="relative z-10 max-w-lg">
-                     <div className="flex items-center gap-2 mb-2">
-                       <div className="w-2 h-2 bg-white rounded-full opacity-50"></div>
-                       <div className="w-2 h-2 bg-white rounded-full opacity-100"></div>
-                     </div>
-                     <h2 className="text-2xl font-bold mb-2">{MENTORSHIP_COURSE_DATA.banner.title}</h2>
-                     <p className="text-sm text-blue-100 leading-relaxed">
-                       {MENTORSHIP_COURSE_DATA.banner.text}
-                     </p>
-                   </div>
-                   <div className="hidden md:block w-32 h-32 relative">
-                      <div className="absolute right-0 bottom-[-20px] text-6xl">🎓</div>
-                   </div>
-                </div>
+                <div className="relative w-full h-[181px] bg-[#042BFD] rounded-[20px] overflow-hidden flex items-center shadow-lg shadow-blue-100/50">
+      <div className="flex items-center w-full px-6 gap-8">
+        
+        {/* SVG Icon Section */}
+        <div className="relative flex-shrink-0 w-[112px] h-[112px] flex items-center justify-center">
+          
+          <img
+            src="/Images/Reading.svg"
+            alt="Reading Illustration"
+            className="w-full h-full object-contain"
+          />
+
+ 
+        </div>
+
+        {/* Text Content Area */}
+        <div className="flex flex-col">
+          <h1 className="text-[24px] font-medium  text-white mb-2 font-inter">
+            Welcome Alan!
+          </h1>
+          <p className="text-blue-100 text-xs md:text-[16px]  max-w-lg leading-snug font-inter">
+            Track your progress, connect with your mentor, and achieve your goals.
+          </p>
+        </div>
+
+      </div>
+
+      {/* Background glow effect */}
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-64 h-64 bg-white/5 rounded-full blur-[80px] pointer-events-none"></div>
+    </div>
 
                 {/* 2. MAIN CONTENT CARD (Description + Modules + Assignments) */}
                 <div className="bg-white rounded-[20px] p-8 border border-gray-200 shadow-sm w-full">
                   
                   {/* --- Section A: Description --- */}
-                  <div className="mb-10">
+                  <div className="mb-5">
                     <h3 className="text-xl font-bold text-[#021165] mb-4">{MENTORSHIP_COURSE_DATA.courseDetails.title}</h3>
                     <div className="space-y-4 text-sm text-gray-600 leading-relaxed text-justify">
                       {MENTORSHIP_COURSE_DATA.courseDetails.description.map((para, i) => (
@@ -189,10 +215,10 @@ export default function MySessionsPage() {
                   </div>
 
                   {/* Divider */}
-                  <hr className="border-gray-100 mb-10" />
+                  <hr className="border-gray-100 mb-5" />
 
                   {/* --- Section B: Modules (Standalone Points, No Lines) --- */}
-                  <div className="mb-10">
+                  <div className="mb-5">
                      <div className="flex flex-col gap-4">
                         {MENTORSHIP_COURSE_DATA.modules?.map((mod) => (
                           <div key={mod.id} className="bg-[#F9FAFB] rounded-xl p-5 border border-gray-100 flex gap-5 items-start">
@@ -215,7 +241,7 @@ export default function MySessionsPage() {
                   </div>
 
                   {/* Divider */}
-                  <hr className="border-gray-100 mb-10" />
+                  <hr className="border-gray-100 mb-5" />
 
                   {/* --- Section C: Assignments Table --- */}
                   <div>

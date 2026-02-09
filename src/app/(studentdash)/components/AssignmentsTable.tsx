@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Filter, ArrowRight, Download } from "lucide-react";
+import { Filter, ArrowRight, Download, Menu } from "lucide-react";
 import { PENDING_ASSIGNMENTS } from "../constants";
 
 
@@ -33,10 +33,10 @@ const AssignmentsTable: React.FC = () => {
       
       {/* Header */}
       <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-white">
-        <div className="flex items-center gap-2">
+        <div className="flex  items-center gap-2">
           {/* <Filter className="w-4 h-4 text-[#021165]" /> */}
           <h3 className="text-lg font-bold text-[#021165]">
-            Pending assignments
+             Pending assignments
           </h3>
         </div>
         <button className="flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-[#021165] transition-colors">

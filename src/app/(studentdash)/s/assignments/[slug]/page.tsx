@@ -93,7 +93,7 @@ function WebinarView({ data }: { data: any }) {
       
       {/* Left Column: Timeline & Hero */}
       {/* CHANGE: Added 'order-2 lg:order-1' -> Bottom on mobile, Left on desktop */}
-      <div className="lg:col-span-2 flex flex-col gap-8 order-2 lg:order-1">
+      {/* <div className="lg:col-span-2 flex flex-col gap-8 order-2 lg:order-1">
         <div className="relative w-full h-48 md:h-80 bg-gray-200 rounded-[20px] overflow-hidden flex items-center justify-center text-gray-400">
            Webinar Hero Image
         </div>
@@ -113,7 +113,49 @@ function WebinarView({ data }: { data: any }) {
             ))}
           </div>
         </div>
+      </div> */}
+<div className="lg:col-span-2 flex flex-col gap-8 order-2 lg:order-1 font-inter">
+      {/* Webinar Hero Image */}
+      <div className="relative w-full h-48 md:h-80 bg-gray-200 rounded-[20px] overflow-hidden flex items-center justify-center text-gray-400">
+        Webinar Hero Image
       </div>
+
+      {/* Timeline Card */}
+      <div className="bg-white p-6 md:p-8 rounded-[20px] border border-gray-100 shadow-sm">
+        <div className="relative">
+          {data.webinar.timeline.map((item: any, index: number) => (
+            <div key={index} className="relative flex gap-6 group">
+              
+              {/* Vertical Line Logic */}
+              <div className="relative flex flex-col items-center">
+                {/* Timeline Dot */}
+                <div className="relative z-10 w-[24px] h-[24px] rounded-full bg-[#003fc7] border-4 border-white shadow-sm mt-1 flex-shrink-0" />
+                
+                {/* Vertical Line: Hidden for the last item */}
+                {index !== data.webinar.timeline.length - 1 && (
+                  <div className="w-[2px] h-full bg-[#003fc7] opacity-20 -mt-1" />
+                )}
+              </div>
+
+              {/* Content */}
+              <div className={`flex flex-col ${index !== data.webinar.timeline.length - 1 ? "pb-10" : "pb-0"}`}>
+                <h4 className="text-lg font-bold text-[#021165] leading-none mb-2">
+                  {item.title}
+                </h4>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[12px] font-semibold text-gray-500 bg-gray-50 px-2 py-1 rounded-md">
+                    {item.time}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed max-w-xl">
+                  {item.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
 
       {/* Right Column: Info Card */}
       {/* CHANGE: Added 'order-1 lg:order-2' -> Top on mobile, Right on desktop */}
