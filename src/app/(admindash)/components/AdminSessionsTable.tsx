@@ -75,7 +75,7 @@ const AdminSessionsTable: React.FC = () => {
 
   return (
     <>
-      <div className="bg-white border border-gray-200 rounded-xl flex flex-col mt-6 shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-xl flex flex-col shadow-sm">
         {/* Header Section */}
         <div className="p-4 sm:p-5 border-b border-gray-100 flex flex-col sm:flex-row justify-between gap-4">
           <div className="relative w-full sm:w-80">
