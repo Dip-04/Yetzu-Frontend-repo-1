@@ -10,14 +10,13 @@ export default function SecurityPage() {
           Security & Compliance
         </h2>
         <p className="text-gray-500 mt-1">
-          Manage security settings and compliance policies
+         Pending
         </p>
       </div>
 
       <div className="bg-white border border-gray-200 rounded-xl p-8 text-center">
         <p className="text-gray-500">
-          Security & Compliance features are under development.
-        </p>
+Pending        </p>
       </div>
     </main>
   );

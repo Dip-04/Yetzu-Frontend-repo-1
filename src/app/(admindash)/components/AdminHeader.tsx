@@ -21,15 +21,7 @@ const AdminHeader: React.FC<HeaderProps> = ({ onMenuClick }) => {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
-        {/* Action Buttons specific to Admin Header in screenshot */}
-        <div className="hidden sm:flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium text-sm">
-            Upload Users <Upload size={16} />
-          </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm">
-            Add Users <Plus size={16} />
-          </button>
-        </div>
+       
 
         <div className="flex items-center gap-4 relative ml-2 border-l border-gray-200 pl-4">
           <button className="w-9 h-9 flex items-center justify-center rounded-full bg-blue-50 text-gray-700 hover:bg-blue-100 transition-colors">
