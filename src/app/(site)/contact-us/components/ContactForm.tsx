@@ -30,7 +30,9 @@ const ContactForm = () => {
     medicalSchool: Yup.string().required(
       "Medical School / Affiliation is required",
     ),
-    researchFocus: Yup.string(),
+    researchFocus: Yup.string().required(
+      "Research Paper Focus is required",
+    ),
     mentorshipNeeds: Yup.string().required(
       "Please describe your mentorship needs",
     ),
@@ -114,8 +116,15 @@ const ContactForm = () => {
                   toast.success("Contact Form Submitted Successfully");
                   resetForm();
                   setIsSubmitted(true);
-                } catch (error) {
-                  toast.error("Failed to submit the contact form");
+                } catch (error: any) {
+                  const message = error?.response?.data?.message || error?.message || "";
+                  if (message.toLowerCase().includes("duplicate") || message.toLowerCase().includes("already exists")) {
+                    toast.error(message || "This email or phone is already registered");
+                  } else if (message.toLowerCase().includes("validation")) {
+                    toast.error(message || "Please check your inputs and try again");
+                  } else {
+                    toast.error("Failed to submit the contact form. Please try again.");
+                  }
                 }
               }}
             >
@@ -192,7 +201,7 @@ const ContactForm = () => {
                       htmlFor="researchFocus"
                       className="text-gray-700 font-medium text-sm sm:text-base"
                     >
-                      Research Paper Focus
+                      Research Paper Focus <span className="text-red-500">*</span>
                     </label>
                     <select
                       id="researchFocus"
@@ -201,7 +210,7 @@ const ContactForm = () => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       disabled={isPending}
-                      className="border border-gray-300 rounded-md p-2 sm:p-2.5 text-sm sm:text-base focus:ring-2 focus:ring-blue-500 outline-none"
+                      className={`border ${errors.researchFocus && touched.researchFocus ? 'border-red-500' : 'border-gray-300'} rounded-md p-2 sm:p-2.5 text-sm sm:text-base focus:ring-2 focus:ring-blue-500 outline-none`}
                     >
                       <option value="">Choose from the option</option>
                       <option value="Cardiology">Cardiology</option>
@@ -209,6 +218,9 @@ const ContactForm = () => {
                       <option value="Oncology">Oncology</option>
                       <option value="Public Health">Public Health</option>
                     </select>
+                    {errors.researchFocus && touched.researchFocus && (
+                      <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.researchFocus}</p>
+                    )}
                   </div>
 
                   <div>

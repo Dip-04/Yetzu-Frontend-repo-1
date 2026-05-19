@@ -1,8 +1,9 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Building2, CheckCircle, Users, DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
 import dynamic from "next/dynamic";
+import { AdminAPI, asArray } from '@/lib/api';
 
 const AreaChart = dynamic(
   () => import("recharts").then((mod) => mod.AreaChart),
@@ -72,10 +73,39 @@ const statsData = [
   }
 ];
 
+const numberOf = (value: any) => Number(String(value || 0).replace(/[^0-9.-]/g, '')) || 0;
+
 export default function StatCards() {
+  const [stats, setStats] = useState(statsData);
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const response = await AdminAPI.getOrganizations({ page: 1, limit: 100 });
+        const organizations = asArray(response);
+        const totalOrganizations = organizations.length;
+        const activeOrganizations = organizations.filter((org: any) => String(org.status || 'active').toLowerCase() === 'active').length;
+        const totalStudents = organizations.reduce((sum: number, org: any) => sum + numberOf(org.students || org.totalStudents || org.studentCount || org.studentsCount), 0);
+        const totalRevenue = organizations.reduce((sum: number, org: any) => sum + numberOf(org.revenue || org.revenueGenerated), 0);
+
+        setStats((current) => current.map((item) => {
+          if (item.title === 'Total Organisations') return { ...item, value: totalOrganizations.toLocaleString() };
+          if (item.title === 'Active Organisations') return { ...item, value: activeOrganizations.toLocaleString() };
+          if (item.title === 'Total Students (B2B)') return { ...item, value: totalStudents.toLocaleString() };
+          if (item.title === 'B2B Revenue') return { ...item, value: `$${totalRevenue.toLocaleString()}` };
+          return item;
+        }));
+      } catch (error) {
+        console.error('Failed to fetch organization stats:', error);
+      }
+    };
+
+    loadStats();
+  }, []);
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-      {statsData.map((item, i) => {
+      {stats.map((item, i) => {
         const isPositive = item.change.startsWith("+");
         const Icon = item.icon;
 

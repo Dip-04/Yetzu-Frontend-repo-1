@@ -1,15 +1,42 @@
-import React from 'react';
-import Link from 'next/link';
+"use client";
 
-const organizationsData = [
-  { name: 'Boston University', students: 390, activeUsers: 310, activePercent: 79, revenue: '$31,200', completionRate: 84 },
-  { name: 'Stanford Institute', students: 320, activeUsers: 290, activePercent: 91, revenue: '$28,400', completionRate: 91 },
-  { name: 'Cambridge College', students: 480, activeUsers: 505, activePercent: 105, revenue: '$24,800', completionRate: 76 },
-  { name: 'Global Tech Institute', students: 280, activeUsers: 240, activePercent: 86, revenue: '$22,100', completionRate: 78 },
-  { name: 'MIT Extension', students: 215, activeUsers: 198, activePercent: 92, revenue: '$19,600', completionRate: 88 },
-];
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { AdminAPI, asArray } from '@/lib/api';
+
+const mapOrganization = (org: any, index: number) => {
+  const students = Number(org.students || org.totalStudents || org.studentCount || org.studentsCount || 0);
+  const activeUsers = Number(org.activeUsers || org.activeStudents || org.active || 0);
+  const activePercent = Number(org.activePercent ?? org.activePercentage ?? (students ? Math.round((activeUsers / students) * 100) : 0));
+
+  return {
+    id: org.id || org._id || org.organizationId || index + 1,
+    name: org.name || org.organizationName || 'Untitled Organization',
+    students,
+    activeUsers,
+    activePercent,
+    revenue: org.revenue || org.revenueGenerated || '$0',
+    completionRate: Number(org.completionRate || org.sessionCompletionRate || 0),
+  };
+};
 
 export default function TopOrganizationsTable() {
+  const [organizationsData, setOrganizationsData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const loadOrganizations = async () => {
+      try {
+        const response = await AdminAPI.getOrganizations({ page: 1, limit: 5 });
+        setOrganizationsData(asArray(response).map(mapOrganization));
+      } catch (error) {
+        console.error('Failed to fetch top organizations:', error);
+        setOrganizationsData([]);
+      }
+    };
+
+    loadOrganizations();
+  }, []);
+
   return (
     <div className="bg-white rounded-2xl border shadow-sm border-gray-100 mt-6 w-full overflow-hidden">
       <div className="flex justify-between items-center p-5 border-b border-gray-100">
@@ -34,7 +61,7 @@ export default function TopOrganizationsTable() {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {organizationsData.map((org, index) => (
-              <tr key={index} className="hover:bg-gray-50/50 transition-colors group">
+              <tr key={org.id || index} className="hover:bg-gray-50/50 transition-colors group">
                 <td className="py-4 px-5 text-sm font-semibold text-[#3B82F6]">
                   {org.name}
                 </td>
@@ -64,12 +91,17 @@ export default function TopOrganizationsTable() {
                   </span>
                 </td>
                 <td className="py-4 px-5 text-right">
-                  <Link href={`/a/organisation/${index + 1}`} className="text-xs font-semibold text-[#3B82F6] hover:underline whitespace-nowrap">
+                  <Link href={`/a/organisation/${org.id}`} className="text-xs font-semibold text-[#3B82F6] hover:underline whitespace-nowrap">
                     View Details
                   </Link>
                 </td>
               </tr>
             ))}
+            {organizationsData.length === 0 && (
+              <tr>
+                <td colSpan={7} className="py-10 px-5 text-center text-sm text-gray-500">No organizations found.</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>

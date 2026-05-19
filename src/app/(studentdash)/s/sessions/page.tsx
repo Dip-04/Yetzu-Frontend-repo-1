@@ -29,7 +29,18 @@ interface SessionCardData {
   startIso: string;
   webinerLink?: string;
   thumbnail?: string;
+  hasRescheduleRequest?: boolean;
 }
+
+const isOneOnOneSession = (type?: string) => {
+  const normalized = String(type || "").toLowerCase().replace(/\s+/g, "");
+  return ["1:1", "1-1", "one-to-one", "onetoone", "mentorship", "mentor"].some((value) => normalized.includes(value));
+};
+
+const hasActiveRescheduleRequest = (item: any) => {
+  const requests = asArray(item.rescheduleRequests || item.reschedule_requests || item.reschedules || item.requests);
+  return requests.some((request: any) => !["approved", "accepted", "rejected", "cancelled", "completed"].includes(String(request.status || request.action || "pending").toLowerCase()));
+};
 
 const getThemeStyles = (type: string, badgeType?: string) => {
   let badgeClasses = "";
@@ -196,13 +207,14 @@ export default function SessionsPage() {
             },
             date: startDate ? startDate.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) : "TBD",
             time: startIso ? new Date(startIso).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }) : "TBD",
-            badge: null,
+            badge: hasActiveRescheduleRequest(course) || hasActiveRescheduleRequest(item) ? "RESCHEDULE REQUESTED" : null,
             badgeType: "gray",
             tab: (isPast ? "completed" : "upcoming") as SessionTab,
             isFocusToday: false,
             startIso,
             webinerLink: course.webinerLink || "",
             thumbnail: getImageUrl(course.thumbnail || ""),
+            hasRescheduleRequest: hasActiveRescheduleRequest(course) || hasActiveRescheduleRequest(item),
           };
         });
 
@@ -336,15 +348,17 @@ export default function SessionsPage() {
                   ref={dropdownRef}
                   className="animate-in fade-in zoom-in-95 absolute right-0 bottom-[110%] z-50 mb-2 w-48 origin-bottom-right rounded-xl border border-gray-100 bg-white py-2 shadow-[0_10px_25px_rgba(0,0,0,0.1)] duration-200"
                 >
-                  <button
-                    className="w-full px-4 py-2.5 text-left text-[13px] font-medium text-gray-700 transition-colors hover:bg-gray-50"
-                    onClick={() => {
-                      setOpenDropdownId(null);
-                      setRescheduleSession(session);
-                    }}
-                  >
-                    Reschedule
-                  </button>
+                  {isOneOnOneSession(session.type) && session.tab === "upcoming" ? (
+                    <button
+                      className="w-full px-4 py-2.5 text-left text-[13px] font-medium text-gray-700 transition-colors hover:bg-gray-50"
+                      onClick={() => {
+                        setOpenDropdownId(null);
+                        setRescheduleSession(session);
+                      }}
+                    >
+                      Reschedule
+                    </button>
+                  ) : null}
                   <button
                     className="w-full px-4 py-2.5 text-left text-[13px] font-medium text-gray-700 transition-colors hover:bg-gray-50"
                     onClick={() => {
@@ -507,6 +521,7 @@ export default function SessionsPage() {
         sessionTime={rescheduleSession?.time}
         mentorName={rescheduleSession?.mentor.name}
         sessionStartIso={rescheduleSession?.startIso}
+        sessionType={rescheduleSession?.type}
       />
     </div>
   );

@@ -13,6 +13,7 @@ interface RescheduleModalProps {
   sessionTime?: string;
   mentorName?: string;
   sessionStartIso?: string;
+  sessionType?: string;
 }
 
 interface SuggestedSlot {
@@ -74,6 +75,11 @@ const createSuggestedSlots = (sessionStartIso?: string): SuggestedSlot[] => {
   });
 };
 
+const isOneOnOneSession = (type?: string) => {
+  const normalized = String(type || "").toLowerCase().replace(/\s+/g, "");
+  return ["1:1", "1-1", "one-to-one", "onetoone", "mentorship", "mentor"].some((value) => normalized.includes(value));
+};
+
 export default function RescheduleModal({
   isOpen,
   onClose,
@@ -83,6 +89,7 @@ export default function RescheduleModal({
   sessionTime = "TBD",
   mentorName = "Educator",
   sessionStartIso,
+  sessionType,
 }: RescheduleModalProps) {
   const [selectedSlots, setSelectedSlots] = useState<number[]>([]);
   const [reason, setReason] = useState("");
@@ -156,6 +163,11 @@ export default function RescheduleModal({
   };
 
   const handleConfirm = async () => {
+    if (!isOneOnOneSession(sessionType)) {
+      setError("Reschedule requests are available only for 1:1 sessions.");
+      return;
+    }
+
     if (!courseId) {
       setError("This session is missing a course reference, so rescheduling cannot be submitted yet.");
       return;
@@ -246,6 +258,7 @@ export default function RescheduleModal({
               </div>
             </div>
             <p className="text-[12px] text-gray-500 md:text-[13px]">with {mentorName}</p>
+            <p className="mt-1 text-[12px] text-gray-500 md:text-[13px]">Type: {sessionType || "Session"}</p>
           </div>
 
           {error ? (

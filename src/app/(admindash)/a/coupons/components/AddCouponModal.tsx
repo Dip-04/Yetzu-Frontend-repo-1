@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { X, CheckCircle2, Calendar } from 'lucide-react';
 import { AdminAPI } from '@/lib/api';
 
@@ -29,6 +29,8 @@ export default function AddCouponModal({ isOpen, onClose, onSuccess }: AddCoupon
   const [sessions, setSessions] = useState<any[]>([]);
   const [sessionsLoading, setSessionsLoading] = useState(false);
   const [selectedSession, setSelectedSession] = useState('');
+  const startDateRef = useRef<HTMLInputElement>(null);
+  const endDateRef = useRef<HTMLInputElement>(null);
 
   const fetchSessions = useCallback(async (type: string) => {
     try {
@@ -70,7 +72,7 @@ export default function AddCouponModal({ isOpen, onClose, onSuccess }: AddCoupon
     code: 'SUMMER50',
     name: 'Summer Promo',
     discountValue: '500',
-    startDate: '2024-04-20',
+    startDate: '',
     endDate: '',
     maxUses: '100',
   });
@@ -87,14 +89,7 @@ export default function AddCouponModal({ isOpen, onClose, onSuccess }: AddCoupon
       const discountValue = parseFloat(formData.discountValue) || 0;
       const maxUses = limitTotalUses ? parseInt(formData.maxUses) : undefined;
 
-      // Map applyTo value to session type
-      let sessionType = '';
-      if (applyTo === 'all-cohort' || applyTo === 'specific-cohort') sessionType = 'cohort';
-      else if (applyTo === 'all-1-1' || applyTo === 'specific-1-1') sessionType = '1-1';
-      else if (applyTo === 'all-webinar' || applyTo === 'specific-webinar') sessionType = 'webinar';
-      else if (applyTo === 'all-workshop' || applyTo === 'specific-workshop') sessionType = 'workshop';
-
-      const payload = {
+      const payload: any = {
         name: formData.name,
         code: formData.code,
         discountType,
@@ -102,9 +97,13 @@ export default function AddCouponModal({ isOpen, onClose, onSuccess }: AddCoupon
         maxUses,
         status: 'active',
         applyTo,
-        sessionType,
-        ...(applyTo.startsWith('specific-') && selectedSession && { sessionId: selectedSession }),
+        startDate: formData.startDate || undefined,
+        endDate: noEndDate ? undefined : (formData.endDate || undefined),
       };
+      
+      if (applyTo.startsWith('specific-') && selectedSession) {
+        payload.sessionId = selectedSession;
+      }
 
       await AdminAPI.createCoupon(payload);
       
@@ -286,25 +285,33 @@ export default function AddCouponModal({ isOpen, onClose, onSuccess }: AddCoupon
                   <span className="text-xs text-gray-500">Start Date</span>
                   <div className="relative">
                     <input 
+                      ref={startDateRef}
                       type="date" 
                       value={formData.startDate}
                       onChange={(e) => updateFormData('startDate', e.target.value)}
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-slate-600 outline-none select-none [&::-webkit-calendar-picker-indicator]:hidden"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-slate-600"
                     />
-                    <Calendar className="w-4 h-4 text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Calendar 
+                      className="w-4 h-4 text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer" 
+                      onClick={() => startDateRef.current?.showPicker()}
+                    />
                   </div>
                 </div>
                 <div className="space-y-1.5">
                   <span className="text-xs text-gray-500">End Date</span>
                   <div className={`relative ${noEndDate ? 'opacity-50 pointer-events-none' : ''}`}>
                     <input 
+                      ref={endDateRef}
                       type="date" 
                       disabled={noEndDate}
                       value={formData.endDate}
                       onChange={(e) => updateFormData('endDate', e.target.value)}
-                      className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-slate-600 outline-none select-none [&::-webkit-calendar-picker-indicator]:hidden"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-slate-600"
                     />
-                    <Calendar className="w-4 h-4 text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    <Calendar 
+                      className="w-4 h-4 text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer" 
+                      onClick={() => endDateRef.current?.showPicker()}
+                    />
                   </div>
                 </div>
               </div>

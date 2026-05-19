@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { 
   ChevronLeft, 
@@ -16,17 +16,58 @@ import {
   X
 } from 'lucide-react';
 import { shortenId } from "@/lib/utils/shortenId";
+import { AdminAPI, asArray } from '@/lib/api';
 
-const organizationsData = [
-  { id: 'ORG-001', name: 'Stanford Institute', type: 'Research Lab', students: 320, active: 290, activePercent: 91, plan: 'Premium', revenue: '$28,400', status: 'Active', date: 'Jan 5, 2026' },
-  { id: 'ORG-002', name: 'Cambridge College', type: 'College', students: 480, active: 505, activePercent: 105, plan: 'Custom', revenue: '$24,800', status: 'Active', date: 'Nov 12, 2025' },
-  { id: 'ORG-003', name: 'MIT Extension', type: 'Institute', students: 215, active: 198, activePercent: 92, plan: 'Premium', revenue: '$19,600', status: 'Active', date: 'Feb 1, 2026' },
-  { id: 'ORG-004', name: 'Nexus Corp Academy', type: 'Corporate', students: 150, active: 130, activePercent: 87, plan: 'Basic', revenue: '$12,000', status: 'Active', date: 'Dec 3, 2025' },
-  { id: 'ORG-005', name: 'Global Tech Institute', type: 'Institute', students: 280, active: 240, activePercent: 86, plan: 'Premium', revenue: '$22,100', status: 'Active', date: 'Oct 20, 2025' },
-  { id: 'ORG-006', name: 'Boston University', type: 'College', students: 390, active: 310, activePercent: 79, plan: 'Custom', revenue: '$31,200', status: 'Active', date: 'Sep 8, 2025' },
-  { id: 'ORG-007', name: 'DataSync Labs', type: 'Research Lab', students: 45, active: 12, activePercent: 27, plan: 'Basic', revenue: '$0', status: 'Inactive', date: 'Mar 1, 2026' },
-  { id: 'ORG-008', name: 'Phoenix Academy', type: 'Institute', students: 180, active: 0, activePercent: 0, plan: 'Basic', revenue: '$0', status: 'Suspended', date: 'Jul 15, 2025' },
-];
+type OrganizationRow = {
+  id: string;
+  name: string;
+  type: string;
+  students: number;
+  active: number;
+  activePercent: number;
+  plan: string;
+  revenue: string;
+  status: string;
+  date: string;
+};
+
+const toTitle = (value: any, fallback = 'N/A') => {
+  const text = String(value || fallback).replace(/[-_]/g, ' ');
+  return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
+const toStatus = (status: any) => {
+  const value = String(status || 'active').toLowerCase();
+  if (value === 'suspended') return 'Suspended';
+  if (value === 'inactive') return 'Inactive';
+  return 'Active';
+};
+
+const formatDate = (value: any) => {
+  if (!value) return 'N/A';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+};
+
+const mapOrganization = (org: any, index: number): OrganizationRow => {
+  const id = org.id || org._id || org.organizationId || org.orgId || `ORG-${index + 1}`;
+  const students = Number(org.students || org.totalStudents || org.studentCount || org.studentsCount || 0);
+  const active = Number(org.active || org.activeStudents || org.activeUsers || 0);
+  const activePercent = Number(org.activePercent ?? org.activePercentage ?? (students ? Math.round((active / students) * 100) : 0));
+
+  return {
+    id,
+    name: org.name || org.organizationName || org.title || 'Untitled Organization',
+    type: toTitle(org.type || org.organizationType || 'institution'),
+    students,
+    active,
+    activePercent,
+    plan: toTitle(org.plan || org.billingCycle || 'Basic'),
+    revenue: org.revenue || org.revenueGenerated || '$0',
+    status: toStatus(org.status),
+    date: formatDate(org.createdAt || org.created_at || org.date),
+  };
+};
 
 export default function AllOrganizationsPage() {
   const [activeTab, setActiveTab] = useState('All Organizations');
@@ -37,7 +78,26 @@ export default function AllOrganizationsPage() {
   const [planFilter, setPlanFilter] = useState('All Plan');
   const [tempStatusFilter, setTempStatusFilter] = useState('All Status');
   const [tempPlanFilter, setTempPlanFilter] = useState('All Plan');
+  const [organizationsData, setOrganizationsData] = useState<OrganizationRow[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const filterRef = useRef<HTMLDivElement>(null);
+
+  const fetchOrganizations = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await AdminAPI.getOrganizations({ page: 1, limit: 100 });
+      setOrganizationsData(asArray(response).map(mapOrganization));
+    } catch (error) {
+      console.error('Failed to fetch organizations:', error);
+      setOrganizationsData([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOrganizations();
+  }, [fetchOrganizations]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -61,7 +121,7 @@ export default function AllOrganizationsPage() {
       case 'Premium': return <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-[#E0E7FF] text-[#4F46E5]">{plan}</span>;
       case 'Custom': return <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-[#F3E8FF] text-[#9333EA]">{plan}</span>;
       case 'Basic': return <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-[#F1F5F9] text-[#64748B]">{plan}</span>;
-      default: return null;
+      default: return <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-[#F1F5F9] text-[#64748B]">{plan}</span>;
     }
   };
 
@@ -103,6 +163,28 @@ export default function AllOrganizationsPage() {
     setTempStatusFilter('All Status');
     setTempPlanFilter('All Plan');
     setShowFilters(false);
+  };
+
+  const handleSuspendOrganization = async (org: OrganizationRow) => {
+    try {
+      await AdminAPI.updateOrganization(org.id, { status: 'suspended' });
+      setOrganizationsData((current) => current.map((item) => item.id === org.id ? { ...item, status: 'Suspended' } : item));
+      setActiveDropdown(null);
+    } catch (error) {
+      console.error('Failed to suspend organization:', error);
+    }
+  };
+
+  const handleDeleteOrganization = async (org: OrganizationRow) => {
+    if (!confirm('Are you sure you want to delete this organization?')) return;
+
+    try {
+      await AdminAPI.deleteOrganization(org.id);
+      setOrganizationsData((current) => current.filter((item) => item.id !== org.id));
+      setActiveDropdown(null);
+    } catch (error) {
+      console.error('Failed to delete organization:', error);
+    }
   };
 
   const filteredData = organizationsData.filter((org) => {
@@ -196,9 +278,9 @@ export default function AllOrganizationsPage() {
             <button className="flex items-center gap-2 bg-white border border-gray-200 px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
               <Download className="w-4 h-4" /> Export
             </button>
-            <button className="flex items-center gap-2 bg-[#0A0A0A] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-black/90 transition-colors ml-auto md:ml-0 whitespace-nowrap">
+            <Link href="/a/organisation/create" className="flex items-center gap-2 bg-[#0A0A0A] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-black/90 transition-colors ml-auto md:ml-0 whitespace-nowrap">
               <Plus className="w-4 h-4" /> Create Organization
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -242,7 +324,11 @@ export default function AllOrganizationsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filteredData.length > 0 ? (
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={10} className="py-10 text-center text-gray-500 font-medium">Loading organizations...</td>
+                  </tr>
+                ) : filteredData.length > 0 ? (
                   filteredData.map((org) => (
                     <tr key={org.id} className="hover:bg-gray-50/50 transition-colors group">
                       <td className="py-4 px-5 w-12"><input type="checkbox" className="rounded text-blue-600 border-gray-300 w-[14px] h-[14px]" /></td>
@@ -280,15 +366,15 @@ export default function AllOrganizationsPage() {
                              <Link href={`/a/organisation/${org.id}`} className="w-full flex items-center gap-2 px-4 py-2 hover:bg-gray-50 text-[13px] font-medium text-gray-700 transition-colors">
                                 <Eye className="w-4 h-4 text-gray-400" /> View Details
                              </Link>
-                             <button className="w-full flex items-center gap-2 px-4 py-2 hover:bg-gray-50 text-[13px] font-medium text-gray-700 transition-colors">
-                                <Edit2 className="w-4 h-4 text-gray-400" /> Edit
-                             </button>
-                             <button className="w-full flex items-center gap-2 px-4 py-2 hover:bg-gray-50 text-[13px] font-medium text-gray-700 transition-colors">
-                                <Pause className="w-4 h-4 text-gray-400" /> Suspend
-                             </button>
-                             <button className="w-full flex items-center gap-2 px-4 py-2 hover:bg-red-50 text-[13px] font-medium text-red-600 transition-colors">
-                                <Trash2 className="w-4 h-4" /> Delete
-                             </button>
+                              <button className="w-full flex items-center gap-2 px-4 py-2 hover:bg-gray-50 text-[13px] font-medium text-gray-700 transition-colors">
+                                 <Edit2 className="w-4 h-4 text-gray-400" /> Edit
+                              </button>
+                              <button onClick={() => handleSuspendOrganization(org)} className="w-full flex items-center gap-2 px-4 py-2 hover:bg-gray-50 text-[13px] font-medium text-gray-700 transition-colors">
+                                 <Pause className="w-4 h-4 text-gray-400" /> Suspend
+                              </button>
+                              <button onClick={() => handleDeleteOrganization(org)} className="w-full flex items-center gap-2 px-4 py-2 hover:bg-red-50 text-[13px] font-medium text-red-600 transition-colors">
+                                 <Trash2 className="w-4 h-4" /> Delete
+                              </button>
                           </div>
                         )}
                       </td>

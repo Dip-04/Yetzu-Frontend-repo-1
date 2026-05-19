@@ -66,6 +66,10 @@ export const asArray = (value: any): any[] => {
     value?.data?.students,
     value?.data?.educators,
     value?.data?.submissions,
+    value?.data?.organizations,
+    value?.data?.contacts,
+    value?.data?.coupons,
+    value?.data?.certificates,
     value?.data,
     value?.items,
     value?.list,
@@ -82,6 +86,10 @@ export const asArray = (value: any): any[] => {
     value?.students,
     value?.messages,
     value?.submissions,
+    value?.organizations,
+    value?.contacts,
+    value?.coupons,
+    value?.certificates,
   ];
 
   for (const candidate of candidates) {
@@ -513,7 +521,12 @@ export const EducatorAPI = {
     };
 
     try {
-      const response = await authApi.post("/api/educator/reschedule/action", body);
+      const response = await authApi.post("/api/educator/reschedule-action", {
+        courseId: body.courseId,
+        requestId: body.requestId,
+        action: body.action || body.status,
+        educatorRemark: body.educatorRemark,
+      });
       return dataOf(response);
     } catch (error) {
       logApiFailure("EducatorAPI.handleRescheduleAction", error, { body });
@@ -901,6 +914,72 @@ export const AdminAPI = {
     }
   },
 
+  getOrganizations: async (params?: { page?: number; limit?: number }) => {
+    try {
+      const response = await authApi.get("/api/admin/organizations", { params });
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.getOrganizations", error, { params });
+      throw error;
+    }
+  },
+
+  createOrganization: async (payload: {
+    name: string;
+    type: string;
+    email: string;
+    status?: string;
+    billingCycle?: string;
+  }) => {
+    if (!payload.name || !payload.type || !payload.email) {
+      throw new Error("Organization name, type, and email are required.");
+    }
+
+    try {
+      const response = await authApi.post("/api/admin/organizations", payload);
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.createOrganization", error, { payload });
+      throw error;
+    }
+  },
+
+  getOrganization: async (organizationId: string) => {
+    try {
+      const response = await authApi.get(`/api/admin/organizations/${organizationId}`);
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.getOrganization", error, { organizationId });
+      throw error;
+    }
+  },
+
+  updateOrganization: async (organizationId: string, payload: {
+    name?: string;
+    type?: string;
+    email?: string;
+    status?: string;
+    billingCycle?: string;
+  }) => {
+    try {
+      const response = await authApi.put(`/api/admin/organizations/${organizationId}`, payload);
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.updateOrganization", error, { organizationId, payload });
+      throw error;
+    }
+  },
+
+  deleteOrganization: async (organizationId: string) => {
+    try {
+      const response = await authApi.delete(`/api/admin/organizations/${organizationId}`);
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.deleteOrganization", error, { organizationId });
+      throw error;
+    }
+  },
+
   getSessions: async (params?: { search?: string; status?: string; page?: number; limit?: number }) => {
     try {
       const response = await authApi.get("/api/admin/sessions", { params });
@@ -984,6 +1063,16 @@ export const AdminAPI = {
       return dataOf(response);
     } catch (error) {
       logApiFailure("AdminAPI.getCoupons", error, { params });
+      throw error;
+    }
+  },
+
+  getCoupon: async (couponId: string) => {
+    try {
+      const response = await authApi.get(`/api/admin/coupons/${couponId}`);
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.getCoupon", error, { couponId });
       throw error;
     }
   },

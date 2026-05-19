@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { X, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { X, CheckCircle2, Calendar } from 'lucide-react';
 import { AdminAPI } from '@/lib/api';
 
 interface EditCouponModalProps {
@@ -26,6 +26,7 @@ export default function EditCouponModal({ isOpen, onClose, couponData, onSuccess
   const [sessions, setSessions] = useState<any[]>([]);
   const [sessionsLoading, setSessionsLoading] = useState(false);
   const [selectedSession, setSelectedSession] = useState('');
+  const [noEndDate, setNoEndDate] = useState(false);
   
   // Form state
   const [code, setCode] = useState('');
@@ -33,6 +34,10 @@ export default function EditCouponModal({ isOpen, onClose, couponData, onSuccess
   const [discountType, setDiscountType] = useState('fixed');
   const [discountValue, setDiscountValue] = useState('');
   const [status, setStatus] = useState('active');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const editStartDateRef = useRef<HTMLInputElement>(null);
+  const editEndDateRef = useRef<HTMLInputElement>(null);
   
   const fetchSessions = useCallback(async (type: string) => {
     try {
@@ -71,6 +76,9 @@ export default function EditCouponModal({ isOpen, onClose, couponData, onSuccess
       setStatus(couponData.status || 'active');
       setApplyTo(couponData.applyTo || 'all-cohort');
       setSelectedSession(couponData.sessionId || '');
+      setStartDate(couponData.startDate ? couponData.startDate.split('T')[0] : '');
+      setEndDate(couponData.endDate ? couponData.endDate.split('T')[0] : '');
+      setNoEndDate(!couponData.endDate);
       
       if (couponData.type === 'Buy X Get Y Free' || couponData.discountType === 'bogo') {
         setApplyTo('specific-cohort');
@@ -98,23 +106,20 @@ export default function EditCouponModal({ isOpen, onClose, couponData, onSuccess
       setLoading(true);
       const couponId = couponData.id || couponData._id;
       
-      // Map applyTo value to session type
-      let sessionType = '';
-      if (applyTo === 'all-cohort' || applyTo === 'specific-cohort') sessionType = 'cohort';
-      else if (applyTo === 'all-1-1' || applyTo === 'specific-1-1') sessionType = '1-1';
-      else if (applyTo === 'all-webinar' || applyTo === 'specific-webinar') sessionType = 'webinar';
-      else if (applyTo === 'all-workshop' || applyTo === 'specific-workshop') sessionType = 'workshop';
-
-      const payload = {
+      const payload: any = {
         name,
         code,
         discountType,
         discountValue: parseFloat(discountValue) || 0,
         status,
         applyTo,
-        sessionType,
-        ...(applyTo.startsWith('specific-') && selectedSession && { sessionId: selectedSession }),
+        startDate: startDate || undefined,
+        endDate: noEndDate ? undefined : (endDate || undefined),
       };
+
+      if (applyTo.startsWith('specific-') && selectedSession) {
+        payload.sessionId = selectedSession;
+      }
 
       await AdminAPI.updateCoupon(couponId, payload);
       
@@ -264,23 +269,47 @@ export default function EditCouponModal({ isOpen, onClose, couponData, onSuccess
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-slate-700">Active Dates</label>
                 <p className="text-xs text-gray-500 mb-1 leading-5">Start Date</p>
-                <input 
-                  type="date" 
-                  defaultValue="2024-03-09"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-600"
-                />
+                <div className="relative">
+                  <input 
+                    ref={editStartDateRef}
+                    type="date" 
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-600"
+                  />
+                  <Calendar 
+                    className="w-4 h-4 text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer" 
+                    onClick={() => editStartDateRef.current?.showPicker()}
+                  />
+                </div>
               </div>
               <div className="space-y-1 pt-6 flex flex-col justify-end">
                 <p className="text-xs text-gray-500 mb-1 leading-5">End Date</p>
-                <div className="flex gap-2">
+                <div className={`relative ${noEndDate ? 'opacity-50 pointer-events-none' : ''}`}>
                   <input 
+                    ref={editEndDateRef}
                     type="date" 
-                    defaultValue="2024-04-12"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    disabled={noEndDate}
                     className="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-gray-600"
+                  />
+                  <Calendar 
+                    className="w-4 h-4 text-gray-400 absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer" 
+                    onClick={() => editEndDateRef.current?.showPicker()}
                   />
                 </div>
               </div>
             </div>
+            <label className="flex items-center gap-2 cursor-pointer mt-2">
+              <input 
+                type="checkbox" 
+                checked={noEndDate}
+                onChange={(e) => setNoEndDate(e.target.checked)}
+                className="w-4 h-4 text-blue-500 border-gray-300 rounded focus:ring-blue-500 bg-white"
+              />
+              <span className="text-sm text-slate-600">Don't set an end date</span>
+            </label>
 
             {/* Row 6: Limits */}
             <div className="pt-2">

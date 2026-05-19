@@ -101,17 +101,24 @@ const useGoogleLoginMutation = (): UseMutationResult<
 const useLogoutMutation = (): UseMutationResult<
   LogoutResponse,
   unknown,
-  { userId: string }
+  { userId?: string }
 > => {
   const queryClient = useQueryClient();
-  return useMutation<LogoutResponse, unknown, { userId: string }>({
-    mutationFn: ({ userId }) => identityService.logout(userId),
-    onSuccess: () => {
+  return useMutation<LogoutResponse, unknown, { userId?: string }>({
+    mutationFn: ({ userId }) => {
+      const resolvedUserId = userId || getJwtUserId(Cookies.get("jwtToken")) || Cookies.get("userId") || "";
+      if (!resolvedUserId) {
+        return Promise.resolve({ success: true, message: "No active user session." } as LogoutResponse);
+      }
+      return identityService.logout(resolvedUserId);
+    },
+    onSettled: () => {
       Cookies.remove("jwtToken");
       Cookies.remove("refreshToken");
       Cookies.remove("isUserLoggedIn");
       Cookies.remove("userId");
-      queryClient.invalidateQueries({ queryKey: ["getUserProfile"] });
+      Cookies.remove("userName");
+      queryClient.removeQueries({ queryKey: ["getUserProfile"] });
     },
   });
 };

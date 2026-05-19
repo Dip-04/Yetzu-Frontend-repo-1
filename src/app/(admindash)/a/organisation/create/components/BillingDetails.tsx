@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { CreditCard, Landmark, Bitcoin, CheckCircle2 } from 'lucide-react';
 
-export default function BillingDetails() {
+type BillingDetailsProps = {
+  billingCycle?: string;
+  onBillingCycleChange?: (value: string) => void;
+};
+
+export default function BillingDetails({ billingCycle = 'monthly', onBillingCycleChange }: BillingDetailsProps) {
   const [model, setModel] = useState('flat');
   const [paymentMethod, setPaymentMethod] = useState('credit');
 
@@ -56,9 +61,9 @@ export default function BillingDetails() {
             </div>
             <div className="space-y-1.5">
                <label className="block text-sm font-semibold text-slate-800">Billing Cycle</label>
-               <select className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-gray-800 appearance-none font-medium">
-                 <option value="monthly">Monthly</option>
-                 <option value="yearly">Yearly</option>
+                <select value={billingCycle} onChange={(e) => onBillingCycleChange?.(e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-gray-800 appearance-none font-medium">
+                  <option value="monthly">Monthly</option>
+                  <option value="yearly">Yearly</option>
                </select>
             </div>
           </div>

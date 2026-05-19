@@ -206,7 +206,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     LayoutGrid,
     Users,
@@ -266,17 +266,16 @@ const getEducatorNav = (basePath: string): NavItem[] => [
 
 export default function DashSidebar({ role, isOpen, onClose }: DashSidebarProps) {
     const pathname = usePathname();
+    const router = useRouter();
     const { mutateAsync: logout } = useLogoutMutation();
     const { user } = useSession();
 
     const handleLogout = async () => {
         try {
-            if (user?.id) {
-                await logout({ userId: user.id });
-                window.location.href = "/";
-            }
+            await logout({ userId: user?.id });
         } catch {
-            window.location.href = "/";
+        } finally {
+            router.replace("/login");
         }
     };
 

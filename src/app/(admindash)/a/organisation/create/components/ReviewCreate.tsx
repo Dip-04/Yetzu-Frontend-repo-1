@@ -1,6 +1,15 @@
 import React from 'react';
 
-export default function ReviewCreate() {
+type ReviewCreateProps = {
+  formData?: {
+    name: string;
+    type: string;
+    email: string;
+  };
+  billingCycle?: string;
+};
+
+export default function ReviewCreate({ formData, billingCycle = 'monthly' }: ReviewCreateProps) {
   const Section = ({ title, children }: { title: string, children: React.ReactNode }) => (
     <div className="py-5 border-b border-gray-100 last:border-0 relative">
       <div className="flex justify-between items-center mb-4">
@@ -29,8 +38,9 @@ export default function ReviewCreate() {
         </div>
 
         <Section title="Basic & Org Details">
-          <Row label="Organization Name" value="Stanford Inst." />
-          <Row label="Admin Email" value="john.doe@stanford.edu" />
+          <Row label="Organization Name" value={formData?.name || 'N/A'} />
+          <Row label="Admin Email" value={formData?.email || 'N/A'} />
+          <Row label="Type" value={formData?.type || 'N/A'} />
         </Section>
 
         <Section title="Student Import">
@@ -43,7 +53,7 @@ export default function ReviewCreate() {
 
         <Section title="Billing Information">
           <Row label="Plan" value="Flat Model" />
-          <Row label="Billing Cycle" value="Monthly" />
+          <Row label="Billing Cycle" value={billingCycle.charAt(0).toUpperCase() + billingCycle.slice(1)} />
         </Section>
 
         <Section title="Offer">

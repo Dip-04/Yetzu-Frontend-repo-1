@@ -5,7 +5,7 @@ import CouponHeader from './components/CouponHeader';
 import CouponTable from './components/CouponTable';
 import AddCouponModal from './components/AddCouponModal';
 import EditCouponModal from './components/EditCouponModal';
-import { AdminAPI } from '@/lib/api';
+import { AdminAPI, asArray } from '@/lib/api';
 
 export default function CouponsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,8 +17,7 @@ export default function CouponsPage() {
     try {
       setLoading(true);
       const response = await AdminAPI.getCoupons({ page: 1, limit: 100 });
-      const couponList = Array.isArray(response?.data) ? response.data :
-                        Array.isArray(response) ? response : [];
+      const couponList = asArray(response);
       setCoupons(couponList);
     } catch (error) {
       console.error('Failed to fetch coupons:', error);

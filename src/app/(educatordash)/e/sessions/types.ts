@@ -1,5 +1,5 @@
 export type SessionStatus = 'Scheduled' | 'Live' | 'Completed' | 'Missed';
-export type SessionType = 'Webinar' | 'Cohort' | 'Workshop' | 'Mentorship';
+export type SessionType = 'Webinar' | 'Cohort' | 'Workshop' | 'Mentorship' | '1:1' | string;
 
 export interface Session {
   id: string;
@@ -14,4 +14,5 @@ export interface Session {
   educator: string;
   assignments?: Array<Record<string, any>>;
   resources?: Array<Record<string, any>>;
+  rescheduleRequests?: Array<Record<string, any>>;
 }

@@ -9,6 +9,8 @@ import { Session } from './types';
 import { EducatorAPI, asArray } from '@/lib/api';
 import { shortenId } from '@/lib/utils/shortenId';
 
+const getRescheduleRequests = (item: any) => asArray(item.rescheduleRequests || item.reschedule_requests || item.reschedules || item.requests);
+
 export default function EducatorSessionsPage() {
     const [activeTab, setActiveTab] = useState<'All' | 'Upcoming' | 'Completed' | 'Missed'>('All');
     const [activeView, setActiveView] = useState<'Sessions List' | 'Calendar View'>('Sessions List');
@@ -29,7 +31,17 @@ export default function EducatorSessionsPage() {
             setIsLoading(true);
             setError("");
             try {
-                const response = await EducatorAPI.getMySessions();
+                const [sessionsResult, requestsResult] = await Promise.allSettled([
+                    EducatorAPI.getMySessions(),
+                    EducatorAPI.getRescheduleRequests(),
+                ]);
+
+                if (sessionsResult.status === "rejected") {
+                    throw sessionsResult.reason;
+                }
+
+                const response = sessionsResult.value;
+                const requestList = requestsResult.status === "fulfilled" ? asArray(requestsResult.value) : [];
                 const apiSessions = asArray(response).map((item: any, index: number) => {
                     const rawDate = item.date || item.scheduledDate || item.startDateTime || item.createdAt;
                     const dateTime = rawDate ? new Date(rawDate) : new Date();
@@ -46,8 +58,17 @@ export default function EducatorSessionsPage() {
                       studentsCount = item.enrolledCount;
                     }
                     
+                    const id = item.id || item._id || item.sessionId || String(index);
+                    const sessionRequests = [
+                        ...getRescheduleRequests(item),
+                        ...requestList.filter((request: any) => {
+                            const requestSessionId = String(request.sessionId || request.courseId || request.session?._id || request.course?._id || "");
+                            return requestSessionId === String(id);
+                        }),
+                    ];
+
                     return {
-                        id: item.id || item._id || item.sessionId || String(index),
+                        id,
                         title: item.title || item.sessionTitle || item.courseTitle || "Session",
                         type: item.type || item.sessionType || "Webinar",
                         attendees: studentsCount,
@@ -59,6 +80,7 @@ export default function EducatorSessionsPage() {
                         educator: item.educator || item.educatorName || "Educator",
                         assignments: asArray(item.assignments),
                         resources: asArray(item.resources || item.files || item.materials),
+                        rescheduleRequests: sessionRequests,
                     };
                 });
                 setSessions(apiSessions as Session[]);

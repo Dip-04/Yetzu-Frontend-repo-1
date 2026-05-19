@@ -6,6 +6,7 @@ import { Menu, LogOut, Loader2, ChevronDown, Bell, FileText, Video, Award, Calen
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { identityService } from "@/lib/queries/identityService/identityService";
+import { useLogoutMutation } from "@/lib/queries/identityService/useIdentityService";
 import { EducatorAPI, asArray } from "@/lib/api";
 
 interface EducatorHeaderProps {
@@ -36,6 +37,7 @@ export default function Header({ onMenuClick }: EducatorHeaderProps) {
   const unreadCount = notifications.filter(n => n.unread).length;
   const notifRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const { mutateAsync: logout } = useLogoutMutation();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -95,17 +97,10 @@ export default function Header({ onMenuClick }: EducatorHeaderProps) {
   const handleLogout = async () => {
     try {
       const userId = Cookies.get("userId");
-      if (userId) {
-        await identityService.logout(userId);
-      }
+      await logout({ userId });
     } catch {
     } finally {
-      // Clear all auth cookies
-      Cookies.remove("jwtToken");
-      Cookies.remove("refreshToken");
-      Cookies.remove("userId");
-      Cookies.remove("userName");
-      router.push("/");
+      router.replace("/login");
     }
   };
 

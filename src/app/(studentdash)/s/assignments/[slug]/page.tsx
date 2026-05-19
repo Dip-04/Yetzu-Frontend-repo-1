@@ -513,13 +513,13 @@ export default function AssignmentSlugPage() {
           </Link>
         </div>
 
-        <div className="hidden md:flex items-center gap-2 text-[13px] font-medium mb-6 px-2 text-gray-500">
+        {/* <div className="hidden md:flex items-center gap-2 text-[13px] font-medium mb-6 px-2 text-gray-500">
           <Link href="/s/sessions" className="hover:text-gray-900 transition-colors">
             Sessions
           </Link>
           <ChevronRight size={14} className="text-gray-400" />
           <span className="text-gray-500 truncate">{assignmentData.mentor.session}</span>
-        </div>
+        </div> */}
 
         <div className="flex flex-col md:grid md:grid-cols-3 md:gap-6 bg-white md:bg-transparent">
           <div className="order-1 md:col-span-2 bg-white p-4 md:p-8 border-b border-gray-200 md:border md:border-gray-100 md:rounded-[24px] md:shadow-[0_2px_15px_rgba(0,0,0,0.02)]">

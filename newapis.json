@@ -1,0 +1,406 @@
+{
+  "info": {
+    "_postman_id": "8b0b3b91-5b88-4d2a-9d4d-asterisksedu0002",
+    "name": "Asterisks Edu Management APIs",
+    "description": "Separate collection for admin organizations, CMS/blogs, contacts, coupons, reschedule flows, and student certificates.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Admin Organizations",
+      "description": "Admin organization flow: list, create, inspect, update, and delete organizations.",
+      "item": [
+        {
+          "name": "List Organizations",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/organizations?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "organizations"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Organization",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Institute\",\n  \"type\": \"institution\",\n  \"email\": \"hello@newinstitute.edu\",\n  \"status\": \"active\",\n  \"billingCycle\": \"monthly\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "organizations"]
+            }
+          }
+        },
+        {
+          "name": "Get Organization",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/organizations/{{organizationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "organizations", "{{organizationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Organization",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Institute\",\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/organizations/{{organizationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "organizations", "{{organizationId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Organization",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/organizations/{{organizationId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "organizations", "{{organizationId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CMS / Blogs",
+      "description": "Admin blog publishing flow for CMS screens.",
+      "item": [
+        {
+          "name": "List Blogs",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/blogs?page=1&limit=10&status=published",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "blogs"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "status", "value": "published" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Blog",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Writing Tips\",\n  \"excerpt\": \"Short blog excerpt\",\n  \"content\": \"Full blog content here.\",\n  \"status\": \"published\",\n  \"tags\": [\"writing\", \"tips\"],\n  \"sections\": [\n    {\n      \"img\": \"https://cdn.example.com/blogs/writing-1.jpg\",\n      \"title\": \"Start with a hook\",\n      \"description\": \"Open with a problem, a question, or a surprising stat.\",\n      \"button\": {\n        \"label\": \"Read more\",\n        \"link\": \"/blogs/writing-tips#hook\"\n      }\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/blogs",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "blogs"]
+            }
+          }
+        },
+        {
+          "name": "Get Blog",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/blogs/{{blogId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "blogs", "{{blogId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Blog",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Writing Tips\",\n  \"status\": \"published\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/blogs/{{blogId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "blogs", "{{blogId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Blog",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/blogs/{{blogId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "blogs", "{{blogId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contacts",
+      "description": "Public contact submit and admin contact inbox.",
+      "item": [
+        {
+          "name": "Public Contact Submit",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"subject\": \"Admissions query\",\n  \"mobile\": \"9876543210\",\n  \"medical_school_affiliation\": \"ABC Medical College\",\n  \"description\": \"I want to know about the admission process.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/form/v1/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "form", "v1", "contact"]
+            }
+          }
+        },
+        {
+          "name": "Admin List Contacts",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/contacts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "contacts"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Coupon Management",
+      "description": "Admin coupon CRUD flow.",
+      "item": [
+        {
+          "name": "List Coupons",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/coupons?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "coupons"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Coupon",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Launch Offer\",\n  \"code\": \"LAUNCH20\",\n  \"discountType\": \"percentage\",\n  \"discountValue\": 20,\n  \"maxUses\": 100,\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/coupons",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "coupons"]
+            }
+          }
+        },
+        {
+          "name": "Get Coupon",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/coupons/{{couponId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "coupons", "{{couponId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Coupon",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Launch Offer Updated\",\n  \"discountValue\": 25,\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/coupons/{{couponId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "coupons", "{{couponId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Coupon",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/coupons/{{couponId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "coupons", "{{couponId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reschedule Flow",
+      "description": "Student request, educator session request, and educator review.",
+      "item": [
+        {
+          "name": "Student Request Reschedule",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" },
+              { "key": "x-user-id", "value": "{{studentUserId}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": \"{{courseId}}\",\n  \"reason\": \"I have a university exam on that day.\",\n  \"proposedDate\": \"2026-05-25T10:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/student/course/reschedule-request",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "student", "course", "reschedule-request"]
+            }
+          }
+        },
+        {
+          "name": "Educator Request Session Reschedule",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{educatorToken}}" },
+              { "key": "x-user-id", "value": "{{educatorUserId}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sessionId\": \"{{sessionId}}\",\n  \"proposedDate\": \"2026-05-25\",\n  \"proposedTime\": \"10:30\",\n  \"reason\": \"Need to move the session due to instructor availability.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/educator/session/reschedule-request",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "educator", "session", "reschedule-request"]
+            }
+          }
+        },
+        {
+          "name": "Educator Review Reschedule",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{educatorToken}}" },
+              { "key": "x-user-id", "value": "{{educatorUserId}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"courseId\": \"{{courseId}}\",\n  \"requestId\": \"<requestId>\",\n  \"action\": \"approved\",\n  \"educatorRemark\": \"Approved, shifting to next week.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/educator/reschedule-action",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "educator", "reschedule-action"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Student Certificates",
+      "description": "Fetch the merged certificates generated from completed certificate-enabled sessions.",
+      "item": [
+        {
+          "name": "List Student Certificates",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{studentToken}}" },
+              { "key": "x-user-id", "value": "{{studentUserId}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/student/certificates",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "student", "certificates"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

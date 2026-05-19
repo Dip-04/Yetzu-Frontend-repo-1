@@ -18,7 +18,7 @@ export default function ContactDetailsModal({ isOpen, onClose, contactData }: Co
           <div>
             <h2 className="text-xl font-bold text-slate-900">Contact Query Details</h2>
             <p className="text-sm font-medium text-slate-600 mt-1">
-              {contactData.user.name} - {contactData.user.email}
+              {contactData.name || contactData.user?.name || 'N/A'} - {contactData.email || contactData.user?.email || 'N/A'}
             </p>
           </div>
           <button 
@@ -37,11 +37,11 @@ export default function ContactDetailsModal({ isOpen, onClose, contactData }: Co
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 rounded-xl border border-gray-200 bg-[#FCFCFD]">
                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">INQUIRY TYPE</p>
-                 <p className="text-sm font-bold text-slate-800">{contactData.inquiry}</p>
+                 <p className="text-sm font-bold text-slate-800">{contactData.subject || contactData.inquiry || 'General'}</p>
               </div>
               <div className="p-4 rounded-xl border border-gray-200 bg-[#FCFCFD]">
                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">SUBMITTED</p>
-                 <p className="text-sm font-bold text-slate-800">{contactData.submittedDate}</p>
+                 <p className="text-sm font-bold text-slate-800">{contactData.createdAt || contactData.created_at || contactData.submittedDate ? new Date(contactData.createdAt || contactData.created_at).toLocaleDateString() : 'N/A'}</p>
               </div>
             </div>
 
@@ -49,18 +49,18 @@ export default function ContactDetailsModal({ isOpen, onClose, contactData }: Co
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="p-4 rounded-xl border border-gray-200 bg-[#FCFCFD]">
                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Phone</p>
-                 <p className="text-sm font-bold text-slate-800">{contactData.user.phone}</p>
+                 <p className="text-sm font-bold text-slate-800">{contactData.mobile || contactData.user?.phone || 'N/A'}</p>
               </div>
               <div className="p-4 rounded-xl border border-gray-200 bg-[#FCFCFD]">
                  <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Institution</p>
-                 <p className="text-sm font-bold text-slate-800">{contactData.user.institution}</p>
+                 <p className="text-sm font-bold text-slate-800">{contactData.medical_school_affiliation || contactData.user?.institution || 'N/A'}</p>
               </div>
             </div>
 
             {/* Row 3: Message */}
             <div className="p-4 rounded-xl border border-gray-200 bg-[#FCFCFD]">
                <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">MESSAGE</p>
-               <p className="text-sm text-slate-800 leading-relaxed font-medium">{contactData.message}</p>
+               <p className="text-sm text-slate-800 leading-relaxed font-medium">{contactData.description || contactData.message || 'No message'}</p>
             </div>
 
             {/* Reply Section */}

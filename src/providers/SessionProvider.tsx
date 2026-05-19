@@ -71,13 +71,14 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
             const data = await logoutUser({ userId: user.id });
             if (data.success) {
                 toast.success("Logged out successfully!");
-                setUser(DEFAULT_USER);
-                setIsUserLoggedIn(false);
             } else {
                 toast.error(`Logout failed: ${data.message || data?.success}`);
             }
         } catch (error: any) {
             toast.error(`Logout error: ${error?.message || "Something went wrong"}`);
+        } finally {
+            setUser(DEFAULT_USER);
+            setIsUserLoggedIn(false);
         }
     };
 

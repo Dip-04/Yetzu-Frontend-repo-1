@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Search, Clock, User, Download, Lock, Award, ExternalLink, FileText } from "lucide-react";
-import { CertificateAPI } from "@/lib/api";
+import { CertificateAPI, asArray } from "@/lib/api";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
 
@@ -32,8 +32,7 @@ export default function CertificatesPage() {
       try {
         setIsLoading(true);
         const response = await CertificateAPI.student.getCertificates();
-        // API returns: { success, message, data: { count, generatedFromSessions, list: [...] } }
-        const certData = response?.data?.list || response?.list || [];
+        const certData = asArray(response);
         
         const mappedCerts: Certificate[] = certData.map((cert: any) => ({
           id: cert.id || cert.certificateId || "",

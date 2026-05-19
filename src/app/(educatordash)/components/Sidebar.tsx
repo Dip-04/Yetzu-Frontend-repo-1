@@ -29,12 +29,10 @@ export default function EducatorSidebar({ isOpen, onClose }: SidebarProps) {
 
   const handleLogout = async () => {
     try {
-      if (user?.id) {
-        await logout({ userId: user.id });
-        router.push("/");
-        window.location.reload();
-      }
+      await logout({ userId: user?.id });
     } catch {
+    } finally {
+      router.replace("/login");
     }
   };
 

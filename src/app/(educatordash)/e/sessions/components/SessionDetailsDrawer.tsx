@@ -11,6 +11,31 @@ interface SessionDetailsDrawerProps {
   session: Session | null;
 }
 
+const isOneOnOneSession = (type?: string) => {
+  const normalized = String(type || "").toLowerCase().replace(/\s+/g, "");
+  return ["1:1", "1-1", "one-to-one", "onetoone", "mentorship", "mentor"].some((value) => normalized.includes(value));
+};
+
+const isActiveRescheduleRequest = (request: any) =>
+  !["approved", "accepted", "rejected", "cancelled", "completed"].includes(String(request?.status || request?.action || "pending").toLowerCase());
+
+const getRequestId = (request: any) => String(request?.id || request?._id || request?.requestId || request?.rescheduleRequestId || "");
+
+const formatRequestDate = (request: any) => {
+  const raw = request?.proposedDate || request?.requestedDate || request?.date || request?.newDate;
+  if (!raw) return "TBD";
+  const date = new Date(raw);
+  return Number.isNaN(date.getTime()) ? String(raw) : date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+};
+
+const formatRequestTime = (request: any) => {
+  if (request?.proposedTime) return String(request.proposedTime);
+  const raw = request?.proposedDate || request?.requestedDate || request?.date || request?.newDate;
+  if (!raw) return "TBD";
+  const date = new Date(raw);
+  return Number.isNaN(date.getTime()) ? "TBD" : date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+};
+
 export default function SessionDetailsDrawer({ isOpen, onClose, session }: SessionDetailsDrawerProps) {
   const [activeTab, setActiveTab] = useState<'Session Info' | 'Assignments' | 'Files'>('Session Info');
   const [showReschedule, setShowReschedule] = useState(false);
@@ -32,6 +57,7 @@ export default function SessionDetailsDrawer({ isOpen, onClose, session }: Sessi
   const [uploadLoading, setUploadLoading] = useState(false);
   const [assignmentDetails, setAssignmentDetails] = useState<any[]>([]);
   const [loadingAssignments, setLoadingAssignments] = useState(false);
+  const [reviewingRequestId, setReviewingRequestId] = useState<string | null>(null);
 
   const getDownloadUrl = (url?: string, path?: string) => {
     const raw = url || path;
@@ -87,6 +113,7 @@ export default function SessionDetailsDrawer({ isOpen, onClose, session }: Sessi
       setAssignmentCreating(false);
       setAssignmentDetails([]);
       setLoadingAssignments(false);
+      setReviewingRequestId(null);
     }
   }, [isOpen]);
 
@@ -131,6 +158,11 @@ export default function SessionDetailsDrawer({ isOpen, onClose, session }: Sessi
     e.preventDefault();
     setRescheduleError("");
 
+    if (!isOneOnOneSession(session?.type)) {
+      setRescheduleError("Reschedule negotiation is available only for 1:1 sessions.");
+      return;
+    }
+
     if (!session?.id) {
       setRescheduleError("This session is missing an ID, so the reschedule request cannot be submitted.");
       return;
@@ -174,6 +206,33 @@ export default function SessionDetailsDrawer({ isOpen, onClose, session }: Sessi
       setRescheduleError(error?.message || "Failed to submit reschedule request.");
     } finally {
       setRescheduleLoading(false);
+    }
+  };
+
+  const handleRescheduleReview = async (request: any, action: "approved" | "rejected") => {
+    const requestId = getRequestId(request);
+    const courseId = String(request?.courseId || request?.course?.id || request?.course?._id || session?.id || "");
+
+    if (!requestId || !courseId) {
+      toast.error("This reschedule request is missing required identifiers.");
+      return;
+    }
+
+    setReviewingRequestId(requestId);
+    try {
+      await EducatorAPI.handleRescheduleAction({
+        courseId,
+        requestId,
+        action,
+        educatorRemark: action === "approved" ? "Approved by educator." : "Rejected by educator.",
+      });
+      toast.success(action === "approved" ? "Reschedule request approved." : "Reschedule request rejected.");
+      onClose();
+    } catch (error: any) {
+      console.error("Failed to review reschedule request", error);
+      toast.error(error?.message || "Failed to review reschedule request.");
+    } finally {
+      setReviewingRequestId(null);
     }
   };
 
@@ -248,6 +307,9 @@ export default function SessionDetailsDrawer({ isOpen, onClose, session }: Sessi
 
   if (!isOpen || !session) return null;
 
+  const isOneOnOne = isOneOnOneSession(session.type);
+  const rescheduleRequests = asArray(session.rescheduleRequests).filter(isActiveRescheduleRequest);
+
   return (
     <>
       <div className="fixed inset-0 bg-black/40 z-[100]" onClick={onClose} />
@@ -315,13 +377,63 @@ export default function SessionDetailsDrawer({ isOpen, onClose, session }: Sessi
                 <span className="text-sm font-medium text-gray-900">{session.type}</span>
               </div>
 
-              {session.status === 'Scheduled' && (
+              {isOneOnOne && rescheduleRequests.length > 0 ? (
+                <div className="mt-4 space-y-3 rounded-xl border border-orange-100 bg-orange-50/60 p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <h4 className="text-sm font-semibold text-gray-900">Pending Reschedule Requests</h4>
+                    <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-orange-600">
+                      {rescheduleRequests.length} Pending
+                    </span>
+                  </div>
+
+                  {rescheduleRequests.map((request: any, index: number) => {
+                    const requestId = getRequestId(request) || String(index);
+                    const isReviewing = reviewingRequestId === requestId;
+
+                    return (
+                      <div key={requestId} className="rounded-xl border border-orange-100 bg-white p-3">
+                        <div className="mb-2 grid grid-cols-2 gap-2 text-xs text-gray-600">
+                          <div>
+                            <span className="block text-gray-400">Requested Date</span>
+                            <span className="font-semibold text-gray-900">{formatRequestDate(request)}</span>
+                          </div>
+                          <div>
+                            <span className="block text-gray-400">Requested Time</span>
+                            <span className="font-semibold text-gray-900">{formatRequestTime(request)}</span>
+                          </div>
+                        </div>
+                        {request.reason ? <p className="mb-3 text-xs leading-relaxed text-gray-600">{request.reason}</p> : null}
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            disabled={isReviewing}
+                            onClick={() => handleRescheduleReview(request, "approved")}
+                            className="flex-1 rounded-lg bg-green-600 px-3 py-2 text-xs font-semibold text-white hover:bg-green-700 disabled:opacity-50"
+                          >
+                            Accept Time
+                          </button>
+                          <button
+                            type="button"
+                            disabled={isReviewing}
+                            onClick={() => handleRescheduleReview(request, "rejected")}
+                            className="flex-1 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : null}
+
+              {session.status === 'Scheduled' && isOneOnOne && (
                 <button
                   onClick={() => setShowReschedule(true)}
                   className="w-full mt-4 py-3 border border-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
                 >
                   <Calendar size={16} />
-                  Request Reschedule
+                  {rescheduleRequests.length > 0 ? "Suggest Different Time" : "Request Reschedule"}
                 </button>
               )}
 

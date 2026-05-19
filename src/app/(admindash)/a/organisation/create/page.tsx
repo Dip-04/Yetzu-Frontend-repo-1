@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { AdminAPI } from '@/lib/api';
 
 import ProgressBar from './components/ProgressBar';
 import BasicInfo from './components/BasicInfo';
@@ -13,8 +15,22 @@ import BillingDetails from './components/BillingDetails';
 import ReviewCreate from './components/ReviewCreate';
 
 export default function CreateOrganizationPage() {
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [billingCycle, setBillingCycle] = useState('monthly');
+  const [formData, setFormData] = useState({
+    name: '',
+    type: '',
+    email: '',
+    location: '',
+    description: '',
+  });
   const totalSteps = 6;
+
+  const updateFormData = (field: string, value: string) => {
+    setFormData((current) => ({ ...current, [field]: value }));
+  };
 
   const handleNext = () => {
     if (currentStep < totalSteps) setCurrentStep(c => c + 1);
@@ -26,13 +42,32 @@ export default function CreateOrganizationPage() {
 
   const renderStep = () => {
     switch (currentStep) {
-      case 1: return <BasicInfo />;
+      case 1: return <BasicInfo formData={formData} onChange={updateFormData} />;
       case 2: return <AdminDetails />;
       case 3: return <StudentImport />;
       case 4: return <AccessPermissions />;
-      case 5: return <BillingDetails />;
-      case 6: return <ReviewCreate />;
-      default: return <BasicInfo />;
+      case 5: return <BillingDetails billingCycle={billingCycle} onBillingCycleChange={setBillingCycle} />;
+      case 6: return <ReviewCreate formData={formData} billingCycle={billingCycle} />;
+      default: return <BasicInfo formData={formData} onChange={updateFormData} />;
+    }
+  };
+
+  const handleCreateOrganization = async () => {
+    try {
+      setIsSubmitting(true);
+      await AdminAPI.createOrganization({
+        name: formData.name.trim(),
+        type: formData.type,
+        email: formData.email.trim(),
+        status: 'active',
+        billingCycle,
+      });
+      router.push('/a/organisation/all');
+    } catch (error: any) {
+      console.error('Failed to create organization:', error);
+      alert(error?.message || 'Failed to create organization. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -77,8 +112,8 @@ export default function CreateOrganizationPage() {
             </button>
             
             {currentStep === totalSteps ? (
-              <button className="px-6 py-2.5 bg-[#0A0A0A] hover:bg-gray-800 text-white rounded-xl text-sm font-bold transition-colors">
-                Create Organization
+              <button onClick={handleCreateOrganization} disabled={isSubmitting} className="px-6 py-2.5 bg-[#0A0A0A] hover:bg-gray-800 text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-60">
+                {isSubmitting ? 'Creating...' : 'Create Organization'}
               </button>
             ) : (
               <button 

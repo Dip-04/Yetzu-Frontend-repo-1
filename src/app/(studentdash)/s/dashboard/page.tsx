@@ -323,8 +323,7 @@ export default function OverviewPage() {
   ];
 
   return (
-    <div className="bg-white md:bg-transparent">
-      <main className="px-4 md:p-6 lg:p-8 max-w-[1600px] font-sans mx-auto flex flex-col gap-5 md:bg-gray-50 min-h-screen overflow-x-hidden pb-24 lg:pb-8">
+    <main className="md:p-6 lg:p-8 max-w-[1600px] font-sans mx-auto flex flex-col gap-5 md:bg-gray-50 min-h-screen overflow-x-hidden pb-24 lg:pb-8">
       
         {dashboardError && (
           <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
@@ -635,6 +634,5 @@ export default function OverviewPage() {
         )}
 
       </main>
-    </div>
   );
 }

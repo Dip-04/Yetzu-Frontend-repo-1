@@ -5,6 +5,11 @@ import { Session } from '../types';
 import { Eye, Users, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { shortenId } from '@/lib/utils/shortenId';
 
+const hasActiveRescheduleRequest = (session: Session) =>
+  (session.rescheduleRequests || []).some((request: any) =>
+    !["approved", "accepted", "rejected", "cancelled", "completed"].includes(String(request.status || request.action || "pending").toLowerCase()),
+  );
+
 interface SessionsListProps {
   sessions: Session[];
   onViewDetails?: (session: Session) => void;
@@ -76,7 +81,16 @@ export default function SessionsList({ sessions, onViewDetails, loading: externa
                   }`}
                 >
                   <td className="py-4 px-4 font-medium text-gray-900 whitespace-nowrap" title={session.id}>{shortenId(session.id)}</td>
-                  <td className="py-4 px-4 text-gray-600 whitespace-nowrap">{session.title}</td>
+                  <td className="py-4 px-4 text-gray-600 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <span>{session.title}</span>
+                      {hasActiveRescheduleRequest(session) ? (
+                        <span className="rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-orange-600">
+                          Reschedule Requested
+                        </span>
+                      ) : null}
+                    </div>
+                  </td>
                   <td className="py-4 px-4 text-gray-600 whitespace-nowrap">{session.type}</td>
                   <td className="py-4 px-4 text-center text-gray-600 whitespace-nowrap">{session.attendees}</td>
                   <td className="py-4 px-4 text-gray-600 whitespace-nowrap">{session.date}</td>

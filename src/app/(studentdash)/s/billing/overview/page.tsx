@@ -124,9 +124,9 @@ const getMetricIconStyles = (colorScheme: string) => {
 
 export default function PaymentsOverviewPage() {
   return (
-    <div className="font-sans">
+    <div className="md:p-6 lg:p-8 max-w-[1600px] font-sans mx-auto flex flex-col gap-5 min-h-screen overflow-x-hidden pb-24 lg:pb-8">
       {/* --- HEADER --- */}
-      <div className="mb-8">
+      <div>
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-medium text-[#021165]">
           Payments Overview
         </h1>
@@ -134,9 +134,9 @@ export default function PaymentsOverviewPage() {
       </div>
 
       {/* --- MAIN CONTENT AREA --- */}
-      <div className="flex-1 w-full">
+      <div className="flex flex-col gap-5">
         {/* --- METRICS GRID --- */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {METRICS_DATA.map((metric) => {
             const Icon = metric.icon;
             const iconStyles = getMetricIconStyles(metric.colorScheme);
@@ -164,7 +164,7 @@ export default function PaymentsOverviewPage() {
         </div>
 
         {/* --- PLAN BANNER --- */}
-        <div className="bg-gradient-to-br from-[#021165] via-[#042BFD] to-[#2D2D7E] rounded-[32px] p-6 md:p-8 lg:p-10 flex flex-col lg:flex-row justify-between lg:items-center gap-8 mb-8 shadow-xl relative overflow-hidden">
+        <div className="bg-gradient-to-br from-[#021165] via-[#042BFD] to-[#2D2D7E] rounded-[32px] p-6 md:p-8 lg:p-10 flex flex-col lg:flex-row justify-between lg:items-center gap-8 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-400/10 rounded-full -ml-32 -mb-32 blur-3xl"></div>
           

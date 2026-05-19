@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Award, Search, Loader2, Download, ExternalLink, Plus, RefreshCw } from "lucide-react";
-import { CertificateAPI } from "@/lib/api";
+import { CertificateAPI, asArray } from "@/lib/api";
 import { toast } from "react-hot-toast";
 
 interface Certificate {
@@ -31,7 +31,7 @@ export default function EducatorCertificatesPage() {
     try {
       setIsLoading(true);
       const response = await CertificateAPI.educator.getCertificates();
-      const certData = response?.data?.list || response?.list || response || [];
+      const certData = asArray(response);
       setCertificates(certData);
     } catch (error) {
       console.error("Failed to load certificates:", error);
