@@ -5,31 +5,54 @@ import { ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AdminAPI } from '@/lib/api';
-import toast from 'react-hot-toast';
+
+import ProgressBar from './components/ProgressBar';
+import BasicInfo from './components/BasicInfo';
+import AdminDetails from './components/AdminDetails';
+import StudentImport from './components/StudentImport';
+import AccessPermissions from './components/AccessPermissions';
+import BillingDetails from './components/BillingDetails';
+import ReviewCreate from './components/ReviewCreate';
 
 export default function CreateOrganizationPage() {
   const router = useRouter();
+  const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [billingCycle, setBillingCycle] = useState('monthly');
   const [formData, setFormData] = useState({
     name: '',
     type: '',
     email: '',
-    billingCycle: 'monthly',
     location: '',
     description: '',
   });
+  const totalSteps = 6;
 
   const updateFormData = (field: string, value: string) => {
     setFormData((current) => ({ ...current, [field]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.name.trim() || !formData.type || !formData.email.trim()) {
-      toast.error('Name, type, and email are required');
-      return;
-    }
+  const handleNext = () => {
+    if (currentStep < totalSteps) setCurrentStep(c => c + 1);
+  };
 
+  const handleBack = () => {
+    if (currentStep > 1) setCurrentStep(c => c - 1);
+  };
+
+  const renderStep = () => {
+    switch (currentStep) {
+      case 1: return <BasicInfo formData={formData} onChange={updateFormData} />;
+      case 2: return <AdminDetails />;
+      case 3: return <StudentImport />;
+      case 4: return <AccessPermissions />;
+      case 5: return <BillingDetails billingCycle={billingCycle} onBillingCycleChange={setBillingCycle} />;
+      case 6: return <ReviewCreate formData={formData} billingCycle={billingCycle} />;
+      default: return <BasicInfo formData={formData} onChange={updateFormData} />;
+    }
+  };
+
+  const handleCreateOrganization = async () => {
     try {
       setIsSubmitting(true);
       await AdminAPI.createOrganization({
@@ -37,19 +60,20 @@ export default function CreateOrganizationPage() {
         type: formData.type,
         email: formData.email.trim(),
         status: 'active',
-        billingCycle: formData.billingCycle,
+        billingCycle,
       });
-      toast.success('Organization created successfully');
-      router.push('/a/organisation');
+      router.push('/a/organisation/all');
     } catch (error: any) {
-      toast.error(error?.message || 'Failed to create organization');
+      console.error('Failed to create organization:', error);
+      alert(error?.message || 'Failed to create organization. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="w-full flex flex-col pb-24">
+    <div className="w-full flex flex-col relative pb-24">
+      {/* Header */}
       <div className="w-full px-6 py-5 flex items-center justify-between border-b border-gray-100 bg-white">
         <Link href="/a/organisation" className="flex items-center gap-2 text-slate-800 font-bold hover:text-blue-600 transition-colors">
           <ChevronLeft className="w-5 h-5" />
@@ -57,95 +81,49 @@ export default function CreateOrganizationPage() {
         </Link>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex-1 w-full bg-[#fcfcfc] py-8 px-4">
-        <div className="w-full max-w-xl mx-auto bg-white rounded-[24px] border border-gray-200 shadow-sm overflow-hidden mt-4">
-          <div className="p-8 space-y-6">
-            <div className="space-y-1">
-              <h2 className="text-xl font-bold text-slate-900">Organization Info</h2>
-              <p className="text-sm text-gray-500">Basic details about the new organization.</p>
-            </div>
+      {/* Progress Bar */}
+      <div className="w-full bg-white border-b border-gray-100">
+        <ProgressBar currentStep={currentStep} />
+      </div>
 
-            <div className="space-y-4 pt-2">
-              <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-slate-800">Organization Name *</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Acme Corp"
-                  value={formData.name}
-                  onChange={(e) => updateFormData('name', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400"
-                />
-              </div>
+      {/* Form Content Wrapper */}
+      <div className="flex-1 w-full bg-[#fcfcfc] py-8 px-4">
+        {renderStep()}
+      </div>
 
-              <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-slate-800">Type *</label>
-                <select value={formData.type} onChange={(e) => updateFormData('type', e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-gray-500 appearance-none">
-                  <option value="" disabled>Select type</option>
-                  <option value="institution">Institution</option>
-                  <option value="cohort">Cohort</option>
-                  <option value="corporate">Corporate</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-slate-800">Email Address *</label>
-                <input
-                  type="email"
-                  placeholder="admin@organization.com"
-                  value={formData.email}
-                  onChange={(e) => updateFormData('email', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-slate-800">Billing Cycle</label>
-                <select value={formData.billingCycle} onChange={(e) => updateFormData('billingCycle', e.target.value)} className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white text-gray-500 appearance-none">
-                  <option value="monthly">Monthly</option>
-                  <option value="quarterly">Quarterly</option>
-                  <option value="yearly">Yearly</option>
-                </select>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-slate-800">Location</label>
-                <input
-                  type="text"
-                  placeholder="City, Country"
-                  value={formData.location}
-                  onChange={(e) => updateFormData('location', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-sm font-semibold text-slate-800">Description</label>
-                <textarea
-                  placeholder="Brief description of the organization..."
-                  rows={4}
-                  value={formData.description}
-                  onChange={(e) => updateFormData('description', e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400 resize-none"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-
+      {/* Fixed Footer */}
       <div className="fixed bottom-0 right-0 md:left-[260px] left-0 bg-white border-t border-gray-100 p-4 md:px-8 z-50">
-        <div className="max-w-4xl mx-auto flex justify-end items-center w-full gap-3">
-          <Link href="/a/organisation" className="px-5 py-2.5 bg-white border border-gray-200 text-slate-700 rounded-xl text-sm font-bold hover:bg-gray-50 transition-colors">
-            Cancel
-          </Link>
-          <button
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className="px-6 py-2.5 bg-[#0A0A0A] hover:bg-gray-800 text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-60"
-          >
-            {isSubmitting ? 'Creating...' : 'Create Organization'}
-          </button>
+        <div className="max-w-4xl mx-auto flex justify-between items-center w-full">
+          <div>
+            {currentStep > 1 && (
+              <button 
+                onClick={handleBack}
+                className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-slate-700 hover:text-blue-600 transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Back
+              </button>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <button className="px-5 py-2.5 bg-white border border-gray-200 text-slate-700 rounded-xl text-sm font-bold hover:bg-gray-50 transition-colors">
+              Save Draft
+            </button>
+            
+            {currentStep === totalSteps ? (
+              <button onClick={handleCreateOrganization} disabled={isSubmitting} className="px-6 py-2.5 bg-[#0A0A0A] hover:bg-gray-800 text-white rounded-xl text-sm font-bold transition-colors disabled:opacity-60">
+                {isSubmitting ? 'Creating...' : 'Create Organization'}
+              </button>
+            ) : (
+              <button 
+                onClick={handleNext}
+                className="px-8 py-2.5 bg-[#0A0A0A] hover:bg-gray-800 text-white rounded-xl text-sm font-bold transition-colors"
+              >
+                Next
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
