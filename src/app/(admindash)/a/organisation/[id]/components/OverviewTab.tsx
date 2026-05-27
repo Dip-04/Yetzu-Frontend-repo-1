@@ -7,14 +7,16 @@ const StatCard = ({ value, label, valueColor }: { value: string | number, label:
   </div>
 );
 
-export default function OverviewTab() {
+const formatCurrency = (amount: number) => `$${(amount || 0).toLocaleString()}`;
+
+export default function OverviewTab({ organization }: { organization?: any }) {
+  const o = organization || {};
+  const createdAt = o.createdAt ? new Date(o.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A';
   const activities = [
-    { text: 'Organisation created', date: 'Jan 5, 2026' },
-    { text: '320 students added', date: 'Jan 10, 2026' },
-    { text: 'Premium plan activated', date: 'Jan 15, 2026' },
-    { text: 'Payment received: $28,400', date: 'Feb 1, 2026' },
-    { text: 'Access updated: Research Modules', date: 'Mar 1, 2026' },
-    { text: 'New students batch: +45', date: 'Mar 15, 2026' },
+    { text: 'Organisation created', date: createdAt },
+    { text: `${o.studentCount || 0} students onboarded`, date: createdAt },
+    { text: `${o.educatorCount || 0} educators assigned`, date: 'N/A' },
+    { text: `Billing cycle: ${o.billingCycle || 'N/A'}`, date: 'N/A' },
   ];
 
   return (
@@ -24,12 +26,12 @@ export default function OverviewTab() {
       <div className="flex-1 flex flex-col gap-6">
         {/* Stat Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          <StatCard value="320" label="Total Students" valueColor="text-blue-600" />
-          <StatCard value="290" label="Active Students" valueColor="text-green-500" />
-          <StatCard value="156" label="Sessions Joined" valueColor="text-purple-500" />
-          <StatCard value="84%" label="Avg Completion Rate" valueColor="text-orange-500" />
-          <StatCard value="$28,400" label="Total Revenue" valueColor="text-teal-500" />
-          <StatCard value="47" label="Certificates Issued" valueColor="text-cyan-500" />
+          <StatCard value={o.studentCount || 0} label="Total Students" valueColor="text-blue-600" />
+          <StatCard value={o.educatorCount || 0} label="Educators" valueColor="text-green-500" />
+          <StatCard value={o.sessionCount || 0} label="Sessions" valueColor="text-purple-500" />
+          <StatCard value="—" label="Avg Completion Rate" valueColor="text-orange-500" />
+          <StatCard value={formatCurrency(o.revenue || 0)} label="Total Revenue" valueColor="text-teal-500" />
+          <StatCard value="—" label="Certificates Issued" valueColor="text-cyan-500" />
         </div>
 
         {/* Organization Activity */}

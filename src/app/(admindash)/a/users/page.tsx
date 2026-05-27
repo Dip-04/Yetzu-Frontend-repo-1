@@ -219,13 +219,15 @@ export default function UserManagementPage() {
   }, 0);
 
   return (
-    <div className="w-full flex-1 p-8 text-gray-900 font-sans">
+    <div className="flex flex-col gap-6">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-        <h1 className="text-2xl font-medium text-[#021165] sm:text-3xl md:text-4xl">
-          User Management
-        </h1>
-        <p className="text-sm text-gray-500 mt-1">Manage all users, roles, and permissions across the platform</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#021165] tracking-tight">
+            User Management
+          </h1>
+          <p className="text-sm text-gray-500 font-medium mt-1">Manage all users, roles, and permissions across the platform</p>
+        </div>
         <div className="flex items-center gap-3">
           <button onClick={() => setIsPermissionsOpen(true)} className="flex items-center px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-slate-50 transition-colors">
             <Shield className="w-4 h-4 mr-2 text-slate-500" />Permissions

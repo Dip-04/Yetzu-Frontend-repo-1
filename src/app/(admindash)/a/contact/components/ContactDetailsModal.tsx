@@ -1,5 +1,7 @@
-import React from 'react';
-import { X, Mail } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Mail, Send, Loader2 } from 'lucide-react';
+import { useCreateContact } from "@/lib/queries/formService/useFormService";
+import { toast } from "react-hot-toast";
 
 interface ContactDetailsModalProps {
   isOpen: boolean;
@@ -8,7 +10,34 @@ interface ContactDetailsModalProps {
 }
 
 export default function ContactDetailsModal({ isOpen, onClose, contactData }: ContactDetailsModalProps) {
+  const [replyMessage, setReplyMessage] = useState("");
+  const [markResolved, setMarkResolved] = useState(true);
+  const createContact = useCreateContact();
+
   if (!isOpen || !contactData) return null;
+
+  const handleSendReply = async () => {
+    if (!replyMessage.trim()) {
+      toast.error("Please enter a reply message");
+      return;
+    }
+
+    try {
+      await createContact.mutateAsync({
+        name: "Admin",
+        email: contactData.email || "N/A",
+        subject: contactData.subject ? `Re: ${contactData.subject}` : "Reply",
+        mobile: contactData.mobile || "N/A",
+        medical_school_affiliation: contactData.medical_school_affiliation || "N/A",
+        description: replyMessage.trim(),
+      });
+      toast.success("Reply sent successfully");
+      setReplyMessage("");
+      onClose();
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || error?.message || "Failed to send reply");
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
@@ -65,37 +94,26 @@ export default function ContactDetailsModal({ isOpen, onClose, contactData }: Co
 
             {/* Reply Section */}
             <div className="pt-6 space-y-4">
-              <h3 className="text-lg font-bold text-slate-900">Reply Through Mail</h3>
+              <h3 className="text-lg font-bold text-slate-900">Reply</h3>
               
-              <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between">
-                <div className="w-full md:w-3/4 space-y-2">
-                  <label className="block text-sm font-bold text-slate-800">Template</label>
-                  <select 
-                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm font-medium text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-500 appearance-none bg-white relative"
-                    defaultValue="Acknowledgement"
-                    style={{ backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")', backgroundPosition: 'right 1rem center', backgroundSize: '1.2em 1.2em' }}
-                  >
-                    <option value="Acknowledgement">Acknowledgement</option>
-                  </select>
-                  <p className="text-xs font-medium text-gray-500">Confirms receipt and follow-up.</p>
-                </div>
-                
-                <div className="w-full md:w-1/4 flex items-center md:justify-end mt-4 md:mt-0">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input 
-                      type="checkbox" 
-                      defaultChecked
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <span className="text-sm font-bold text-slate-700">Mark as resolved</span>
-                  </label>
-                </div>
+              <div className="flex items-center justify-end">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    checked={markResolved}
+                    onChange={(e) => setMarkResolved(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <span className="text-sm font-bold text-slate-700">Mark as resolved</span>
+                </label>
               </div>
 
-              <div className="space-y-2 pt-2">
-                <label className="block text-sm font-bold text-slate-800">Additional Notes</label>
+              <div className="space-y-2">
+                <label className="block text-sm font-bold text-slate-800">Reply Message</label>
                 <textarea 
-                  placeholder="Add optional context before sending the template response"
+                  value={replyMessage}
+                  onChange={(e) => setReplyMessage(e.target.value)}
+                  placeholder="Type your reply message..."
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400 resize-none font-medium"
                 />
@@ -115,11 +133,16 @@ export default function ContactDetailsModal({ isOpen, onClose, contactData }: Co
             Close
           </button>
           <button 
-            onClick={onClose}
-            className="flex items-center gap-2 px-6 py-2.5 bg-[#0F172B] hover:bg-blue-500 text-white rounded-xl text-sm font-bold transition-colors"
+            onClick={handleSendReply}
+            disabled={createContact.isPending}
+            className="flex items-center gap-2 px-6 py-2.5 bg-[#0F172B] hover:bg-blue-500 disabled:bg-slate-400 text-white rounded-xl text-sm font-bold transition-colors"
           >
-            <Mail className="w-4 h-4" />
-            Send Reply
+            {createContact.isPending ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Send className="w-4 h-4" />
+            )}
+            {createContact.isPending ? "Sending..." : "Send Reply"}
           </button>
         </div>
         

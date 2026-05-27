@@ -7,7 +7,7 @@ import TopOrganizationsTable from './components/TopOrganizationsTable';
 
 export default function OrganizationPage() {
   return (
-    <div className="flex flex-col gap-8 p-6 md:p-10">
+    <div className="flex flex-col gap-6">
       <OrganizationHeader />
       
       <StatCards />

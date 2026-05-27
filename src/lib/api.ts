@@ -740,7 +740,7 @@ export const EducatorAPI = {
 
   getNotifications: async () => {
     try {
-      const response = await authApi.get("/api/educator/notifications");
+      const response = await authApi.get("/api/educator/dashboard/notifications");
       return dataOf(response);
     } catch (error) {
       logApiFailure("EducatorAPI.getNotifications", error);
@@ -875,6 +875,16 @@ export const AdminAPI = {
       return dataOf(response);
     } catch (error) {
       logApiFailure("AdminAPI.getUsers", error, { params });
+      throw error;
+    }
+  },
+
+  getUserById: async (userId: string) => {
+    try {
+      const response = await authApi.get(`/api/admin/users/${userId}`);
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.getUserById", error, { userId });
       throw error;
     }
   },
@@ -1125,7 +1135,7 @@ export const AdminAPI = {
 
   getNotifications: async () => {
     try {
-      const response = await authApi.get("/api/admin/notifications");
+      const response = await authApi.get("/api/admin/dashboard/notifications");
       return dataOf(response);
     } catch (error) {
       logApiFailure("AdminAPI.getNotifications", error);

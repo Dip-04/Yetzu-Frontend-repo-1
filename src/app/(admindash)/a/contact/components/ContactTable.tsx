@@ -8,7 +8,6 @@ interface ContactTableProps {
 }
 
 export default function ContactTable({ onViewClick }: ContactTableProps) {
-  const [activeTab, setActiveTab] = useState('Contact');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All Status');
   const [typeFilter, setTypeFilter] = useState('All Inquiry Types');
@@ -30,27 +29,7 @@ export default function ContactTable({ onViewClick }: ContactTableProps) {
   return (
     <div className="bg-white rounded-[20px] border border-gray-200 mt-8 w-full shadow-sm overflow-hidden p-6 pb-12">
       
-      {/* Tabs */}
-      <div className="flex mb-6">
-        <div className="flex border border-gray-200 rounded-xl overflow-hidden bg-gray-50/50 p-1">
-          <button 
-            onClick={() => setActiveTab('Contact')}
-            className={`px-5 py-2 text-sm font-semibold rounded-lg transition-colors ${
-              activeTab === 'Contact' ? 'bg-white shadow-sm text-slate-800' : 'text-gray-500 hover:text-slate-700'
-            }`}
-          >
-            Contact
-          </button>
-          <button 
-            onClick={() => setActiveTab('Post Publication Support')}
-            className={`px-5 py-2 text-sm font-semibold rounded-lg transition-colors ${
-              activeTab === 'Post Publication Support' ? 'bg-white shadow-sm text-slate-800' : 'text-gray-500 hover:text-slate-700'
-            }`}
-          >
-            Post Publication Support
-          </button>
-        </div>
-      </div>
+
 
       {/* Toolbar */}
       <div className="flex flex-col md:flex-row justify-start items-start md:items-center gap-4 mb-6">

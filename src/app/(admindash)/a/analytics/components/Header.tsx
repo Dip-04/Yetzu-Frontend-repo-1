@@ -8,10 +8,10 @@ export default function Header() {
   const [active, setActive] = useState('30 days');
 
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div>
-        <h1 className="text-2xl font-medium text-[#021165] sm:text-3xl md:text-4xl">Analytics</h1>
-        <p className="text-sm text-gray-500 mt-1">Key platform metrics · Last 30 days</p>
+        <h1 className="text-3xl md:text-4xl font-bold text-[#021165] tracking-tight">Analytics</h1>
+        <p className="text-sm text-gray-500 font-medium mt-1">Key platform metrics · Last 30 days</p>
       </div>
       <div className="flex flex-wrap items-center gap-1.5">
         {periods.map((p) => (

@@ -104,14 +104,14 @@ export default function CMSPage() {
   };
 
   return (
-    <div className="w-full flex-1 p-8 font-sans">
+    <div className="flex flex-col gap-6">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 border-b border-slate-200 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-medium text-[#021165] sm:text-3xl md:text-4xl">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#021165] tracking-tight">
             Content Management System
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-gray-500 font-medium mt-1">
             Edit and manage content for all public pages. Changes are static for now — backend integration coming later.
           </p>
         </div>
@@ -121,7 +121,7 @@ export default function CMSPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         {/* Page Selector */}
         <div className="relative w-56">
           <select

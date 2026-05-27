@@ -62,7 +62,7 @@ export default function OrganizationProfilePage({ params }: { params: Promise<{ 
           <div className="flex items-center gap-2 text-sm text-gray-500 ml-9">
             <span>{organization?.type || organization?.organizationType || 'Institution'}</span>
             <span>•</span>
-            <span>{organization?.students || organization?.totalStudents || organization?.studentCount || 0} students</span>
+            <span>{organization?.studentCount || 0} students</span>
             <span>•</span>
             <span>{organizationId}</span>
           </div>
@@ -88,9 +88,9 @@ export default function OrganizationProfilePage({ params }: { params: Promise<{ 
         <div className="flex space-x-1 min-w-max">
           {[
             { id: 'overview', label: 'Overview' },
-            { id: 'students', label: 'Students', badge: '320' },
+            { id: 'students', label: 'Students', badge: String(organization?.studentCount || 0) },
             { id: 'permissions', label: 'Access & Permissions' },
-            { id: 'sessions', label: 'Sessions', badge: '3' },
+            { id: 'sessions', label: 'Sessions', badge: String(organization?.sessionCount || 0) },
             { id: 'progress', label: 'Progress' },
             { id: 'billing', label: 'Billing' },
           ].map((tab) => (
@@ -121,12 +121,12 @@ export default function OrganizationProfilePage({ params }: { params: Promise<{ 
 
       {/* Tab Content */}
       <div className="w-full">
-        {activeTab === 'overview' && <OverviewTab />}
+        {activeTab === 'overview' && <OverviewTab organization={organization} />}
         {activeTab === 'students' && <StudentsTab />}
-        {activeTab === 'permissions' && <PermissionsTab />}
+        {activeTab === 'permissions' && <PermissionsTab permissions={organization?.permissions} />}
         {activeTab === 'sessions' && <SessionsTab />}
         {activeTab === 'progress' && <ProgressTab />}
-        {activeTab === 'billing' && <BillingTab />}
+        {activeTab === 'billing' && <BillingTab billingCycle={organization?.billingCycle} revenue={organization?.revenue} />}
       </div>
     </div>
   );

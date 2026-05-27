@@ -37,8 +37,8 @@ const generateSessionCode = (type: string) => {
       ? "WEB"
       : type === "Cohort"
       ? "COH"
-      : type === "Workshop"
-      ? "WRK"
+      : type === "Certification Course"
+      ? "CRC"
       : "MNT";
   const num = Math.floor(Math.random() * 900) + 100;
   return `${prefix}-${num}`;
@@ -68,8 +68,6 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
   const [sessionDate, setSessionDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [maxStudents, setMaxStudents] = useState(50);
-  const [minStudents, setMinStudents] = useState(5);
   const [sessionPlatform, setSessionPlatform] = useState("Zoom");
   const [mode, setMode] = useState("online");
   
@@ -77,7 +75,7 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
   
   const [pricingType, setPricingType] = useState("");
   const [priceAmount, setPriceAmount] = useState("");
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState("INR");
   
   const [assignmentEnabled, setAssignmentEnabled] = useState(true);
   const [certificateEnabled, setCertificateEnabled] = useState(false);
@@ -195,14 +193,6 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
         toast.error("End time must be after start time");
         return;
       }
-      if (minStudents < 1 || maxStudents < 1) {
-        toast.error("Capacity must be at least 1");
-        return;
-      }
-      if (minStudents > maxStudents) {
-        toast.error("Minimum students cannot exceed maximum students");
-        return;
-      }
     }
     if (currentStep === 3) {
       if (!pricingType) {
@@ -217,6 +207,10 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
         toast.error("Please select at least one session for bundle");
         return;
       }
+      if (pricingType.toLowerCase() === "bundle" && (!priceAmount || Number(priceAmount) <= 0)) {
+        toast.error("Please enter bundle price");
+        return;
+      }
     }
     if (currentStep === 4 && !selectedEducator) {
       toast.error("Please select an educator");
@@ -224,10 +218,6 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
     }
     if (currentStep === 5 && enrollmentType === "Individual" && selectedStudents.length === 0) {
       toast.error("Please select at least one student");
-      return;
-    }
-    if (currentStep === 5 && selectedStudents.length > maxStudents) {
-      toast.error("Selected students exceed the maximum session capacity");
       return;
     }
     if (currentStep < stepsList.length) setCurrentStep(currentStep + 1);
@@ -266,8 +256,8 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
       toast.error("Please choose a pricing type");
       return;
     }
-    if (minStudents > maxStudents) {
-      toast.error("Minimum students cannot exceed maximum students");
+    if (pricingType.toLowerCase() === "bundle" && (!priceAmount || Number(priceAmount) <= 0)) {
+      toast.error("Please enter bundle price");
       return;
     }
 
@@ -283,16 +273,15 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
       formData.append("category", category);
       formData.append("assignmentEnabled", assignmentEnabled ? "true" : "false");
       formData.append("certificateEnabled", certificateEnabled ? "true" : "false");
-      formData.append("scheduledDate", sessionDate);
+      formData.append("scheduleDate", sessionDate);
       formData.append("date", sessionDate);
       formData.append("startTime", startTime);
       formData.append("endTime", endTime);
-      formData.append("capacity", String(Number(maxStudents)));
-      formData.append("maxCapacity", String(Number(maxStudents)));
-      formData.append("maxStudents", String(Number(maxStudents)));
-      formData.append("minStudents", String(Number(minStudents)));
+      formData.append("capacity", "50");
+      formData.append("maxCapacity", "50");
+      formData.append("maxStudents", "50");
       formData.append("pricingType", pricingType.toLowerCase());
-      formData.append("price", pricingType.toLowerCase() === "paid" ? String(Number(priceAmount)) : "0");
+      formData.append("price", (pricingType.toLowerCase() === "paid" || pricingType.toLowerCase() === "bundle") ? String(Number(priceAmount)) : "0");
       formData.append("currency", currency);
       formData.append("billingInterval", "one_time");
       formData.append("educatorId", selectedEducator);
@@ -345,9 +334,7 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
           <button onClick={onBack} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
             Cancel
           </button>
-          <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-            View Templates
-          </button>
+         
         </div>
       </div>
 
@@ -409,7 +396,7 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
                 {[
                   { id: "Webinar", desc: "One-to-many live session" },
                   { id: "Cohort", desc: "Multi-session batch program" },
-                  { id: "Workshop", desc: "Hands-on practical session" },
+                  { id: "Certification Course", desc: "Structured certification program" },
                   { id: "1:1", desc: "Private mentoring session" },
                 ].map((type) => (
                   <button
@@ -450,28 +437,6 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
                       }`}
                     >
                       {cat}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Delivery Mode */}
-              <div className="mb-10">
-                <label className="block text-sm font-medium text-gray-900 mb-3">
-                  Delivery Mode
-                </label>
-                <div className="flex gap-3">
-                  {["Online", "Hybrid"].map((opt) => (
-                    <button
-                      key={opt}
-                      onClick={() => setMode(opt.toLowerCase())}
-                      className={`px-5 py-2 text-sm font-medium rounded-lg border transition-colors ${
-                        mode === opt.toLowerCase()
-                          ? "border-blue-600 text-blue-700 bg-white"
-                          : "border-gray-200 text-gray-700 hover:bg-gray-50"
-                      }`}
-                    >
-                      {opt}
                     </button>
                   ))}
                 </div>
@@ -657,52 +622,7 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
                 </div>
               </div>
 
-              <div className="text-xs font-semibold text-gray-500 mb-4 tracking-wider uppercase">
-                Capacity
-              </div>
-              <div className="flex gap-5 mb-8">
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Max Students
-                  </label>
-                  <input
-                    type="number"
-                    value={maxStudents}
-                    onChange={(e) => setMaxStudents(Number(e.target.value))}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300"
-                  />
-                </div>
-                <div className="flex-1">
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                    Min Students
-                  </label>
-                  <input
-                    type="number"
-                    value={minStudents}
-                    onChange={(e) => setMinStudents(Number(e.target.value))}
-                    className="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300"
-                  />
-                </div>
-              </div>
 
-              <div className="text-xs font-semibold text-gray-500 mb-4 tracking-wider uppercase">
-                Max Students
-              </div>
-              <div className="flex gap-3 mb-8">
-                {[25, 50, 100, 200].map((num) => (
-                  <button
-                    key={num}
-                    onClick={() => setMaxStudents(num)}
-                    className={`px-5 py-2 text-sm font-medium rounded-lg border transition-colors ${
-                      maxStudents === num
-                        ? "border-blue-600 text-blue-700 bg-white"
-                        : "border-gray-200 text-gray-700 hover:bg-gray-50"
-                    }`}
-                  >
-                    {num}
-                  </button>
-                ))}
-              </div>
             </div>
           )}
 
@@ -787,22 +707,45 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
                     <p className="text-sm text-gray-500">No paid sessions available. Create paid sessions first.</p>
                   </div>
                 ) : (
-                  <div className="border border-gray-200 rounded-xl overflow-hidden max-h-80 overflow-y-auto">
-                    <table className="w-full text-left text-sm">
-                      <thead className="bg-gray-50 sticky top-0">
-                        <tr><th className="px-4 py-3 w-12"></th><th className="px-4 py-3 font-medium">Session</th><th className="px-4 py-3 font-medium">Price</th></tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {paidSessions.map((session) => (
-                          <tr key={session.id} className={`cursor-pointer ${selectedBundleSessions.includes(session.id) ? "bg-blue-50" : "hover:bg-gray-50"}`} onClick={() => toggleBundleSession(session.id)}>
-                            <td className="px-4 py-3"><input type="checkbox" checked={selectedBundleSessions.includes(session.id)} onChange={() => {}} className="w-4 h-4" /></td>
-                            <td className="px-4 py-3 font-medium">{session.title || session.type || "Session"}</td>
-                            <td className="px-4 py-3 text-gray-500">${session.price || 0}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                  <>
+                    <div className="border border-gray-200 rounded-xl overflow-hidden max-h-80 overflow-y-auto">
+                      <table className="w-full text-left text-sm">
+                        <thead className="bg-gray-50 sticky top-0">
+                          <tr><th className="px-4 py-3 w-12"></th><th className="px-4 py-3 font-medium">Session</th><th className="px-4 py-3 font-medium">Price</th></tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                          {paidSessions.map((session) => {
+                            const isSelected = selectedBundleSessions.includes(session.id);
+                            return (
+                              <tr key={session.id} className={`cursor-pointer ${isSelected ? "bg-blue-50" : "hover:bg-gray-50"}`} onClick={() => toggleBundleSession(session.id)}>
+                                <td className="px-4 py-3"><input type="checkbox" checked={isSelected} onChange={() => {}} className="w-4 h-4" /></td>
+                                <td className="px-4 py-3 font-medium">{session.title || session.type || "Session"}</td>
+                                <td className="px-4 py-3 text-gray-500">{(session.currency === "INR" ? "₹" : "$")}{session.price || 0}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                    {selectedBundleSessions.length > 0 && (
+                      <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <p className="text-sm text-gray-700">
+                          <span className="font-medium">{selectedBundleSessions.length}</span> session(s) selected — Total: <span className="font-semibold">${paidSessions.filter(s => selectedBundleSessions.includes(s.id)).reduce((sum, s) => sum + (Number(s.price) || 0), 0).toFixed(2)}</span>
+                        </p>
+                      </div>
+                    )}
+                    <div className="mt-6">
+                      <label className="block text-sm font-medium text-gray-900 mb-3">Bundle Cost</label>
+                      <div className="flex gap-3 items-center">
+                        <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="w-24 px-4 py-2 border border-gray-200 rounded-lg text-sm">
+                          <option value="INR">INR</option>
+                          <option value="USD">USD</option>
+                          <option value="EUR">EUR</option>
+                        </select>
+                        <input type="number" value={priceAmount} onChange={(e) => setPriceAmount(e.target.value)} placeholder="0.00" className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm" />
+                      </div>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
@@ -966,12 +909,8 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
                     <p className="font-medium">{startTime} - {endTime}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Capacity</p>
-                    <p className="font-medium">{maxStudents} students</p>
-                  </div>
-                  <div>
                     <p className="text-sm text-gray-500">Pricing</p>
-                    <p className="font-medium">{pricingType} {pricingType === "Paid" && `$${priceAmount}`}</p>
+                    <p className="font-medium">{pricingType}{(pricingType === "Paid" || pricingType === "Bundle") && priceAmount ? ` — ${currency === "INR" ? "₹" : "$"}${priceAmount}` : ""}</p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Enrollment Type</p>

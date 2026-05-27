@@ -73,20 +73,18 @@ export default function CalendarView({ data, onSessionClick }: CalendarViewProps
     return date.toLocaleDateString('en-US', { weekday: 'short' });
   };
 
-  const formatSessionTime = (timeStr: string) => {
-    if (!timeStr) return 9;
-    const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)?/i);
-    if (!match) return 9;
-    let hour = parseInt(match[1]);
-    const ampm = match[3]?.toUpperCase();
+  const formatTime = (time: string) => {
+    if (!time) return FIRST_HOUR;
+    const [hourStr, ampm] = time.split(' ');
+    let hour = parseInt(hourStr);
     if (ampm === 'PM' && hour !== 12) hour += 12;
     if (ampm === 'AM' && hour === 12) hour = 0;
-    return hour;
+    return isNaN(hour) ? FIRST_HOUR : hour;
   };
 
   const parseSessionTimes = (session: Session) => {
-    const startHour = formatSessionTime(session.startTime || "");
-    const endHour = formatSessionTime(session.endTime || "");
+    const startHour = formatTime(session.startTime || "");
+    const endHour = formatTime(session.endTime || "");
     const duration = endHour - startHour;
     return { startHour, duration: duration > 0 ? duration : 1 };
   };
@@ -129,9 +127,11 @@ export default function CalendarView({ data, onSessionClick }: CalendarViewProps
     setCurrentDate(new Date());
   };
 
+  const sessions = useMemo(() => data, [data]);
+
   const filteredSessions = useMemo(() => {
-    return data.filter(session => {
-      if (!session.date && !session.dateTime) return false;
+    return sessions.filter(session => {
+      if (!session.dateTime && !session.date) return false;
       const sessionDate = new Date(session.dateTime || session.date);
       
       if (viewType === 'Day') {
@@ -144,93 +144,92 @@ export default function CalendarView({ data, onSessionClick }: CalendarViewProps
                sessionDate.getFullYear() === currentDate.getFullYear();
       }
     });
-  }, [data, viewType, currentDate]);
-
-  const sessionsByDayHour = useMemo(() => {
-    const map: Record<string, { session: Session; index: number }[]> = {};
-    filteredSessions.forEach((session, idx) => {
-      if (!session.date && !session.dateTime) return;
-      const sessionDate = new Date(session.dateTime || session.date);
-      const dayKey = sessionDate.toDateString();
-      const hour = sessionDate.getHours();
-      const key = `${dayKey}-${hour}`;
-      if (!map[key]) map[key] = [];
-      map[key].push({ session, index: idx });
-    });
-    return map;
-  }, [filteredSessions]);
+  }, [sessions, viewType, currentDate]);
 
   const hours = Array.from({ length: LAST_HOUR - FIRST_HOUR + 1 }, (_, i) => FIRST_HOUR + i);
 
   const getSessionColor = (type: string) => {
     switch (type?.toLowerCase()) {
       case 'webinar':
-        return 'bg-blue-100/70 border-blue-500';
+        return 'bg-blue-50 border-l-blue-500';
       case 'cohort':
-        return 'bg-green-100/50 border-green-500';
+        return 'bg-emerald-50 border-l-emerald-500';
       case 'workshop':
-        return 'bg-purple-100/50 border-purple-500';
+        return 'bg-violet-50 border-l-violet-500';
+      case '1:1':
+      case 'mentorship':
+        return 'bg-amber-50 border-l-amber-500';
       default:
-        return 'bg-blue-100/70 border-blue-500';
+        return 'bg-blue-50 border-l-blue-500';
     }
   };
 
-  const renderSessionCard = (session: Session, parentHeight: number) => {
-    const { duration } = parseSessionTimes(session);
-    const height = Math.max(duration * HOUR_HEIGHT - 8, 40);
+  const formatHourLabel = (hour: number) => {
+    if (hour === 0) return '12 AM';
+    if (hour < 12) return `${hour} AM`;
+    if (hour === 12) return '12 PM';
+    return `${hour - 12} PM`;
+  };
+
+  const renderSessionCard = (session: Session) => {
+    const { startHour, duration } = parseSessionTimes(session);
+    const top = (startHour - FIRST_HOUR) * HOUR_HEIGHT;
+    const height = Math.max(duration * HOUR_HEIGHT - 4, 24);
     const colorClass = getSessionColor(session.type);
     
     return (
       <div
         key={session.id}
         onClick={() => onSessionClick?.(session)}
-        className={`absolute left-1 right-1 ${colorClass} border-l-4 rounded-r-lg p-2 z-10 overflow-hidden cursor-pointer hover:shadow-md transition-shadow`}
-        style={{
-          top: 4,
-          height: height,
-        }}
+        className={`absolute left-1.5 right-1.5 ${colorClass} border-l-[3px] rounded-md p-1.5 z-10 overflow-hidden cursor-pointer hover:shadow-md hover:brightness-95 transition-all`}
+        style={{ top, height }}
       >
-        <div className="font-semibold text-[10px] text-gray-800 truncate">{session.title || "Untitled Session"}</div>
-        <div className="text-[9px] text-gray-600 truncate mt-0.5">{session.educator}</div>
-        <div className="text-[9px] text-gray-500 mt-0.5">{session.students || 0} Students</div>
-        {session.startTime && session.endTime && (
-          <div className="text-[9px] text-gray-500">{session.startTime} - {session.endTime}</div>
+        <div className="text-[11px] font-semibold text-gray-800 leading-tight truncate">{session.title}</div>
+        <div className="text-[9px] text-gray-500 mt-0.5 truncate">{session.educator || "Educator"}</div>
+        {height >= 50 && (
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-[9px] text-gray-400">{session.startTime} - {session.endTime}</span>
+            <span className="text-[9px] text-gray-400">·</span>
+            <span className="text-[9px] text-gray-400">{session.students || 0} enrolled</span>
+          </div>
         )}
       </div>
     );
   };
 
+  const getDaySessions = (dayKey: string) => {
+    return filteredSessions.filter(s => {
+      if (!s.dateTime && !s.date) return false;
+      const d = new Date(s.dateTime || s.date);
+      return d.toDateString() === dayKey;
+    });
+  };
+
   const renderDayView = () => {
     const dayKey = currentDate.toDateString();
+    const daySessions = getDaySessions(dayKey);
     
     return (
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <div className="grid grid-cols-[60px_1fr] border-b border-gray-100">
-          <div className="py-3 px-2 text-center text-xs font-medium text-gray-500 border-r border-gray-100 bg-gray-50">Time</div>
-          <div className="py-3 px-4 text-left text-xs font-semibold text-gray-900 bg-gray-50">Sessions</div>
+        <div className="flex border-b border-gray-100">
+          <div className="shrink-0 w-14 py-3 text-center text-xs font-semibold text-gray-500 bg-gray-50">Time</div>
+          <div className="flex-1 py-3 px-4 text-xs font-semibold text-gray-900 bg-gray-50">
+            {currentDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
+          </div>
         </div>
         <div className="max-h-[500px] overflow-y-auto">
-          {hours.map(hour => {
-            const hourKey = `${dayKey}-${hour}`;
-            const hourSessions = sessionsByDayHour[hourKey] || [];
-            
-            return (
-              <div key={hour} className="grid grid-cols-[60px_1fr] border-b border-gray-100 last:border-b-0">
-                <div className="py-4 px-2 text-center text-sm text-gray-500 border-r border-gray-100">
-                  {hour > 12 ? `${hour - 12} PM` : hour === 12 ? '12 PM' : `${hour} AM`}
-                </div>
-                <div className="py-3 px-4 relative">
-                  {hourSessions.length > 0 ? (
-                    hourSessions.map(({ session }) => 
-                      renderSessionCard(session, HOUR_HEIGHT)
-                    )
-                  ) : (
-                    <div className="h-full"></div>
-                  )}
-                </div>
+          <div className="relative" style={{ height: hours.length * HOUR_HEIGHT }}>
+            {/* Hour grid lines */}
+            {hours.map((hour, i) => (
+              <div key={hour} className="absolute left-0 right-0 border-b border-gray-100" style={{ top: i * HOUR_HEIGHT }}>
+                <span className="absolute -left-14 top-0 w-14 pr-2 pt-1 text-right text-[10px] text-gray-400">
+                  {formatHourLabel(hour)}
+                </span>
               </div>
-            );
-          })}
+            ))}
+            {/* Session cards */}
+            {daySessions.map(session => renderSessionCard(session))}
+          </div>
         </div>
       </div>
     );
@@ -238,46 +237,40 @@ export default function CalendarView({ data, onSessionClick }: CalendarViewProps
 
   const renderWeekView = () => {
     const weekDays = getWeekDays(currentDate);
+    const colWidth = `calc((100% - 56px) / 7)`;
     
     return (
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <div className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-gray-100">
-          <div className="py-3 border-r border-gray-100 bg-gray-50"></div>
+        <div className="grid grid-cols-[56px_repeat(7,1fr)] border-b border-gray-100">
+          <div className="border-r border-gray-100 bg-gray-50"></div>
           {weekDays.map((day, idx) => {
             const isToday = day.toDateString() === today.toDateString();
             return (
-              <div key={idx} className={`py-3 text-center border-r border-gray-100 last:border-r-0 ${isToday ? 'bg-blue-50' : 'bg-gray-50'}`}>
-                <div className="text-xs text-gray-500 font-medium">{getDayName(day)}</div>
-                <div className={`text-lg font-bold ${isToday ? 'text-blue-600' : 'text-gray-900'}`}>{day.getDate()}</div>
+              <div key={idx} className={`py-2.5 text-center border-r border-gray-100 last:border-r-0 ${isToday ? 'bg-blue-50' : 'bg-gray-50'}`}>
+                <div className="text-[10px] text-gray-500 font-medium uppercase">{getDayName(day)}</div>
+                <div className={`text-base font-bold leading-tight ${isToday ? 'text-blue-600' : 'text-gray-900'}`}>{day.getDate()}</div>
               </div>
             );
           })}
         </div>
         
-        <div 
-          ref={containerRef}
-          className="relative overflow-y-auto"
-          style={{ height: hours.length * HOUR_HEIGHT }}
-        >
-          {hours.map(hour => {
+        <div ref={containerRef} className="relative overflow-y-auto" style={{ height: hours.length * HOUR_HEIGHT }}>
+          {/* Hour grid rows */}
+          {hours.map((hour, i) => (
+            <div key={hour} className="absolute left-0 right-0 border-b border-gray-100" style={{ top: i * HOUR_HEIGHT, height: HOUR_HEIGHT }}>
+              <span className="absolute left-0 top-0 w-14 pr-1 pt-1 text-right text-[10px] text-gray-400">
+                {formatHourLabel(hour)}
+              </span>
+            </div>
+          ))}
+          {/* Day columns with session cards */}
+          {weekDays.map((day, dayIdx) => {
+            const dayKey = day.toDateString();
+            const daySessions = getDaySessions(dayKey);
+            const left = 56 + (dayIdx / 7) * (100 - 56);
             return (
-              <div key={hour} className="grid grid-cols-[60px_repeat(7,1fr)] border-b border-gray-100 last:border-b-0">
-                <div className="py-6 px-2 text-center text-[10px] text-gray-400 border-r border-gray-100">
-                  {hour > 12 ? `${hour - 12} PM` : hour === 12 ? '12 PM' : `${hour} AM`}
-                </div>
-                {weekDays.map((day, dayIdx) => {
-                  const dayKey = new Date(day).toDateString();
-                  const hourKey = `${dayKey}-${hour}`;
-                  const hourSessions = sessionsByDayHour[hourKey] || [];
-                  
-                  return (
-                    <div key={dayIdx} className="relative border-r border-gray-100 last:border-r-0">
-                      {hourSessions.map(({ session }) => 
-                        renderSessionCard(session, HOUR_HEIGHT)
-                      )}
-                    </div>
-                  );
-                })}
+              <div key={dayKey} className="absolute top-0 bottom-0 border-r border-gray-100 last:border-r-0" style={{ left: `calc(56px + ${dayIdx} * ${colWidth})`, width: colWidth }}>
+                {daySessions.map(session => renderSessionCard(session))}
               </div>
             );
           })}
@@ -310,8 +303,8 @@ export default function CalendarView({ data, onSessionClick }: CalendarViewProps
                 const isCurrentMonth = day.getMonth() === currentDate.getMonth();
                 const isToday = day.toDateString() === today.toDateString();
                 const daySessions = filteredSessions.filter(s => {
-                  if (!s.dateTime) return false;
-                  return new Date(s.dateTime).toDateString() === day.toDateString();
+                  if (!s.dateTime && !s.date) return false;
+                  return new Date(s.dateTime || s.date).toDateString() === day.toDateString();
                 });
                 
                 return (

@@ -1,9 +1,10 @@
 import React from "react";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, Eye } from "lucide-react";
 import { User } from "./types";
 import { shortenId } from "@/lib/utils/shortenId";
 import { AdminAPI } from "@/lib/api";
 import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 interface UsersTableProps {
   users: User[];
@@ -87,7 +88,9 @@ export function UsersTable({ users, onRefresh }: UsersTableProps) {
                     {shortenId(user.id)}
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-slate-900 whitespace-nowrap">
-                    {user.name}
+                    <Link href={`/a/users/${user.id}`} className="hover:text-blue-600 transition-colors">
+                      {user.name}
+                    </Link>
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-500 whitespace-nowrap">
                     {user.email}
@@ -122,6 +125,13 @@ export function UsersTable({ users, onRefresh }: UsersTableProps) {
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-400 text-right whitespace-nowrap">
                     <div className="flex items-center justify-end gap-1">
+                      <Link
+                        href={`/a/users/${user.id}`}
+                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#F0F4FF] text-[#042BFD] hover:bg-[#042BFD] hover:text-white transition-all shadow-sm group/view"
+                        title="View Details"
+                      >
+                        <Eye className="w-4 h-4 group-hover/view:scale-110 transition-transform" />
+                      </Link>
                       <button
                         onClick={() => handleEdit(user)}
                         className="p-1 rounded-md hover:bg-slate-100 transition-colors text-slate-400 hover:text-blue-600"

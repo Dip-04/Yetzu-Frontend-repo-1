@@ -19,8 +19,8 @@ export default function AdminDashLayout({
         <AdminSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 
         <main className="flex-1 overflow-y-auto w-full custom-scrollbar">
-          <div className="px-6 md:px-8 min-h-full">
-            <div className="max-w-[1600px] py-6">
+          <div className="px-4 md:px-8 min-h-full">
+            <div className="py-5">
               {children}
             </div>
           </div>

@@ -328,11 +328,11 @@ export default function AllSessions({ data }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-8 p-6 md:p-10">
+    <div className="flex flex-col gap-6">
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black text-[#021165] tracking-tight">Sessions</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#021165] tracking-tight">Sessions</h1>
           <p className="text-sm text-gray-500 font-medium mt-1">Manage and monitor all platform educational sessions</p>
         </div>
         <button 

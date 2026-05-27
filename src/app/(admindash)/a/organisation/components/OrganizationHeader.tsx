@@ -6,7 +6,7 @@ export default function OrganizationHeader() {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div>
-        <h1 className="text-3xl md:text-4xl font-black text-[#021165] tracking-tight">Organizations</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-[#021165] tracking-tight">Organizations</h1>
         <p className="text-sm text-gray-500 font-medium mt-1">Manage partner institutions and corporate entities</p>
       </div>
       <div className="flex items-center gap-3">

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search } from 'lucide-react';
+import { Search, RefreshCw, Clock, ChevronRight } from 'lucide-react';
 import SessionsList from './components/SessionsList';
 import CalendarView from './components/CalendarView';
 import SessionDetailsDrawer from './components/SessionDetailsDrawer';
@@ -10,6 +10,14 @@ import { EducatorAPI, asArray } from '@/lib/api';
 import { shortenId } from '@/lib/utils/shortenId';
 
 const getRescheduleRequests = (item: any) => asArray(item.rescheduleRequests || item.reschedule_requests || item.reschedules || item.requests);
+
+const isActiveRescheduleRequest = (request: any) =>
+  !["approved", "accepted", "rejected", "cancelled", "completed"].includes(
+    String(request?.status || request?.action || "pending").toLowerCase()
+  );
+
+const hasActiveRescheduleRequests = (session: Session) =>
+  (session.rescheduleRequests || []).some(isActiveRescheduleRequest);
 
 export default function EducatorSessionsPage() {
     const [activeTab, setActiveTab] = useState<'All' | 'Upcoming' | 'Completed' | 'Missed'>('All');
@@ -197,6 +205,30 @@ export default function EducatorSessionsPage() {
                         Calendar View
                     </button>
                 </div>
+
+                {/* Reschedule Notification Banner */}
+                {sessions.filter(hasActiveRescheduleRequests).length > 0 && (
+                  <div className="mt-4 mb-2 rounded-xl border border-orange-200 bg-orange-50 p-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+                        <RefreshCw size={16} className="text-orange-600" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900">
+                          {sessions.filter(hasActiveRescheduleRequests).length} Session{sessions.filter(hasActiveRescheduleRequests).length > 1 ? "s" : ""} with Reschedule Requests
+                        </p>
+                        <p className="text-xs text-gray-500">Click on a session to review and accept or reject requests.</p>
+                      </div>
+                    </div>
+                    <div className="flex -space-x-1">
+                      {sessions.filter(hasActiveRescheduleRequests).slice(0, 5).map((s) => (
+                        <div key={s.id} className="w-7 h-7 rounded-full bg-white border border-orange-200 flex items-center justify-center text-[10px] font-bold text-orange-600" title={s.title}>
+                          {s.title.charAt(0).toUpperCase()}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Content */}
                 {activeView === 'Sessions List' ? (

@@ -7,15 +7,10 @@ interface CouponHeaderProps {
 
 export default function CouponHeader({ onNewCoupon }: CouponHeaderProps) {
   return (
-    <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full gap-4 pb-6 border-b border-gray-100">
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div>
-        <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-          <span>Home</span>
-          <span>&gt;</span>
-          <span className="font-semibold text-slate-900">Coupon Management</span>
-        </div>
-        <h1 className="text-2xl font-medium text-[#021165] sm:text-3xl md:text-4xl">Coupon Management</h1>
-        <p className="text-sm text-gray-500 mt-1">
+        <h1 className="text-3xl md:text-4xl font-bold text-[#021165] tracking-tight">Coupon Management</h1>
+        <p className="text-sm text-gray-500 font-medium mt-1">
           Boost sales by giving customers special offers and discounts.
         </p>
       </div>

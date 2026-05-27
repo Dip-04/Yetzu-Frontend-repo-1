@@ -7,15 +7,21 @@ const ToggleSwitch = ({ enabled }: { enabled: boolean }) => (
   </div>
 );
 
-export default function PermissionsTab() {
-  const permissions = [
-    { feature: 'Webinars', enabled: true, used: '14', barWidth: '80%', total: '4' },
-    { feature: 'Cohorts', enabled: true, used: '5', barWidth: '50%', total: '5' },
-    { feature: '1:1 Mentorship', enabled: false, used: '-', barWidth: '0%', total: '-' },
-    { feature: 'Cert. Practice Courses', enabled: true, used: 'Unlimited', barWidth: '100%', total: '12' },
-    { feature: 'Assignments', enabled: true, used: '10', barWidth: '60%', total: '10' },
-    { feature: 'Research Modules', enabled: false, used: '-', barWidth: '0%', total: '-' },
-  ];
+export default function PermissionsTab({ permissions }: { permissions?: Record<string, boolean> }) {
+  const permList = permissions
+    ? Object.entries(permissions).map(([key, enabled]) => ({
+        feature: key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()),
+        enabled,
+        used: enabled ? 'Yes' : '-',
+        barWidth: enabled ? '100%' : '0%',
+        total: enabled ? 'Granted' : '-',
+      }))
+    : [
+        { feature: 'Webinars', enabled: true, used: '14', barWidth: '80%', total: '4' },
+        { feature: 'Cohorts', enabled: true, used: '5', barWidth: '50%', total: '5' },
+        { feature: '1:1 Mentorship', enabled: false, used: '-', barWidth: '0%', total: '-' },
+        { feature: 'Assignments', enabled: true, used: '10', barWidth: '60%', total: '10' },
+      ];
 
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden p-6 w-full max-w-[1000px]">
@@ -33,7 +39,7 @@ export default function PermissionsTab() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {permissions.map((perm, idx) => (
+            {permList.map((perm, idx) => (
               <tr key={idx} className="group">
                 <td className="py-4 px-2 text-sm font-semibold text-[#0A0A0A]">
                   {perm.feature}

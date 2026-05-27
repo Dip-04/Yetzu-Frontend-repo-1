@@ -8,7 +8,9 @@ const SummaryCard = ({ value, label, valueColor }: { value: string, label: strin
   </div>
 );
 
-export default function BillingTab() {
+const formatCurrency = (amount: number) => `$${(amount || 0).toLocaleString()}`;
+
+export default function BillingTab({ billingCycle, revenue }: { billingCycle?: string; revenue?: number }) {
   const invoices = [
     { id: 'INV-001', amount: '$24,000', status: 'Paid', issueDate: 'Jan 1, 2026', dueDate: 'Jan 15, 2026' },
     { id: 'INV-002', amount: '$24,000', status: 'Paid', issueDate: 'Feb 1, 2026', dueDate: 'Feb 15, 2026' },
@@ -20,10 +22,10 @@ export default function BillingTab() {
       
       {/* Top Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <SummaryCard value="$48,000" label="Total Paid" valueColor="text-green-500" />
-        <SummaryCard value="$24,000" label="Pending Payment" valueColor="text-orange-500" />
-        <SummaryCard value="Feb 1, 2026" label="Last Payment" valueColor="text-blue-500" />
-        <SummaryCard value="May 1, 2026" label="Next Billing Date" valueColor="text-purple-500" />
+        <SummaryCard value={formatCurrency(revenue || 0)} label="Total Revenue" valueColor="text-green-500" />
+        <SummaryCard value="$0" label="Pending Payment" valueColor="text-orange-500" />
+        <SummaryCard value="N/A" label="Last Payment" valueColor="text-blue-500" />
+        <SummaryCard value={(billingCycle || 'N/A').charAt(0).toUpperCase() + (billingCycle || '').slice(1)} label="Billing Cycle" valueColor="text-purple-500" />
       </div>
 
       {/* Invoices List */}

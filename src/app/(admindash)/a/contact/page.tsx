@@ -9,7 +9,7 @@ export default function ContactPage() {
   const [selectedContact, setSelectedContact] = useState<any | null>(null);
 
   return (
-    <div className="w-full p-4 md:p-8 relative">
+    <div className="w-full relative">
       <ContactHeader />
       <ContactTable onViewClick={(contact) => setSelectedContact(contact)} />
 
