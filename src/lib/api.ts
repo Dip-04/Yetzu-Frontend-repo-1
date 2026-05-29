@@ -934,13 +934,7 @@ export const AdminAPI = {
     }
   },
 
-  createOrganization: async (payload: {
-    name: string;
-    type: string;
-    email: string;
-    status?: string;
-    billingCycle?: string;
-  }) => {
+  createOrganization: async (payload: Record<string, any>) => {
     if (!payload.name || !payload.type || !payload.email) {
       throw new Error("Organization name, type, and email are required.");
     }
@@ -986,6 +980,130 @@ export const AdminAPI = {
       return dataOf(response);
     } catch (error) {
       logApiFailure("AdminAPI.deleteOrganization", error, { organizationId });
+      throw error;
+    }
+  },
+
+  // ── Organization Students ──────────────────────────────────────────────────
+
+  getOrganizationStudents: async (organizationId: string, params?: { page?: number; limit?: number; status?: string; search?: string }) => {
+    try {
+      const response = await authApi.get(`/api/organizations/${organizationId}/students`, { params });
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.getOrganizationStudents", error, { organizationId, params });
+      throw error;
+    }
+  },
+
+  addOrganizationStudent: async (organizationId: string, payload: { name: string; email: string; password: string; mobileNo?: string }) => {
+    try {
+      const response = await authApi.post(`/api/organizations/${organizationId}/students`, payload);
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.addOrganizationStudent", error, { organizationId, payload });
+      throw error;
+    }
+  },
+
+  importOrganizationStudents: async (organizationId: string, file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await authApi.post(`/api/organizations/${organizationId}/students/import`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.importOrganizationStudents", error, { organizationId });
+      throw error;
+    }
+  },
+
+  updateOrganizationStudent: async (organizationId: string, studentId: string, payload: { name?: string; mobileNo?: string }) => {
+    try {
+      const response = await authApi.put(`/api/organizations/${organizationId}/students/${studentId}`, payload);
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.updateOrganizationStudent", error, { organizationId, studentId, payload });
+      throw error;
+    }
+  },
+
+  updateOrganizationStudentStatus: async (organizationId: string, studentId: string, status: string) => {
+    try {
+      const response = await authApi.patch(`/api/organizations/${organizationId}/students/${studentId}/status`, { status });
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.updateOrganizationStudentStatus", error, { organizationId, studentId, status });
+      throw error;
+    }
+  },
+
+  // ── Access Permissions ─────────────────────────────────────────────────────
+
+  getAccessPermissions: async (organizationId: string) => {
+    try {
+      const response = await authApi.get(`/api/organizations/${organizationId}/access-permissions`);
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.getAccessPermissions", error, { organizationId });
+      throw error;
+    }
+  },
+
+  updateAccessPermissions: async (organizationId: string, permissions: Array<{ code: string; enabled: boolean; limit?: number | null; usedCount?: number; accessExpiry?: string | null }>) => {
+    try {
+      const response = await authApi.put(`/api/organizations/${organizationId}/access-permissions`, { permissions });
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.updateAccessPermissions", error, { organizationId });
+      throw error;
+    }
+  },
+
+  // ── Organization Sessions ──────────────────────────────────────────────────
+
+  getOrganizationSessions: async (organizationId: string) => {
+    try {
+      const response = await authApi.get(`/api/organizations/${organizationId}/sessions`);
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.getOrganizationSessions", error, { organizationId });
+      throw error;
+    }
+  },
+
+  // ── Billing ────────────────────────────────────────────────────────────────
+
+  getBillingSummary: async (organizationId: string) => {
+    try {
+      const response = await authApi.get(`/api/organizations/${organizationId}/billing`);
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.getBillingSummary", error, { organizationId });
+      throw error;
+    }
+  },
+
+  recordBillingPayment: async (organizationId: string, payload: {
+    invoiceId: string;
+    amount: number;
+    currency?: string;
+    paymentDate?: string;
+    paymentMethod?: string;
+    billingCycle?: string;
+    planType?: string;
+    paymentStatus?: string;
+    nextBillingDate?: string;
+    transactionRef?: string;
+    notes?: string;
+  }) => {
+    try {
+      const response = await authApi.post(`/api/organizations/${organizationId}/billing/payments`, payload);
+      return dataOf(response);
+    } catch (error) {
+      logApiFailure("AdminAPI.recordBillingPayment", error, { organizationId, payload });
       throw error;
     }
   },

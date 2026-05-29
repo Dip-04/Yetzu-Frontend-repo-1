@@ -9,12 +9,12 @@ const SummaryCard = ({ value, label, valueColor, subtitle }: { value: string, la
   </div>
 );
 
-export default function SessionsTab() {
-  const sessions = [
-    { id: 'SEN-001', name: 'Advanced Research Methods', type: 'Master', participants: '45/50', attendance: 90, date: 'Mar 12, 2026', status: 'Completed' },
-    { id: 'SEN-002', name: 'Data Science Cohort 1', type: 'Cohort', participants: '28/30', attendance: 93, date: 'Mar 14, 2026', status: 'Scheduled' },
-    { id: 'SEN-003', name: 'Writing Workshop', type: 'Workshop', participants: '38/40', attendance: 95, date: 'Mar 15, 2026', status: 'Completed' },
-  ];
+type SessionsTabProps = {
+  sessions?: any[];
+};
+
+export default function SessionsTab({ sessions }: SessionsTabProps) {
+  const sessionList = (sessions && sessions.length > 0) ? sessions : [];
 
   return (
     <div className="flex flex-col gap-6 w-full pb-10">
@@ -43,40 +43,51 @@ export default function SessionsTab() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {sessions.map((session, idx) => (
-                <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                  <td className="py-4 px-5 text-sm text-gray-500 font-medium" title={session.id}>
-                    {shortenId(session.id)}
+              {sessionList.map((session: any, idx: number) => {
+                const id = session.sessionId || session.id || session.Id || `SES-${idx}`;
+                const name = session.sessionName || session.name || session.Name || 'Untitled';
+                const type = session.type || session.Type || 'webinar';
+                const participants = session.studentsParticipated ?? session.participants ?? session.Participants ?? 0;
+                const total = session.totalStudents ?? session.total ?? 0;
+                const attendance = session.attendancePercentage ?? session.attendance ?? 0;
+                const date = session.date || session.Date || session.scheduledDate || 'N/A';
+                const displayDate = date !== 'N/A' ? new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A';
+                const status = session.status || session.Status || 'draft';
+
+                return (
+                <tr key={id} className="hover:bg-gray-50 transition-colors">
+                  <td className="py-4 px-5 text-sm text-gray-500 font-medium" title={id}>
+                    {shortenId(id)}
                   </td>
                   <td className="py-4 px-5 text-sm font-semibold text-gray-900">
-                    {session.name}
+                    {name}
                   </td>
                   <td className="py-4 px-5">
                     <span className="text-xs font-semibold text-blue-500 bg-blue-50 px-2 py-1 rounded">
-                      {session.type}
+                      {type}
                     </span>
                   </td>
                   <td className="py-4 px-5 text-sm text-gray-900 font-medium text-center">
-                    {session.participants}
+                    {participants}{total ? `/${total}` : ''}
                   </td>
                   <td className="py-4 px-5">
                     <div className="flex items-center gap-3">
                       <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-green-500 rounded-full" style={{ width: `${session.attendance}%` }}></div>
+                        <div className="h-full bg-green-500 rounded-full" style={{ width: `${attendance}%` }}></div>
                       </div>
-                      <span className="text-xs font-semibold text-gray-500 w-8">{session.attendance}%</span>
+                      <span className="text-xs font-semibold text-gray-500 w-8">{attendance}%</span>
                     </div>
                   </td>
                   <td className="py-4 px-5 text-sm text-gray-500">
-                    {session.date}
+                    {displayDate}
                   </td>
                   <td className="py-4 px-5">
                     <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${
-                      session.status === 'Completed' 
-                        ? 'text-gray-500 bg-gray-100' 
+                      status === 'completed' || status === 'Completed'
+                        ? 'text-gray-500 bg-gray-100'
                         : 'text-blue-600 bg-blue-50'
                     }`}>
-                      {session.status}
+                      {status}
                     </span>
                   </td>
                   <td className="py-4 px-5 text-right">
@@ -90,7 +101,8 @@ export default function SessionsTab() {
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>

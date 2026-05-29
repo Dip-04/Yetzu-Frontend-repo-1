@@ -10,12 +10,8 @@ const SummaryCard = ({ value, label, valueColor }: { value: string, label: strin
 
 const formatCurrency = (amount: number) => `$${(amount || 0).toLocaleString()}`;
 
-export default function BillingTab({ billingCycle, revenue }: { billingCycle?: string; revenue?: number }) {
-  const invoices = [
-    { id: 'INV-001', amount: '$24,000', status: 'Paid', issueDate: 'Jan 1, 2026', dueDate: 'Jan 15, 2026' },
-    { id: 'INV-002', amount: '$24,000', status: 'Paid', issueDate: 'Feb 1, 2026', dueDate: 'Feb 15, 2026' },
-    { id: 'INV-003', amount: '$24,000', status: 'Pending', issueDate: 'Mar 1, 2026', dueDate: 'Mar 15, 2026' },
-  ];
+export default function BillingTab({ billingCycle, revenue, invoices: propInvoices }: { billingCycle?: string; revenue?: number; invoices?: any[] }) {
+  const invoices = (propInvoices && propInvoices.length > 0) ? propInvoices : [];
 
   return (
     <div className="flex flex-col gap-6 w-full pb-10">
@@ -57,26 +53,37 @@ export default function BillingTab({ billingCycle, revenue }: { billingCycle?: s
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {invoices.map((inv, idx) => (
-                <tr key={idx} className="hover:bg-gray-50 transition-colors">
+              {invoices.map((inv: any, idx: number) => {
+                const id = inv.invoiceId || inv.id || inv.Id || inv.invoice_id || `INV-${idx}`;
+                const amount = inv.amount || inv.Amount || 0;
+                const currency = inv.currency || inv.Currency || '$';
+                const displayAmount = typeof amount === 'number' ? `${currency}${amount.toLocaleString()}` : amount;
+                const status = inv.paymentStatus || inv.status || inv.Status || 'Pending';
+                const issueDate = inv.invoiceDate || inv.issueDate || inv.IssueDate || inv.createdAt || '';
+                const dueDate = inv.dueDate || inv.DueDate || inv.paymentDate || '';
+                const displayIssue = issueDate ? new Date(issueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A';
+                const displayDue = dueDate ? new Date(dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A';
+
+                return (
+                <tr key={id} className="hover:bg-gray-50 transition-colors">
                   <td className="py-4 px-6 text-sm font-semibold text-gray-900">
-                    {inv.id}
+                    {id}
                   </td>
                   <td className="py-4 px-6 text-sm font-bold text-gray-900">
-                    {inv.amount}
+                    {displayAmount}
                   </td>
                   <td className="py-4 px-6">
                     <span className={`text-xs font-semibold ${
-                      inv.status === 'Paid' ? 'text-green-500 bg-green-50' : 'text-orange-500 bg-orange-50'
+                      String(status).toLowerCase() === 'paid' ? 'text-green-500 bg-green-50' : 'text-orange-500 bg-orange-50'
                     } px-2 py-1 rounded inline-flex`}>
-                      {inv.status}
+                      {status}
                     </span>
                   </td>
                   <td className="py-4 px-6 text-sm text-gray-500">
-                    {inv.issueDate}
+                    {displayIssue}
                   </td>
                   <td className="py-4 px-6 text-sm text-gray-500">
-                    {inv.dueDate}
+                    {displayDue}
                   </td>
                   <td className="py-4 px-6 text-center">
                     <button className="text-gray-400 hover:text-gray-900 transition-colors inline-block">
@@ -84,7 +91,8 @@ export default function BillingTab({ billingCycle, revenue }: { billingCycle?: s
                     </button>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>

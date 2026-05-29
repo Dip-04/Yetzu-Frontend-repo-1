@@ -7,21 +7,33 @@ const ToggleSwitch = ({ enabled }: { enabled: boolean }) => (
   </div>
 );
 
-export default function PermissionsTab({ permissions }: { permissions?: Record<string, boolean> }) {
-  const permList = permissions
-    ? Object.entries(permissions).map(([key, enabled]) => ({
-        feature: key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()),
-        enabled,
-        used: enabled ? 'Yes' : '-',
-        barWidth: enabled ? '100%' : '0%',
-        total: enabled ? 'Granted' : '-',
-      }))
-    : [
-        { feature: 'Webinars', enabled: true, used: '14', barWidth: '80%', total: '4' },
-        { feature: 'Cohorts', enabled: true, used: '5', barWidth: '50%', total: '5' },
-        { feature: '1:1 Mentorship', enabled: false, used: '-', barWidth: '0%', total: '-' },
-        { feature: 'Assignments', enabled: true, used: '10', barWidth: '60%', total: '10' },
-      ];
+export default function PermissionsTab({ permissions }: { permissions?: Record<string, boolean> | any[] }) {
+  const fallbackPerms = [
+    { feature: 'Webinars', enabled: true, used: '14', barWidth: '80%', total: '4' },
+    { feature: 'Cohorts', enabled: true, used: '5', barWidth: '50%', total: '5' },
+    { feature: '1:1 Mentorship', enabled: false, used: '-', barWidth: '0%', total: '-' },
+    { feature: 'Assignments', enabled: true, used: '10', barWidth: '60%', total: '10' },
+  ];
+
+  const permList = !permissions
+    ? fallbackPerms
+    : Array.isArray(permissions)
+      ? permissions.map((p: any) => ({
+          feature: (p.featureName || p.featureCode || p.code || p.name || '').replace(/_/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase()),
+          enabled: p.enabled || false,
+          used: String(p.usedCount ?? (p.enabled ? 'Yes' : '-')),
+          barWidth: p.enabled ? `${Math.min(100, ((p.usedCount ?? 0) / (p.limit || 1)) * 100)}%` : '0%',
+          total: p.enabled ? String(p.limit ?? 'Granted') : '-',
+        }))
+      : Object.entries(permissions).length > 0
+        ? Object.entries(permissions).map(([key, enabled]) => ({
+            feature: key.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()),
+            enabled: enabled as boolean,
+            used: enabled ? 'Yes' : '-',
+            barWidth: enabled ? '100%' : '0%',
+            total: enabled ? 'Granted' : '-',
+          }))
+        : fallbackPerms;
 
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden p-6 w-full max-w-[1000px]">

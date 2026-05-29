@@ -1,19 +1,21 @@
 import React from 'react';
 import { Search, MoreHorizontal } from 'lucide-react';
 
-export default function StudentsTab() {
-  const students = [
-    { name: 'Priya Sharma', initials: 'PS', email: 'priya@org.edu', status: 'Active', access: 'All', sessions: 12, progress: 78, certs: 2 },
-    { name: 'Rahul Kumar', initials: 'RK', email: 'rahul@org.edu', status: 'Active', access: 'Webinars, Cohorts', sessions: 6, progress: 45, certs: 1 },
-    { name: 'Maria Lopez', initials: 'ML', email: 'maria@org.edu', status: 'Suspended', access: 'None', sessions: 2, progress: 25, certs: 0 },
-    { name: 'James Wilson', initials: 'JW', email: 'james@org.edu', status: 'Active', access: 'All', sessions: 22, progress: 96, certs: 4 },
-    { name: 'Aisha Mohammed', initials: 'AM', email: 'aisha@org.edu', status: 'Active', access: 'Cohorts', sessions: 8, progress: 64, certs: 1 },
-  ];
+type StudentsTabProps = {
+  students?: any[];
+};
 
-  const getInitialsColor = (index: number) => {
-    const colors = ['bg-blue-100 text-blue-600', 'bg-purple-100 text-purple-600', 'bg-green-100 text-green-600', 'bg-orange-100 text-orange-600', 'bg-teal-100 text-teal-600'];
-    return colors[index % colors.length];
-  };
+const getInitials = (name: string) => {
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) || '?';
+};
+
+const getInitialsColor = (index: number) => {
+  const colors = ['bg-blue-100 text-blue-600', 'bg-purple-100 text-purple-600', 'bg-green-100 text-green-600', 'bg-orange-100 text-orange-600', 'bg-teal-100 text-teal-600'];
+  return colors[index % colors.length];
+};
+
+export default function StudentsTab({ students }: StudentsTabProps) {
+  const studentList = (students && students.length > 0) ? students : [];
 
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
@@ -50,55 +52,66 @@ export default function StudentsTab() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {students.map((student, idx) => (
-              <tr key={idx} className="hover:bg-gray-50 transition-colors">
-                <td className="py-3 px-4">
-                  <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer" />
-                </td>
-                <td className="py-3 px-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${getInitialsColor(idx)}`}>
-                      {student.initials}
+              {studentList.map((student: any, idx: number) => {
+                const name = student.name || student.Name || 'Student';
+                const email = student.email || student.Email || '';
+                const status = student.status || student.Status || 'Active';
+                const progress = Number(student.progress || student.Progress || student.completionRate || 0);
+                const sessions = Number(student.sessionsJoined || student.sessions || student.SessionsJoined || 0);
+                const certs = Number(student.certificates || student.certs || 0);
+                const access = student.assignedAccess || student.access || student.Access || '—';
+                const accessDisplay = Array.isArray(access) ? access.join(', ') : access;
+
+                return (
+                <tr key={student.id || idx} className="hover:bg-gray-50 transition-colors">
+                  <td className="py-3 px-4">
+                    <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer" />
+                  </td>
+                  <td className="py-3 px-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${getInitialsColor(idx)}`}>
+                        {getInitials(name)}
+                      </div>
+                      <span className="text-sm font-semibold text-gray-900">{name}</span>
                     </div>
-                    <span className="text-sm font-semibold text-gray-900">{student.name}</span>
-                  </div>
-                </td>
-                <td className="py-3 px-4 text-sm text-gray-500">
-                  {student.email}
-                </td>
-                <td className="py-3 px-4">
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${
-                    student.status === 'Active' 
-                      ? 'text-green-600' 
-                      : 'text-red-500'
-                  }`}>
-                    {student.status}
-                  </span>
-                </td>
-                <td className="py-3 px-4 text-sm text-gray-500">
-                  {student.access}
-                </td>
-                <td className="py-3 px-4 text-sm text-gray-900 font-medium text-center">
-                  {student.sessions}
-                </td>
-                <td className="py-3 px-4 w-48">
-                  <div className="flex items-center gap-3">
-                    <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-600 rounded-full" style={{ width: `${student.progress}%` }}></div>
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-500">
+                    {email}
+                  </td>
+                  <td className="py-3 px-4">
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold ${
+                      status === 'Active' || status === 'active'
+                        ? 'text-green-600'
+                        : 'text-red-500'
+                    }`}>
+                      {status}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-500">
+                    {accessDisplay}
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-900 font-medium text-center">
+                    {sessions}
+                  </td>
+                  <td className="py-3 px-4 w-48">
+                    <div className="flex items-center gap-3">
+                      <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-full bg-blue-600 rounded-full" style={{ width: `${progress}%` }}></div>
+                      </div>
+                      <span className="text-xs font-semibold text-gray-500 w-8">{progress}%</span>
                     </div>
-                    <span className="text-xs font-semibold text-gray-500 w-8">{student.progress}%</span>
-                  </div>
-                </td>
-                <td className="py-3 px-4 text-sm text-gray-900 font-medium text-center">
-                  {student.certs}
-                </td>
-                <td className="py-3 px-4 text-right">
-                  <button className="text-gray-400 hover:text-gray-600 p-1 rounded-md hover:bg-gray-100 transition-colors">
-                    <MoreHorizontal className="w-4 h-4" />
-                  </button>
-                </td>
-              </tr>
-            ))}
+                  </td>
+                  <td className="py-3 px-4 text-sm text-gray-900 font-medium text-center">
+                    {certs}
+                  </td>
+                  <td className="py-3 px-4 text-right">
+                    <button className="text-gray-400 hover:text-gray-600 p-1 rounded-md hover:bg-gray-100 transition-colors">
+                      <MoreHorizontal className="w-4 h-4" />
+                    </button>
+                  </td>
+                </tr>
+                );
+              })}
           </tbody>
         </table>
       </div>

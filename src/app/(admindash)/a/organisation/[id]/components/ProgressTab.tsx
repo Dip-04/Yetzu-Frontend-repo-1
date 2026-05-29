@@ -9,14 +9,22 @@ const SummaryCard = ({ value, label, valueColor }: { value: string, label: strin
   </div>
 );
 
-export default function ProgressTab() {
-  const topPerformers = [
-    { rank: 1, name: 'James Wilson', progress: 98, certs: 4 },
-    { rank: 2, name: 'Priya Sharma', progress: 78, certs: 2 },
-    { rank: 3, name: 'Aisha Mohammed', progress: 64, certs: 1 },
-    { rank: 4, name: 'Rahul Kumar', progress: 45, certs: 1 },
-    { rank: 5, name: 'Maria Lopez', progress: 25, certs: 0 },
-  ];
+type ProgressTabProps = {
+  students?: any[];
+};
+
+export default function ProgressTab({ students }: ProgressTabProps) {
+  const topPerformersRaw = (students && students.length > 0)
+    ? students
+      .map((s: any) => ({
+        name: s.name || s.Name || 'Student',
+        progress: Number(s.progress || s.Progress || s.completionRate || 0),
+        certs: Number(s.certificates || s.certs || 0),
+      }))
+      .sort((a, b) => b.progress - a.progress)
+      .slice(0, 5)
+      .map((s, i) => ({ ...s, rank: i + 1 }))
+    : [];
 
   return (
     <div className="flex flex-col gap-6 w-full pb-10">
@@ -116,7 +124,7 @@ export default function ProgressTab() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {topPerformers.map((student, idx) => (
+              {topPerformersRaw.length > 0 ? topPerformersRaw.map((student, idx) => (
                 <tr key={idx} className="hover:bg-gray-50 transition-colors">
                   <td className="py-3 px-6 text-sm text-gray-400 font-semibold">
                     {student.rank}
@@ -136,7 +144,11 @@ export default function ProgressTab() {
                     {student.certs}
                   </td>
                 </tr>
-              ))}
+              )) : (
+                <tr>
+                  <td colSpan={4} className="py-10 text-center text-sm text-gray-500">No student progress data available.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

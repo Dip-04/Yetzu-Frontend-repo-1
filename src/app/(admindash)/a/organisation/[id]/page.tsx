@@ -15,6 +15,9 @@ export default function OrganizationProfilePage({ params }: { params: Promise<{ 
   const [activeTab, setActiveTab] = useState('overview');
   const [organizationId, setOrganizationId] = useState('');
   const [organization, setOrganization] = useState<any>(null);
+  const [sessionsList, setSessionsList] = useState<any[]>([]);
+  const [studentsList, setStudentsList] = useState<any[]>([]);
+  const [invoicesList, setInvoicesList] = useState<any[]>([]);
 
   useEffect(() => {
     const loadOrganization = async () => {
@@ -22,7 +25,12 @@ export default function OrganizationProfilePage({ params }: { params: Promise<{ 
         const resolvedParams = await Promise.resolve(params);
         setOrganizationId(resolvedParams.id);
         const response = await AdminAPI.getOrganization(resolvedParams.id);
-        setOrganization(response?.data || response?.organization || response);
+        const org = response?.data?.organization || response?.organization || response?.data || response;
+        const allData = response?.data || response;
+        setOrganization(org);
+        setSessionsList(allData?.sessions || []);
+        setStudentsList(allData?.students || []);
+        setInvoicesList(allData?.invoices || []);
       } catch (error) {
         console.error('Failed to fetch organization:', error);
       }
@@ -122,11 +130,11 @@ export default function OrganizationProfilePage({ params }: { params: Promise<{ 
       {/* Tab Content */}
       <div className="w-full">
         {activeTab === 'overview' && <OverviewTab organization={organization} />}
-        {activeTab === 'students' && <StudentsTab />}
+        {activeTab === 'students' && <StudentsTab students={studentsList} />}
         {activeTab === 'permissions' && <PermissionsTab permissions={organization?.permissions} />}
-        {activeTab === 'sessions' && <SessionsTab />}
-        {activeTab === 'progress' && <ProgressTab />}
-        {activeTab === 'billing' && <BillingTab billingCycle={organization?.billingCycle} revenue={organization?.revenue} />}
+        {activeTab === 'sessions' && <SessionsTab sessions={sessionsList} />}
+        {activeTab === 'progress' && <ProgressTab students={studentsList} />}
+        {activeTab === 'billing' && <BillingTab billingCycle={organization?.billingCycle} revenue={organization?.revenue} invoices={invoicesList} />}
       </div>
     </div>
   );
