@@ -12,8 +12,7 @@ const menuItems = [
   { name: "Overview", path: "/e/dashboard", icon: LayoutDashboard },
   { name: "Sessions", path: "/e/sessions", icon: Calendar },
   { name: "Assignments", path: "/e/assignments", icon: FileText },
-  { name: "Assignments 2", path: "/e/assignments2", icon: FileText },
-  { name: "Submissions 2", path: "/e/submissions2", icon: FileText },
+  { name: "Submissions", path: "/e/submissions", icon: FileText },
   { name: "Chat", path: "/e/chat", icon: MessageSquare },
   { name: "Tickets", path: "/e/tickets", icon: Ticket },
 ];

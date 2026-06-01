@@ -29,17 +29,18 @@ export default function EducatorChatPage() {
         setLoading(true);
         const response = await EducatorChatAPI.getStudents();
         const apiStudents = asArray(response).map((item: any, index: number) => {
-          const id = item.id || item._id || item.userId || item.studentId || String(index);
-          const name = item.name || item.Name || item.studentName || "Student";
+          const student = item.student || item.Student || {};
+          const id = item.id || item._id || item.userId || item.studentId || student.id || String(index);
+          const name = item.name || item.Name || item.studentName || student.name || "Student";
           return {
             id,
             name,
-            studentId: item.studentId || item.userId || id,
+            studentId: item.studentId || item.userId || student.id || id,
             avatar: item.avatar || item.profileImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=042BFD&color=fff`,
             lastMessage: item.lastMessage || item.message || "Start a conversation",
-            time: item.time || item.updatedAt || "",
+            time: item.time || item.updatedAt || item.createdAt || "",
             unread: Boolean(item.unread || item.isUnread),
-            sessionName: item.sessionName || item.courseTitle || "",
+            sessionName: item.sessionName || item.sessionTitle || item.courseTitle || item.session?.title || "",
           };
         });
         
@@ -77,13 +78,13 @@ export default function EducatorChatPage() {
         const response = await EducatorChatAPI.getMessages(activeContactId);
         const rawMessages = asArray(response);
         const apiMessages: Message[] = rawMessages.map((item: any, index: number) => {
-          const messageFrom = item.from || "";
+          const messageFrom = item.from || item.senderId || "";
           const isFromMe = messageFrom === currentUserId;
           return {
             id: item.id || item._id || "msg-" + index,
             sender: isFromMe ? "me" as const : "them" as const,
-            content: item.content || item.message || item.text || "",
-            time: item.time || item.createdAt || "",
+            content: item.content || item.message || item.text || item.comments || "",
+            time: item.time || item.createdAt || item.timestamp || "",
             showAvatar: true,
           };
         });

@@ -53,6 +53,12 @@ export default function EducatorSessionsPage() {
                 const apiSessions = asArray(response).map((item: any, index: number) => {
                     const rawDate = item.date || item.scheduledDate || item.startDateTime || item.createdAt;
                     const dateTime = rawDate ? new Date(rawDate) : new Date();
+                    const endDateTime = item.endDateTime ? new Date(item.endDateTime) : null;
+                    
+                    const now = new Date();
+                    const isPast = endDateTime ? endDateTime < now : dateTime < now;
+                    const isToday = dateTime.toDateString() === now.toDateString();
+                    const computedStatus = isToday ? "Ongoing" : isPast ? "Completed" : "Scheduled";
                     
                     let studentsCount = 0;
                     const stu = item.students;
@@ -84,7 +90,7 @@ export default function EducatorSessionsPage() {
                         dateTime,
                         startTime: item.startTime || item.time || dateTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
                         endTime: item.endTime || "",
-                        status: item.status || "Scheduled",
+                        status: item.status === "Missed" ? "Missed" : computedStatus,
                         educator: item.educator || item.educatorName || "Educator",
                         assignments: asArray(item.assignments),
                         resources: asArray(item.resources || item.files || item.materials),
@@ -105,8 +111,7 @@ export default function EducatorSessionsPage() {
 
     const filteredSessions = useMemo(() => {
         return sessions.filter(session => {
-            // 1. Filter by Tab
-            if (activeTab === 'Upcoming' && session.status !== 'Scheduled' && session.status !== 'Live') return false;
+            if (activeTab === 'Upcoming' && session.status !== 'Scheduled' && session.status !== 'Ongoing') return false;
             if (activeTab === 'Completed' && session.status !== 'Completed') return false;
             if (activeTab === 'Missed' && session.status !== 'Missed') return false;
 
@@ -129,7 +134,7 @@ export default function EducatorSessionsPage() {
 
     const tabs = [
         { name: 'All', count: sessions.length },
-        { name: 'Upcoming', count: sessions.filter(s => s.status === 'Scheduled' || s.status === 'Live').length },
+        { name: 'Upcoming', count: sessions.filter(s => s.status === 'Scheduled' || s.status === 'Ongoing').length },
         { name: 'Completed', count: sessions.filter(s => s.status === 'Completed').length },
         { name: 'Missed', count: sessions.filter(s => s.status === 'Missed').length },
     ];

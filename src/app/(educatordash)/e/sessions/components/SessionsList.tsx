@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { Session } from '../types';
-import { Eye, Users, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
+import { Eye, Users, ChevronLeft, ChevronRight, Loader2, CheckCircle2, Circle, PlayCircle } from 'lucide-react';
 import { shortenId } from '@/lib/utils/shortenId';
 
 const hasActiveRescheduleRequest = (session: Session) =>
@@ -95,46 +96,40 @@ export default function SessionsList({ sessions, onViewDetails, loading: externa
                   <td className="py-4 px-4 text-center text-gray-600 whitespace-nowrap">{session.attendees}</td>
                   <td className="py-4 px-4 text-gray-600 whitespace-nowrap">{session.date}</td>
                   <td className="py-4 px-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      {session.status === 'Live' && (
-                        <>
-                          <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                          <span className="text-green-600 font-medium">{session.status}</span>
-                        </>
-                      )}
-                      {session.status === 'Scheduled' && (
-                        <>
-                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                          <span className="text-blue-600 font-medium">{session.status}</span>
-                        </>
-                      )}
-                      {session.status === 'Completed' && (
-                        <>
-                          <div className="w-1.5 h-1.5 rounded-full bg-gray-500"></div>
-                          <span className="text-gray-600 font-medium">{session.status}</span>
-                        </>
-                      )}
-                      {session.status === 'Missed' && (
-                        <>
-                          <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
-                          <span className="text-red-600 font-medium">{session.status}</span>
-                        </>
-                      )}
-                    </div>
+                    {session.status === 'Ongoing' && (
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-green-200 bg-green-50 text-green-700 text-xs font-medium">
+                        <PlayCircle className="w-3.5 h-3.5" />
+                        Ongoing
+                      </div>
+                    )}
+                    {session.status === 'Scheduled' && (
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-blue-600 text-xs font-medium">
+                        <Circle className="w-3.5 h-3.5" />
+                        Scheduled
+                      </div>
+                    )}
+                    {session.status === 'Completed' && (
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-green-200 bg-green-50 text-green-700 text-xs font-medium">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        Completed
+                      </div>
+                    )}
+                    {session.status === 'Missed' && (
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-red-200 bg-red-50 text-red-600 text-xs font-medium">
+                        <Circle className="w-3.5 h-3.5" />
+                        Missed
+                      </div>
+                    )}
                   </td>
                   <td className="py-4 px-4 whitespace-nowrap">
-                    <div className="flex items-center justify-end gap-4 min-w-[120px]">
-                      <button 
-                        onClick={() => onViewDetails?.(session)}
-                        className="text-gray-400 hover:text-gray-600 transition-colors"
+                    <div className="flex items-center justify-center gap-4">
+                      <Link
+                        href={`/e/assignments/create?sessionId=${session.id}&hideFiles=true`}
+                        className="text-gray-400 hover:text-blue-600 transition-colors"
+                        title="Create Assignment"
                       >
                         <Eye size={18} />
-                      </button>
-                      {session.status === 'Live' && (
-                        <button className="border border-gray-200 text-gray-700 bg-white hover:bg-gray-50 font-medium py-1.5 px-4 rounded-xl text-sm transition-colors shadow-sm">
-                          Join Now
-                        </button>
-                      )}
+                      </Link>
                     </div>
                   </td>
                 </tr>

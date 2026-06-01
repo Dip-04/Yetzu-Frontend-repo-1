@@ -761,7 +761,7 @@ export const EducatorAPI = {
     }
   },
 
-  createTicket: async (payload: { subject: string; description: string; priority?: string }) => {
+  createTicket: async (payload: { subject: string; description: string; priority?: string; category?: string; sessionId?: string }) => {
     try {
       const response = await authApi.post("/api/educator/tickets", payload, {
         withCredentials: true,
@@ -789,8 +789,37 @@ export const EducatorAPI = {
 export const EducatorChatAPI = {
   getStudents: async () => {
     try {
-      const response = await authApi.get("/api/Educatorchat/students");
-      return dataOf(response);
+      const sessionsResponse = await EducatorAPI.getMySessions();
+      const sessions = asArray(sessionsResponse);
+      const studentMap = new Map<string, any>();
+
+      for (const session of sessions) {
+        const raw = session.students || session.studentDetails || [];
+        if (!Array.isArray(raw)) continue;
+
+        for (const entry of raw) {
+          if (typeof entry === "string") {
+            if (!studentMap.has(entry)) {
+              studentMap.set(entry, {
+                id: entry,
+                name: `Student ${entry.substring(0, 8)}`,
+              });
+            }
+          } else if (entry && typeof entry === "object") {
+            const sid = entry.id || entry._id || "";
+            if (sid && !studentMap.has(sid)) {
+              studentMap.set(sid, {
+                id: sid,
+                name: entry.name || entry.studentName || `Student ${sid.substring(0, 8)}`,
+                email: entry.email || entry.studentEmail || "",
+                mobileno: entry.mobileno || entry.mobileNo || "",
+              });
+            }
+          }
+        }
+      }
+
+      return Array.from(studentMap.values());
     } catch (error) {
       logApiFailure("EducatorChatAPI.getStudents", error);
       throw error;
@@ -799,8 +828,9 @@ export const EducatorChatAPI = {
 
   getMessages: async (studentId: string) => {
     try {
-      const response = await authApi.post("/api/Educatorchat/messages", { studentId });
-      return dataOf(response);
+      const res = await fetch(`/api/Educatorchat/messages?studentId=${encodeURIComponent(studentId)}`);
+      const json = await res.json();
+      return dataOf(json);
     } catch (error) {
       logApiFailure("EducatorChatAPI.getMessages", error, { studentId });
       throw error;
@@ -809,8 +839,13 @@ export const EducatorChatAPI = {
 
   sendMessage: async (studentId: string, content: string) => {
     try {
-      const response = await authApi.post("/api/Educatorchat/send", { studentId, content });
-      return dataOf(response);
+      const res = await fetch("/api/Educatorchat/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ studentId, content }),
+      });
+      const json = await res.json();
+      return dataOf(json);
     } catch (error) {
       logApiFailure("EducatorChatAPI.sendMessage", error, { studentId, contentLength: content.length });
       throw error;

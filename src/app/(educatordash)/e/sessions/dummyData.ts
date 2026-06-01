@@ -10,7 +10,7 @@ export const sessionData: Session[] = [
     dateTime: new Date('2026-04-27T09:00:00'),
     startTime: '09:00 AM',
     endTime: '12:00 PM',
-    status: 'Live',
+    status: 'Ongoing',
     educator: 'Dr. Jane Chen',
   },
   {

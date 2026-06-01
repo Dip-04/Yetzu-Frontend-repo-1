@@ -74,6 +74,7 @@ const getPriorityBadge = (priority: string) => {
 interface Ticket {
   id: string;
   _id?: string;
+  ticketCode?: string;
   subject: string;
   status: string;
   priority: string;
@@ -258,8 +259,8 @@ export default function EducatorTicketsPage() {
                     </td>
                   </tr>
                 ) : (
-                  tickets.map((ticket, index) => {
-                    const ticketId = ticket.id || ticket._id || `T-${index}`;
+                    tickets.map((ticket, index) => {
+                      const ticketId = ticket.ticketCode || ticket.id || ticket._id || `T-${index}`;
                     return (
                       <tr key={ticketId} className="hover:bg-gray-50/50 transition-colors">
                         <td className="py-5 px-6 text-[14px] text-gray-600">{ticketId}</td>

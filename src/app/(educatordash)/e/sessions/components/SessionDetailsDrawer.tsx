@@ -347,12 +347,12 @@ export default function SessionDetailsDrawer({ isOpen, onClose, session }: Sessi
               <div className="flex justify-between items-center py-3 border-b border-gray-50 gap-4">
                 <span className="text-sm text-gray-500">Status</span>
                 <div className="flex items-center gap-2">
-                  {session.status === 'Live' && <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>}
+                  {session.status === 'Ongoing' && <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>}
                   {session.status === 'Scheduled' && <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>}
                   {session.status === 'Completed' && <div className="w-1.5 h-1.5 rounded-full bg-gray-500"></div>}
                   {session.status === 'Missed' && <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>}
                   <span className={`text-sm font-medium ${
-                    session.status === 'Live' ? 'text-green-600' :
+                    session.status === 'Ongoing' ? 'text-green-600' :
                     session.status === 'Scheduled' ? 'text-blue-600' :
                     session.status === 'Completed' ? 'text-gray-600' : 'text-red-600'
                   }`}>

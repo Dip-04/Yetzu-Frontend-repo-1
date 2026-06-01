@@ -1,4 +1,4 @@
-export type SessionStatus = 'Scheduled' | 'Live' | 'Completed' | 'Missed';
+export type SessionStatus = 'Scheduled' | 'Ongoing' | 'Completed' | 'Missed';
 export type SessionType = 'Webinar' | 'Cohort' | 'Workshop' | 'Mentorship' | '1:1' | string;
 
 export interface Session {
