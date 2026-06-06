@@ -123,7 +123,7 @@ export default function ChatPage() {
   });
 
   return (
-    <div className="flex flex-col h-[calc(100vh-80px)] md:h-[calc(100vh-80px)] bg-white font-sans mx-auto overflow-hidden">
+    <div className="flex flex-col h-[calc(100vh-80px)] md:h-[calc(100vh-80px)] bg-white font-sans overflow-hidden">
       <div className={`bg-white px-4 md:px-10 md:py-3 md:border-b border-gray-100 ${!showMobileList ? "hidden md:block" : "block"}`}>
         <h1 className="text-[22px] hidden md:block font-bold text-gray-900 mb-1 md:mb-2">Chat</h1>
         <p className="text-sm text-gray-500 hidden md:block">Engage directly with your 1:1 mentors.</p>
@@ -209,7 +209,7 @@ export default function ChatPage() {
                 <p className="text-[14px] md:text-[15px] text-gray-500">Start a conversation with {activeContact?.name}</p>
               </div>
             ) : (
-              <div className="flex flex-col max-w-3xl mx-auto w-full pb-4">
+              <div className="flex flex-col w-full pb-4">
                 <div className="text-center mb-4 md:mb-6">
                   <span className="text-[11px] md:text-xs font-medium text-gray-500">Today</span>
                 </div>
@@ -248,7 +248,7 @@ export default function ChatPage() {
 
           {activeContact && (
             <div className="p-4 mb-14 md:mb-0 md:p-6 pt-2 md:pt-2 shrink-0 bg-white z-10 border-t border-gray-50 md:border-transparent pb-safe">
-              <div className="relative flex items-center max-w-4xl mx-auto">
+              <div className="relative flex items-center mx-auto w-full max-w-2xl">
                 <input
                   type="text"
                   placeholder="Type a message"

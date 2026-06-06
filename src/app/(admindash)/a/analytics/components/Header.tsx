@@ -10,7 +10,7 @@ export default function Header() {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div>
-        <h1 className="text-3xl md:text-4xl font-bold text-[#021165] tracking-tight">Analytics</h1>
+        <h1 className="text-[24px] font-semibold text-[#0A0A0A]" style={{ fontFamily: "'Inter', sans-serif", lineHeight: "36px", letterSpacing: "0.0703125px" }}>Analytics</h1>
         <p className="text-sm text-gray-500 font-medium mt-1">Key platform metrics · Last 30 days</p>
       </div>
       <div className="flex flex-wrap items-center gap-1.5">

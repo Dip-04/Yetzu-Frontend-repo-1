@@ -6,8 +6,10 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: string | Role; // Using string | Role to avoid strict type issues with mock data
+  role: string | Role;
   status: Status;
   joined: string;
   sessions: number;
+  mobileno?: string;
+  permissions?: Record<string, boolean>;
 }

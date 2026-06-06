@@ -730,7 +730,7 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
                     {selectedBundleSessions.length > 0 && (
                       <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                         <p className="text-sm text-gray-700">
-                          <span className="font-medium">{selectedBundleSessions.length}</span> session(s) selected — Total: <span className="font-semibold">${paidSessions.filter(s => selectedBundleSessions.includes(s.id)).reduce((sum, s) => sum + (Number(s.price) || 0), 0).toFixed(2)}</span>
+                          <span className="font-medium">{selectedBundleSessions.length}</span> session(s) selected — Total: <span className="font-semibold">{paidSessions.find(s => selectedBundleSessions.includes(s.id))?.currency === "INR" ? "₹" : "$"}{paidSessions.filter(s => selectedBundleSessions.includes(s.id)).reduce((sum, s) => sum + (Number(s.price) || 0), 0).toFixed(2)}</span>
                         </p>
                       </div>
                     )}

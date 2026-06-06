@@ -34,7 +34,7 @@ export function UsersTable({ users, onRefresh }: UsersTableProps) {
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-slate-200">
+            <tr className="border-b bg-[#F8F9FA] border-slate-200">
               <th className="px-6 py-4 w-12">
                 <div className="flex items-center justify-center">
                   <input

@@ -7,7 +7,7 @@ import { Session, Status, Tab } from "@/app/(admindash)/types/SessionType";
 import { AdminAPI, asArray } from "@/lib/api";
 import CreateSession from "./CreateSession";
 import CalendarView from "./CalendarView";
-import { Plus, Search, List, Calendar as CalendarIcon, Filter, X, Check } from "lucide-react";
+import { Plus, Search, List, Calendar as CalendarIcon, Filter, X, Check, ChevronDown } from "lucide-react";
 
 interface Props {
   data: Session[];
@@ -181,7 +181,6 @@ export default function AllSessions({ data }: Props) {
     }
   };
 
-  // Close filter panel on outside click
   useEffect(() => {
     if (!isFilterOpen) return;
     const handleClick = (e: MouseEvent) => {
@@ -248,7 +247,6 @@ export default function AllSessions({ data }: Props) {
       list = list.filter((session) => session.status === status);
     }
 
-    // Apply mega filter
     if (activeFilters["Status"] && activeFilters["Status"].length > 0) {
       list = list.filter((session) => activeFilters["Status"].includes(session.status));
     }
@@ -280,7 +278,6 @@ export default function AllSessions({ data }: Props) {
       );
     }
 
-    // Sort
     list.sort((a, b) => {
       let cmp = 0;
       if (sortBy === "date") {
@@ -328,229 +325,284 @@ export default function AllSessions({ data }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col min-h-screen bg-white">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-[#021165] tracking-tight">Sessions</h1>
-          <p className="text-sm text-gray-500 font-medium mt-1">Manage and monitor all platform educational sessions</p>
-        </div>
-        <button 
-          onClick={() => setIsCreating(true)}
-          className="flex items-center justify-center gap-2 bg-[#042BFD] text-white px-6 py-3 rounded-2xl text-sm font-bold uppercase tracking-widest hover:bg-[#0325D7] transition-all shadow-lg shadow-blue-600/20 active:scale-95"
-        >
-          <Plus size={18} strokeWidth={3} />
-          Create Session
-        </button>
-      </div>
-
-      {/* Filters & Search Section */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        {/* Tabs */}
-        <div className="flex items-center gap-2 bg-gray-100/50 p-1.5 rounded-2xl border border-gray-100 overflow-x-auto no-scrollbar">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-6 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all flex items-center gap-2.5 ${
-                activeTab === tab
-                  ? "bg-white text-[#021165] shadow-sm ring-1 ring-black/5"
-                  : "text-gray-400 hover:text-gray-600"
-              }`}
-            >
-              {tab}
-              <span className={`px-2 py-0.5 rounded-md text-[10px] font-black ${
-                activeTab === tab ? "bg-blue-50 text-blue-600" : "bg-gray-200 text-gray-500"
-              }`}>
-                {tabCounts[tab]}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-3 w-full lg:max-w-2xl">
-          {/* Sort */}
-          <select 
-            value={sortBy} 
-            onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-3 py-3 bg-white border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-100"
-          >
-            <option value="date">Sort by Date</option>
-            <option value="title">Sort by Name</option>
-            <option value="students">Sort by Students</option>
-          </select>
+      <div className="pb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-[24px] font-semibold text-[#0A0A0A]" style={{ fontFamily: "'Inter', sans-serif", lineHeight: "36px", letterSpacing: "0.0703125px" }}>Sessions</h1>
+          </div>
           <button 
-            onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-            className="p-3 bg-white border border-gray-100 rounded-2xl text-gray-400 hover:text-[#021165] hover:border-blue-100 transition-all"
-            title={sortOrder === "asc" ? "Ascending" : "Descending"}
+            onClick={() => setIsCreating(true)}
+            className="flex items-center justify-center gap-2 bg-[#021165] text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-[#010d4a] transition-all active:scale-[0.98]"
           >
-            {sortOrder === "asc" ? "↑" : "↓"}
+            <Plus size={16} strokeWidth={2.5} />
+            Create Session
           </button>
+        </div>
+      </div>
 
-          {/* Search */}
-          <div className="relative flex-1 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#042BFD] transition-colors" size={18} />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, ID, or educator..."
-              className="w-full pl-11 pr-4 py-3 bg-white border border-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-[#042BFD]/20 transition-all shadow-sm"
-            />
+      {/* Tab Navigation - Figma: Tab Menu Horizontal */}
+      <div className="border-gray-200">
+        <div className="flex items-center justify-between">
+          {/* Tabs */}
+          <div className="flex items-center gap-6">
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`relative flex items-center gap-1.5 pb-3.5 pt-0 text-[14px] font-medium transition-colors ${
+                  activeTab === tab
+                    ? "text-[#0A0D14]"
+                    : "text-[#525866] hover:text-[#0A0D14]"
+                }`}
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontWeight: 500,
+                  fontSize: "14px",
+                  lineHeight: "20px",
+                  letterSpacing: "-0.006em",
+                  fontFeatureSettings: "'cv09' on, 'ss11' on, 'calt' off, 'liga' off",
+                }}
+              >
+                {tab}
+                {tabCounts[tab] > 0 && (
+                  <span 
+                    className={`inline-flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full text-[11px] font-medium ${
+                      activeTab === tab
+                        ? "bg-[#E6EAFF] text-[#042BFD]"
+                        : "bg-[#F3F4F6] text-[#717182]"
+                    }`}
+                    style={{
+                      fontFamily: "'Inter', sans-serif",
+                      fontWeight: 500,
+                      fontSize: "11px",
+                      lineHeight: "12px",
+                      letterSpacing: "0.02em",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {tabCounts[tab]}
+                  </span>
+                )}
+                {activeTab === tab && (
+                  <div 
+                    className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#375DFB]"
+                  />
+                )}
+              </button>
+            ))}
           </div>
-          <div className="relative">
-            <button 
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className={`p-3 bg-white border rounded-2xl transition-all shadow-sm ${
-                isFilterOpen || activeFilterCount > 0
-                  ? "text-[#042BFD] border-blue-200 bg-blue-50"
-                  : "text-gray-400 hover:text-[#021165] hover:border-blue-100 border-gray-100"
-              }`}
+
+          {/* Search Bar */}
+          <div className="flex items-center">
+            <div 
+              className="flex items-center gap-2 px-3 py-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg w-[320px]"
+              style={{
+                height: "39px",
+              }}
             >
-              <Filter size={20} />
-            </button>
-            {activeFilterCount > 0 && (
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                {activeFilterCount}
-              </span>
-            )}
-
-            {/* Mega Dropdown Filter Panel */}
-            {isFilterOpen && (
-              <div ref={filterPanelRef} className="absolute right-0 top-full mt-2 z-50 w-[480px] bg-white rounded-xl border border-slate-200 shadow-2xl overflow-hidden">
-                <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                  <h3 className="text-sm font-bold text-slate-900">Filters</h3>
-                  <button onClick={() => setIsFilterOpen(false)} className="text-slate-400 hover:text-slate-600 transition-colors"><X size={16} /></button>
-                </div>
-                <div className="p-6 space-y-6 max-h-[400px] overflow-y-auto">
-                  {filterSections.map((section, idx) => (
-                    <div key={idx}>
-                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">{section.title}</h4>
-                      
-                      {section.type === "checkboxes" && section.options && (
-                        <div className="grid grid-cols-2 gap-2">
-                          {section.options.map((option) => {
-                            const isChecked = (activeFilters[section.title] || []).includes(option.value);
-                            return (
-                              <label
-                                key={option.value}
-                                className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all ${
-                                  isChecked
-                                    ? "border-blue-500 bg-blue-50 text-blue-700"
-                                    : "border-slate-200 hover:bg-slate-50 text-slate-700"
-                                }`}
-                                onClick={() => {
-                                  const current = activeFilters[section.title] || [];
-                                  const updated = isChecked 
-                                    ? current.filter((v: string) => v !== option.value)
-                                    : [...current, option.value];
-                                  setActiveFilters({ ...activeFilters, [section.title]: updated });
-                                }}
-                              >
-                                <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
-                                  isChecked ? "border-blue-500 bg-blue-500 text-white" : "border-slate-300"
-                                }`}>
-                                  {isChecked && <Check size={12} strokeWidth={3} />}
-                                </div>
-                                <span className="text-sm font-medium">{option.label}</span>
-                              </label>
-                            );
-                          })}
-                        </div>
-                      )}
-
-                      {section.type === "select" && section.options && (
-                        <select
-                          value={activeFilters[section.title] || ""}
-                          onChange={(e) => setActiveFilters({ ...activeFilters, [section.title]: e.target.value })}
-                          className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                        >
-                          <option value="">All Educators</option>
-                          {section.options.map((option) => (
-                            <option key={option.value} value={option.value}>{option.label}</option>
-                          ))}
-                        </select>
-                      )}
-
-                      {section.type === "number-range" && (
-                        <div className="grid grid-cols-2 gap-3">
-                          <input
-                            type="number"
-                            placeholder={section.minPlaceholder || "Min"}
-                            value={(activeFilters[section.title] || {}).min || ""}
-                            onChange={(e) => setActiveFilters({
-                              ...activeFilters,
-                              [section.title]: { ...(activeFilters[section.title] || {}), min: e.target.value }
-                            })}
-                            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                          />
-                          <input
-                            type="number"
-                            placeholder={section.maxPlaceholder || "Max"}
-                            value={(activeFilters[section.title] || {}).max || ""}
-                            onChange={(e) => setActiveFilters({
-                              ...activeFilters,
-                              [section.title]: { ...(activeFilters[section.title] || {}), max: e.target.value }
-                            })}
-                            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-between bg-slate-50">
-                  <button
-                    onClick={() => { setActiveFilters({}); handleResetFilters(); }}
-                    className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-red-600 transition-colors"
-                  >
-                    Reset
-                  </button>
-                  <button
-                    onClick={handleApplyFilters}
-                    className="px-6 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
-                  >
-                    Apply Filters
-                  </button>
-                </div>
-              </div>
-            )}
+              <Search className="text-[#717182] flex-shrink-0" size={14} strokeWidth={1.5} />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search by session ID or educator"
+                className="flex-1 bg-transparent text-[14px] text-[#0A0A0A] placeholder-[rgba(10,10,10,0.5)] focus:outline-none"
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontWeight: 400,
+                  fontSize: "14px",
+                  lineHeight: "17px",
+                  letterSpacing: "-0.150391px",
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* View Toggle */}
-      <div className="flex">
-        <div className="inline-flex items-center bg-gray-100/50 p-1.5 rounded-2xl border border-gray-100 shadow-inner">
-          <button
-            onClick={() => setViewMode('list')}
-            className={`flex items-center gap-2.5 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-              viewMode === 'list'
-                ? 'bg-white text-[#021165] shadow-sm'
-                : 'text-gray-400 hover:text-gray-600'
-            }`}
-          >
-            <List size={16} />
-            List
-          </button>
-          <button
-            onClick={() => setViewMode('calendar')}
-            className={`flex items-center gap-2.5 px-6 py-2 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
-              viewMode === 'calendar'
-                ? 'bg-white text-[#021165] shadow-sm'
-                : 'text-gray-400 hover:text-gray-600'
-            }`}
-          >
-            <CalendarIcon size={16} />
-            Calendar
-          </button>
+      {/* View Toggle & Filters */}
+      <div className="py-4">
+        <div className="flex items-center justify-between">
+          {/* View Toggle */}
+          <div className="flex items-center gap-1 p-1 bg-[#F8F9FA] rounded-lg border border-gray-200">
+            <button
+              onClick={() => setViewMode('list')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md text-[13px] font-medium transition-all ${
+                viewMode === 'list'
+                  ? 'bg-white text-[#021165] shadow-sm border border-gray-200'
+                  : 'text-[#525866] hover:text-[#0A0D14]'
+              }`}
+            >
+              <List size={14} strokeWidth={2} />
+              Sessions List
+            </button>
+            <button
+              onClick={() => setViewMode('calendar')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-md text-[13px] font-medium transition-all ${
+                viewMode === 'calendar'
+                  ? 'bg-white text-[#021165] shadow-sm border border-gray-200'
+                  : 'text-[#525866] hover:text-[#0A0D14]'
+              }`}
+            >
+              <CalendarIcon size={14} strokeWidth={2} />
+              Calendar View
+            </button>
+          </div>
+
+          {/* Sort & Filter Controls */}
+          <div className="flex items-center gap-3">
+            {/* Sort Dropdown */}
+            <div className="relative">
+              <select 
+                value={sortBy} 
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="appearance-none flex items-center gap-2 px-3 py-2 pr-8 bg-white border border-gray-200 rounded-lg text-[13px] font-medium text-[#525866] focus:outline-none focus:ring-2 focus:ring-blue-100 cursor-pointer"
+              >
+                <option value="date">Sort by Date</option>
+                <option value="title">Sort by Name</option>
+                <option value="students">Sort by Students</option>
+              </select>
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#717182] pointer-events-none" size={14} />
+            </div>
+
+            {/* Sort Order Toggle */}
+            <button 
+              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+              className="flex items-center justify-center w-9 h-9 bg-white border border-gray-200 rounded-lg text-[#717182] hover:text-[#021165] hover:border-blue-200 transition-colors"
+              title={sortOrder === "asc" ? "Ascending" : "Descending"}
+            >
+              {sortOrder === "asc" ? "↑" : "↓"}
+            </button>
+
+            {/* Filter Button */}
+            <div className="relative">
+              <button 
+                onClick={() => setIsFilterOpen(!isFilterOpen)}
+                className={`flex items-center justify-center w-9 h-9 border rounded-lg transition-colors ${
+                  isFilterOpen || activeFilterCount > 0
+                    ? "text-[#042BFD] border-blue-200 bg-blue-50"
+                    : "text-[#717182] hover:text-[#021165] hover:border-blue-200 bg-white border-gray-200"
+                }`}
+              >
+                <Filter size={16} strokeWidth={2} />
+              </button>
+              {activeFilterCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#042BFD] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                  {activeFilterCount}
+                </span>
+              )}
+
+              {/* Mega Dropdown Filter Panel */}
+              {isFilterOpen && (
+                <div ref={filterPanelRef} className="absolute right-0 top-full mt-2 z-50 w-[480px] bg-white rounded-xl border border-slate-200 shadow-2xl overflow-hidden">
+                  <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                    <h3 className="text-sm font-bold text-slate-900">Filters</h3>
+                    <button onClick={() => setIsFilterOpen(false)} className="text-slate-400 hover:text-slate-600 transition-colors"><X size={16} /></button>
+                  </div>
+                  <div className="p-6 space-y-6 max-h-[400px] overflow-y-auto">
+                    {filterSections.map((section, idx) => (
+                      <div key={idx}>
+                        <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">{section.title}</h4>
+                        
+                        {section.type === "checkboxes" && section.options && (
+                          <div className="grid grid-cols-2 gap-2">
+                            {section.options.map((option) => {
+                              const isChecked = (activeFilters[section.title] || []).includes(option.value);
+                              return (
+                                <label
+                                  key={option.value}
+                                  className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all ${
+                                    isChecked
+                                      ? "border-blue-500 bg-blue-50 text-blue-700"
+                                      : "border-slate-200 hover:bg-slate-50 text-slate-700"
+                                  }`}
+                                  onClick={() => {
+                                    const current = activeFilters[section.title] || [];
+                                    const updated = isChecked 
+                                      ? current.filter((v: string) => v !== option.value)
+                                      : [...current, option.value];
+                                    setActiveFilters({ ...activeFilters, [section.title]: updated });
+                                  }}
+                                >
+                                  <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
+                                    isChecked ? "border-blue-500 bg-blue-500 text-white" : "border-slate-300"
+                                  }`}>
+                                    {isChecked && <Check size={12} strokeWidth={3} />}
+                                  </div>
+                                  <span className="text-sm font-medium">{option.label}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {section.type === "select" && section.options && (
+                          <select
+                            value={activeFilters[section.title] || ""}
+                            onChange={(e) => setActiveFilters({ ...activeFilters, [section.title]: e.target.value })}
+                            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                          >
+                            <option value="">All Educators</option>
+                            {section.options.map((option) => (
+                              <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                          </select>
+                        )}
+
+                        {section.type === "number-range" && (
+                          <div className="grid grid-cols-2 gap-3">
+                            <input
+                              type="number"
+                              placeholder={section.minPlaceholder || "Min"}
+                              value={(activeFilters[section.title] || {}).min || ""}
+                              onChange={(e) => setActiveFilters({
+                                ...activeFilters,
+                                [section.title]: { ...(activeFilters[section.title] || {}), min: e.target.value }
+                              })}
+                              className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                            />
+                            <input
+                              type="number"
+                              placeholder={section.maxPlaceholder || "Max"}
+                              value={(activeFilters[section.title] || {}).max || ""}
+                              onChange={(e) => setActiveFilters({
+                                ...activeFilters,
+                                [section.title]: { ...(activeFilters[section.title] || {}), max: e.target.value }
+                              })}
+                              className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="px-6 py-4 border-t border-slate-100 flex items-center justify-between bg-slate-50">
+                    <button
+                      onClick={() => { setActiveFilters({}); handleResetFilters(); }}
+                      className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-red-600 transition-colors"
+                    >
+                      Reset
+                    </button>
+                    <button
+                      onClick={handleApplyFilters}
+                      className="px-6 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
+                    >
+                      Apply Filters
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Content Area */}
-      <div className="w-full">
+      <div className="flex-1 pb-8">
         {viewMode === 'list' ? (
-          <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm overflow-hidden">
+          <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-[10px] overflow-hidden">
             <SessionTable 
               data={filteredData} 
               showHeader={true} 
@@ -559,7 +611,7 @@ export default function AllSessions({ data }: Props) {
             />
           </div>
         ) : (
-          <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-6 sm:p-8">
+          <div className="bg-white border border-[rgba(0,0,0,0.1)] rounded-[10px] p-6">
             <CalendarView data={filteredData} onSessionClick={(session) => setSelectedSession(session)} />
           </div>
         )}
@@ -580,8 +632,6 @@ export default function AllSessions({ data }: Props) {
           </div>
         </>
       )}
-
-      <div className="pb-10" />
     </div>
   );
 }

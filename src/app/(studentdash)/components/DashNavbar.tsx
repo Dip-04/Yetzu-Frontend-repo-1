@@ -646,9 +646,6 @@ import {
   Mail, 
   Phone, 
   Edit2, 
-  FastForward, 
-  CreditCard, 
-  Globe,
   Video,
   FileText,
   Calendar,
@@ -679,7 +676,6 @@ export default function DashNavbar({
   const { user: sessionUser } = useSession();
   const pathname = usePathname();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"personal" | "payment">("personal");
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   
@@ -687,19 +683,10 @@ export default function DashNavbar({
   const [unreadCount, setUnreadCount] = useState(0);
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   
-  const [autoPayout, setAutoPayout] = useState(true);
-  const [notifyPayments, setNotifyPayments] = useState(false);
-  
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: ""
-  });
-
-  const [paymentData, setPaymentData] = useState({
-    cardNumber: "9978 1128 1558 1978",
-    cardHolder: "",
-    country: "United Kingdom"
   });
 
   const profileRef = useRef<HTMLDivElement>(null);
@@ -823,7 +810,6 @@ export default function DashNavbar({
               email: userInfo.email || "",
               phone: userInfo.mobileno || userInfo.phone || ""
             });
-            setPaymentData(prev => ({ ...prev, cardHolder: userInfo.name || "" }));
           }
         } catch {
           // If me() doesn't exist or fails, continue without user info
@@ -1135,163 +1121,37 @@ export default function DashNavbar({
                   </div>
                 </div>
 
-                {/* Tabs */}
-                <div className="flex border-b border-gray-200 mb-5 relative">
-                  <button
-                    onClick={() => { setActiveTab("personal"); setIsEditing(false); }}
-                    className={`pb-2.5 px-1 text-[13px] transition-colors relative ${
-                      activeTab === "personal" ? "font-semibold text-gray-900" : "font-medium text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    Personal Info
-                    {activeTab === "personal" && (
-                      <div className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-[#042BFD]" />
-                    )}
-                  </button>
-                  <button
-                    onClick={() => { setActiveTab("payment"); setIsEditing(false); }}
-                    className={`pb-2.5 px-5 text-[13px] transition-colors relative ${
-                      activeTab === "payment" ? "font-semibold text-gray-900" : "font-medium text-gray-500 hover:text-gray-700"
-                    }`}
-                  >
-                    Payment Info
-                    {activeTab === "payment" && (
-                      <div className="absolute bottom-[-1px] left-0 w-full h-[2px] bg-[#042BFD]" />
-                    )}
-                  </button>
+                <div className="mb-5">
+                  <h3 className="text-[13px] font-semibold text-gray-900">Personal Info</h3>
                 </div>
 
                 <div className="overflow-hidden pb-[calc(1rem+env(safe-area-inset-bottom))] sm:pb-0">
-                  {activeTab === "personal" ? (
-                    <div className="border border-gray-200 rounded-xl p-1.5 bg-white">
-                      {[
-                        { icon: <User size={18} className="text-[#042BFD]" strokeWidth={1.5} />, label: "Full Name", field: "fullName" as const, type: "text" },
-                        { icon: <Mail size={18} className="text-[#042BFD]" strokeWidth={1.5} />, label: "Email", field: "email" as const, type: "email" },
-                        { icon: <Phone size={18} className="text-[#042BFD]" strokeWidth={1.5} />, label: "Phone Number", field: "phone" as const, type: "tel" },
-                      ].map((item, idx, arr) => (
-                        <div key={item.field} className={`flex items-center gap-3 p-3 ${idx < arr.length - 1 ? "border-b border-gray-100" : ""}`}>
-                          <div className="w-10 h-10 rounded-xl bg-[#F8F9FA] flex items-center justify-center shrink-0">
-                            {item.icon}
-                          </div>
-                          <div className="flex-1">
-                            {/* Label → normal */}
-                            <p className="text-[12px] text-gray-400 mb-0.5 font-normal">{item.label}</p>
-                            {isEditing ? (
-                              <input
-                                type={item.type}
-                                value={formData[item.field]}
-                                onChange={(e) => setFormData({ ...formData, [item.field]: e.target.value })}
-                                className="w-full text-[14px] font-medium text-gray-900 border-b border-gray-300 focus:border-[#042BFD] outline-none pb-1 bg-transparent"
-                              />
-                            ) : (
-                              <p className="text-[14px] font-medium text-gray-900">{formData[item.field]}</p>
-                            )}
-                          </div>
+                  <div className="border border-gray-200 rounded-xl p-1.5 bg-white">
+                    {[
+                      { icon: <User size={18} className="text-[#042BFD]" strokeWidth={1.5} />, label: "Full Name", field: "fullName" as const, type: "text" },
+                      { icon: <Mail size={18} className="text-[#042BFD]" strokeWidth={1.5} />, label: "Email", field: "email" as const, type: "email" },
+                      { icon: <Phone size={18} className="text-[#042BFD]" strokeWidth={1.5} />, label: "Phone Number", field: "phone" as const, type: "tel" },
+                    ].map((item, idx, arr) => (
+                      <div key={item.field} className={`flex items-center gap-3 p-3 ${idx < arr.length - 1 ? "border-b border-gray-100" : ""}`}>
+                        <div className="w-10 h-10 rounded-xl bg-[#F8F9FA] flex items-center justify-center shrink-0">
+                          {item.icon}
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-3">
-                      <div>
-                        <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">PREFERENCE</h3>
-                        <div className="border border-gray-200 rounded-xl bg-white overflow-hidden">
-                          {[
-                            {
-                              icon: <FastForward size={18} className="text-[#042BFD]" strokeWidth={1.5} />,
-                              label: "Enable Auto Payout",
-                              sub: "Autopayout occurs at the end of each month.",
-                              value: autoPayout,
-                              toggle: () => setAutoPayout(!autoPayout),
-                            },
-                            {
-                              icon: <Bell size={18} className="text-[#042BFD]" strokeWidth={1.5} />,
-                              label: "Notify New Payments",
-                              sub: "You will be notified when a payment has been made.",
-                              value: notifyPayments,
-                              toggle: () => setNotifyPayments(!notifyPayments),
-                            },
-                          ].map((item, idx, arr) => (
-                            <div key={item.label} className={`flex items-center justify-between p-3 ${idx < arr.length - 1 ? "border-b border-gray-100" : ""}`}>
-                              <div className="flex items-center gap-3 pr-4">
-                                <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center shrink-0">
-                                  {item.icon}
-                                </div>
-                                <div>
-                                  <p className="text-[13px] font-medium text-gray-900">{item.label}</p>
-                                  <p className="text-[11px] text-gray-500 font-normal">{item.sub}</p>
-                                </div>
-                              </div>
-                              {isEditing ? (
-                                <div
-                                  onClick={item.toggle}
-                                  className={`w-10 h-[22px] rounded-full p-0.5 transition-colors duration-200 shrink-0 cursor-pointer ${item.value ? "bg-[#042BFD]" : "bg-gray-200"}`}
-                                >
-                                  <div className={`w-[18px] h-[18px] bg-white rounded-full shadow-sm transform transition-transform duration-200 ${item.value ? "translate-x-[18px]" : "translate-x-0"}`} />
-                                </div>
-                              ) : (
-                                <span className={`text-[10px] font-semibold px-2 py-0.5 rounded shrink-0 ${item.value ? "bg-[#ECFDF5] text-[#059669]" : "bg-[#F1F5F9] text-[#64748B]"}`}>
-                                  {item.value ? "ON" : "OFF"}
-                                </span>
-                              )}
-                            </div>
-                          ))}
+                        <div className="flex-1">
+                          <p className="text-[12px] text-gray-400 mb-0.5 font-normal">{item.label}</p>
+                          {isEditing ? (
+                            <input
+                              type={item.type}
+                              value={formData[item.field]}
+                              onChange={(e) => setFormData({ ...formData, [item.field]: e.target.value })}
+                              className="w-full text-[14px] font-medium text-gray-900 border-b border-gray-300 focus:border-[#042BFD] outline-none pb-1 bg-transparent"
+                            />
+                          ) : (
+                            <p className="text-[14px] font-medium text-gray-900">{formData[item.field]}</p>
+                          )}
                         </div>
                       </div>
-
-                      <div>
-                        <h3 className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">CARD DETAILS</h3>
-                        <div className="border border-gray-200 rounded-xl bg-white overflow-hidden p-1.5">
-                          {[
-                            { icon: <CreditCard size={18} className="text-[#042BFD]" strokeWidth={1.5} />, label: "Credit Card", field: "cardNumber" as const, type: "text" },
-                            { icon: <User size={18} className="text-[#042BFD]" strokeWidth={1.5} />, label: "Card Holder", field: "cardHolder" as const, type: "text" },
-                          ].map((item, idx) => (
-                            <div key={item.field} className="flex items-center gap-3 p-2.5 border-b border-gray-100">
-                              <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center shrink-0">
-                                {item.icon}
-                              </div>
-                              <div className="flex-1">
-                                <p className="text-[11px] text-gray-400 mb-0.5 font-normal">{item.label}</p>
-                                {isEditing ? (
-                                  <input
-                                    type={item.type}
-                                    value={paymentData[item.field]}
-                                    onChange={(e) => setPaymentData({ ...paymentData, [item.field]: e.target.value })}
-                                    className="w-full text-[13px] font-medium text-gray-900 border-b border-gray-300 focus:border-[#042BFD] outline-none pb-0.5 bg-transparent"
-                                  />
-                                ) : (
-                                  <p className="text-[13px] font-medium text-gray-900">{paymentData[item.field]}</p>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-
-                          <div className="flex items-center gap-3 p-2.5">
-                            <div className="w-9 h-9 rounded-xl bg-[#F8F9FA] flex items-center justify-center shrink-0">
-                              <Globe size={18} className="text-[#042BFD]" strokeWidth={1.5} />
-                            </div>
-                            <div className="flex-1">
-                              <p className="text-[11px] text-gray-400 mb-0.5 font-normal">Country</p>
-                              {isEditing ? (
-                                <div className="flex items-center gap-1.5 border-b border-gray-300 focus-within:border-[#042BFD] pb-0.5">
-                                  <span>🇬🇧</span>
-                                  <input
-                                    type="text"
-                                    value={paymentData.country}
-                                    onChange={(e) => setPaymentData({ ...paymentData, country: e.target.value })}
-                                    className="w-full text-[13px] font-medium text-gray-900 outline-none bg-transparent"
-                                  />
-                                </div>
-                              ) : (
-                                <p className="text-[13px] font-medium text-gray-900 flex items-center gap-1.5">
-                                  <span>🇬🇧</span> {paymentData.country}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                    ))}
+                  </div>
                 </div>
               </div>
             )}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Search, Eye } from 'lucide-react';
 import { useGetContacts } from "@/lib/queries/formService/useFormService";
 import { asArray } from "@/lib/api";
@@ -7,11 +7,24 @@ interface ContactTableProps {
   onViewClick: (contactData: any) => void;
 }
 
+function StatusBadge({ status }: { status: string }) {
+  const cfg: Record<string, { bg: string; text: string }> = {
+    Pending: { bg: "bg-[#EFF6FF]", text: "text-[#1447E6]" },
+    Resolved: { bg: "bg-[#ECFDF5]", text: "text-[#007A55]" },
+  };
+  const c = cfg[status] || { bg: "bg-[#F3F4F6]", text: "text-[#717182]" };
+  return (
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded ${c.bg} ${c.text}`}
+      style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: "11px", lineHeight: "16px", letterSpacing: "0.0644531px" }}
+    >
+      {status}
+    </span>
+  );
+}
+
 export default function ContactTable({ onViewClick }: ContactTableProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All Status');
-  const [typeFilter, setTypeFilter] = useState('All Inquiry Types');
-  const [sortBy, setSortBy] = useState('Newest First');
 
   const { data, isLoading } = useGetContacts();
   const contactData = asArray(data?.data || data?.contacts || data || []);
@@ -26,122 +39,113 @@ export default function ContactTable({ onViewClick }: ContactTableProps) {
     );
   });
 
+  const gridCols = "grid-cols-[130px_1.5fr_1fr_1.8fr_110px_90px]";
+  const columns = [
+    { key: "date", label: "Submitted" },
+    { key: "user", label: "User" },
+    { key: "inquiry", label: "Inquiry" },
+    { key: "message", label: "Message" },
+    { key: "status", label: "Status" },
+    { key: "action", label: "Action" },
+  ];
+
   return (
-    <div className="bg-white rounded-[20px] border border-gray-200 mt-8 w-full shadow-sm overflow-hidden p-6 pb-12">
-      
-
-
+    <div className="border border-[rgba(0,0,0,0.1)] rounded-[10px] overflow-hidden bg-white">
       {/* Toolbar */}
-      <div className="flex flex-col md:flex-row justify-start items-start md:items-center gap-4 mb-6">
-        <div className="relative w-full max-w-sm">
-          <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+      <div className="flex items-center gap-3 p-4 border-b border-[rgba(0,0,0,0.1)]">
+        <div className="relative" style={{ width: "320px" }}>
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#717182]" strokeWidth={1.5} />
           <input 
             type="text" 
             placeholder="Search name, email, phone..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-800"
+            className="w-full pl-9 pr-4 py-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg text-[14px] text-[#0A0A0A] placeholder-[rgba(10,10,10,0.5)] focus:outline-none"
+            style={{ height: "39px", fontFamily: "'Inter', sans-serif" }}
           />
-        </div>
-        
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <select 
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-slate-700 font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 appearance-none pr-8 relative bg-no-repeat"
-            style={{ backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")', backgroundPosition: 'right 0.5rem center', backgroundSize: '1em 1em' }}
-          >
-            <option>All Status</option>
-            <option>Pending</option>
-            <option>Resolved</option>
-          </select>
-          <select 
-            value={typeFilter}
-            onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-slate-700 font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 appearance-none pr-8 relative bg-no-repeat"
-            style={{ backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")', backgroundPosition: 'right 0.5rem center', backgroundSize: '1em 1em' }}
-          >
-            <option>All Inquiry Types</option>
-            <option>General</option>
-            <option>Support</option>
-          </select>
-          <select 
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-slate-700 font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 appearance-none pr-8 relative bg-no-repeat"
-            style={{ backgroundImage: 'url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e")', backgroundPosition: 'right 0.5rem center', backgroundSize: '1em 1em' }}
-          >
-            <option>Newest First</option>
-            <option>Oldest First</option>
-          </select>
         </div>
       </div>
 
-      {/* Table Content */}
-      <div className="overflow-x-auto w-full rounded-2xl border border-gray-100 pb-2">
-        <table className="w-full text-left border-collapse min-w-[1000px]">
-          <thead>
-            <tr className="bg-[#FAFAFA] border-b border-gray-100">
-              <th className="py-4 px-6 text-[13px] font-bold text-gray-500 capitalize w-[15%]">Submitted</th>
-              <th className="py-4 px-6 text-[13px] font-bold text-gray-500 capitalize w-[25%]">User</th>
-              <th className="py-4 px-6 text-[13px] font-bold text-gray-500 capitalize w-[15%]">Inquiry</th>
-              <th className="py-4 px-6 text-[13px] font-bold text-gray-500 capitalize w-[20%]">Message</th>
-              <th className="py-4 px-6 text-[13px] font-bold text-gray-500 capitalize w-[15%]">Status</th>
-              <th className="py-4 px-6 text-[13px] font-bold text-gray-500 capitalize w-[10%] text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {isLoading ? (
-              <tr>
-                <td colSpan={6} className="py-10 px-6 text-center text-sm text-gray-500">
-                  Loading contacts...
-                </td>
-              </tr>
-            ) : filteredContacts.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="py-10 px-6 text-center text-sm text-gray-500">
-                  No contact submissions found
-                </td>
-              </tr>
-            ) : filteredContacts.map((item: any, index: number) => (
-              <tr key={item.id || item._id || index} className="hover:bg-gray-50/50 transition-colors group">
-                <td className="py-5 px-6 text-sm text-slate-600 font-medium">
-                  {item.createdAt || item.created_at ? new Date(item.createdAt || item.created_at).toLocaleDateString() : 'N/A'}
-                </td>
-                <td className="py-5 px-6">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-sm font-bold text-slate-800">{item.name || 'N/A'}</span>
-                    <span className="text-xs text-gray-500">{item.email || 'N/A'}</span>
-                    <span className="text-xs text-gray-500">{item.mobile || 'N/A'}</span>
-                    <span className="text-xs text-gray-500">{item.medical_school_affiliation || 'N/A'}</span>
-                  </div>
-                </td>
-                <td className="py-5 px-6 text-sm text-slate-700 font-medium">
-                  {item.subject || 'General'}
-                </td>
-                <td className="py-5 px-6 text-sm text-slate-600 truncate max-w-[200px]">
-                  {item.description || 'No message'}
-                </td>
-                <td className="py-5 px-6">
-                  <div className="flex flex-col gap-2 items-start">
-                    <span className={`px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider rounded-md border bg-[#E0F2FE] text-[#0284C7] border-blue-200`}>
-                      Pending
-                    </span>
-                  </div>
-                </td>
-                <td className="py-5 px-6 text-center">
-                  <button 
-                    onClick={() => onViewClick(item)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 border border-blue-200 rounded-lg text-sm font-bold text-blue-600 hover:bg-blue-50 transition-colors mx-auto"
-                  >
-                    <Eye className="w-4 h-4" />
-                    View
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Header */}
+      <div
+        className={`grid ${gridCols} items-center bg-[#F8F9FA] border-b border-[rgba(0,0,0,0.1)]`}
+        style={{ height: "45.5px" }}
+      >
+        {columns.map((col) => (
+          <div key={col.key} className="flex items-center px-4 h-full">
+            <span
+              className="text-[14px] font-medium text-[#717182]"
+              style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+            >
+              {col.label}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Body */}
+      <div className="divide-y divide-[rgba(0,0,0,0.1)]">
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12 text-[#717182] text-sm">
+            Loading contacts...
+          </div>
+        ) : filteredContacts.length === 0 ? (
+          <div className="flex items-center justify-center py-12 text-[#717182] text-sm">
+            No contact submissions found
+          </div>
+        ) : filteredContacts.map((item: any, index: number) => (
+          <div
+            key={item.id || item._id || index}
+            className={`grid ${gridCols} items-center transition-colors hover:bg-gray-50 cursor-pointer`}
+            style={{ height: "46px" }}
+            onClick={() => onViewClick(item)}
+          >
+            <div className="flex items-center px-4">
+              <span
+                className="text-[14px] text-[#717182]"
+                style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+              >
+                {item.createdAt || item.created_at ? new Date(item.createdAt || item.created_at).toLocaleDateString() : 'N/A'}
+              </span>
+            </div>
+            <div className="flex items-center px-4">
+              <span
+                className="text-[14px] text-[#0A0A0A] truncate"
+                style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+                title={`${item.name || 'N/A'} - ${item.email || 'N/A'}`}
+              >
+                {item.name || 'N/A'}
+              </span>
+            </div>
+            <div className="flex items-center px-4">
+              <span
+                className="text-[14px] text-[#717182] truncate"
+                style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+              >
+                {item.subject || 'General'}
+              </span>
+            </div>
+            <div className="flex items-center px-4">
+              <span
+                className="text-[14px] text-[#717182] truncate"
+                style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+              >
+                {item.description || 'No message'}
+              </span>
+            </div>
+            <div className="flex items-center px-4">
+              <StatusBadge status={item.status || 'Pending'} />
+            </div>
+            <div className="flex items-center px-4">
+              <button
+                onClick={(e) => { e.stopPropagation(); onViewClick(item); }}
+                className="flex items-center justify-center w-7 h-7 text-[#717182] hover:text-[#042BFD] hover:bg-blue-50 rounded-lg transition-colors"
+              >
+                <Eye size={14} strokeWidth={1.8} />
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

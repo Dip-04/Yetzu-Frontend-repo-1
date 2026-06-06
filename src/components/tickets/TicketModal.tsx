@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Calendar, User, AlertCircle, CheckCircle, Clock } from "lucide-react";
+import { X, Send, Loader2, User, Calendar } from "lucide-react";
 
 interface Ticket {
   id: string;
@@ -27,13 +27,12 @@ export default function TicketModal({ ticket, onClose, onResolve }: TicketModalP
 
   if (!ticket) return null;
 
-  const ticketId = ticket.id || ticket._id;
+  const ticketId = ticket.id || ticket._id || "";
 
   const handleResolve = async () => {
-    if (!onResolve) return;
+    if (!onResolve || !ticketId) return;
     setIsUpdating(true);
     try {
-      // @ts-ignore - comment is string type, onResolve accepts string | undefined
       await onResolve(ticketId, comment);
       onClose();
     } catch (error) {
@@ -43,124 +42,99 @@ export default function TicketModal({ ticket, onClose, onResolve }: TicketModalP
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "resolved":
-      case "closed":
-        return <CheckCircle size={18} className="text-[#059669]" />;
-      case "open":
-        return <Clock size={18} className="text-[#2563EB]" />;
-      case "in_review":
-      case "in progress":
-        return <AlertCircle size={18} className="text-[#D97706]" />;
-      default:
-        return <AlertCircle size={18} className="text-gray-400" />;
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high": return "bg-red-100 text-red-700";
-      case "medium": return "bg-yellow-100 text-yellow-700";
-      case "low": return "bg-green-100 text-green-700";
-      default: return "bg-gray-100 text-gray-600";
-    }
-  };
-
   return (
-    <div className="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
-          <h2 className="text-[16px] font-bold text-gray-900">Ticket Details</h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <X size={20} />
-          </button>
+    <div className="bg-white h-screen flex flex-col border-l border-gray-200 overflow-hidden">
+      {/* Header */}
+      <div className="p-6 border-b border-gray-100 relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="text-xs font-semibold text-gray-500 mb-2">Ticket</div>
+        <h2 className="text-xl font-bold text-gray-900 pr-8">{ticket.subject}</h2>
+        <p className="text-sm text-gray-500 mt-1">{ticket.userName || ticket.from || "N/A"}</p>
+      </div>
+
+      {/* Body */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        {/* Status & Priority */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Status</div>
+            <div className="text-sm font-bold text-gray-900 capitalize">{ticket.status}</div>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Priority</div>
+            <div className="text-sm font-bold text-gray-900 capitalize">{ticket.priority}</div>
+          </div>
         </div>
 
-        <div className="p-6 space-y-6">
-          {/* Status & Priority */}
-          <div className="flex gap-6">
-            <div>
-              <p className="text-[14px] text-gray-500 mb-1">Status</p>
-              <span className="flex items-center gap-2">
-                {getStatusIcon(ticket.status)}
-                <span className="text-[14px] capitalize font-medium text-gray-600">{ticket.status}</span>
-              </span>
-            </div>
-            <div>
-              <p className="text-[14px] text-gray-500 mb-1">Priority</p>
-              <span className={`text-xs font-medium px-2 py-1 rounded-full ${getPriorityColor(ticket.priority)}`}>
-                {ticket.priority}
-              </span>
+        {/* Description */}
+        {ticket.description && (
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Description</div>
+            <p className="text-sm text-gray-900 leading-relaxed font-medium">{ticket.description}</p>
+          </div>
+        )}
+
+        {/* User Info */}
+        {(ticket.userName || ticket.from) && (
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">From</div>
+            <div className="flex items-center gap-2 text-sm font-bold text-gray-900">
+              <User size={14} className="text-gray-400" />
+              {ticket.userName || ticket.from}
             </div>
           </div>
+        )}
 
-          {/* Subject */}
-          <div>
-            <p className="text-[14px] text-gray-500 mb-1">Subject</p>
-            <p className="text-[16px] font-bold text-gray-900">{ticket.subject}</p>
+        {/* Date */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+          <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Created</div>
+          <div className="flex items-center gap-2 text-sm font-bold text-gray-900">
+            <Calendar size={14} className="text-gray-400" />
+            {new Date(ticket.createdAt || ticket.created_at || "").toLocaleString()}
           </div>
+        </div>
 
-          {/* Description */}
-          {ticket.description && (
-            <div>
-              <p className="text-[14px] text-gray-500 mb-1">Description</p>
-              <p className="text-[14px] text-gray-600 leading-relaxed">{ticket.description}</p>
-            </div>
-          )}
-
-          {/* User Info */}
-          {(ticket.userName || ticket.from) && (
-            <div>
-              <p className="text-[14px] text-gray-500 mb-1">From</p>
-              <span className="flex items-center gap-2 text-[14px] text-gray-600">
-                <User size={14} />
-                {ticket.userName || ticket.from}
-              </span>
-            </div>
-          )}
-
-          {/* Date */}
-          <div>
-            <p className="text-[14px] text-gray-500 mb-1">Created</p>
-            <span className="flex items-center gap-2 text-[14px] text-gray-500">
-              <Calendar size={14} />
-              {new Date(ticket.createdAt || ticket.created_at || "").toLocaleString()}
-            </span>
+        {/* Comment (if resolved) */}
+        {ticket.comment && (
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Resolution Comment</div>
+            <p className="text-sm text-gray-900 leading-relaxed font-medium">{ticket.comment}</p>
           </div>
+        )}
 
-          {/* Comment (if resolved) */}
-          {ticket.comment && (
-            <div className="bg-gray-50 p-4 rounded-xl">
-              <p className="text-[14px] text-gray-500 mb-1">Resolution Comment</p>
-              <p className="text-[14px] text-gray-600">{ticket.comment}</p>
-            </div>
-          )}
-
-          {/* Resolve Section (Admin only) */}
-          {onResolve && ticket.status !== "resolved" && ticket.status !== "closed" && (
-            <div className="border-t border-gray-200 pt-6">
-              <label className="block text-[14px] font-bold text-gray-900 mb-2">
-                Resolution Comment (Optional)
-              </label>
-              <textarea
-                rows={3}
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                placeholder="Add a comment about the resolution..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#042BFD] text-[14px] text-gray-900"
-              />
+        {/* Resolve Section */}
+        {onResolve && ticket.status !== "resolved" && ticket.status !== "closed" && (
+          <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5 space-y-4">
+            <h3 className="text-sm font-bold text-gray-900">Resolve Ticket</h3>
+            <textarea
+              rows={3}
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Add a comment about the resolution..."
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-gray-400 resize-none font-medium"
+            />
+            <div className="flex justify-end">
               <button
                 onClick={handleResolve}
                 disabled={isUpdating}
-                className="mt-3 flex items-center gap-2 bg-[#6366F1] text-white px-4 py-2 rounded-lg hover:bg-[#4F46E5] transition-colors disabled:opacity-50 text-[14px] font-medium"
+                className="flex items-center gap-2 px-4 py-2 bg-[#0F172B] hover:bg-blue-500 disabled:bg-slate-400 text-white rounded-lg text-sm font-bold transition-colors"
               >
-                <CheckCircle size={16} />
+                {isUpdating ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
                 {isUpdating ? "Resolving..." : "Resolve Ticket"}
               </button>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

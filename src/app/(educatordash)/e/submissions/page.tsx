@@ -128,8 +128,8 @@ export default function SubmissionsPage() {
   };
 
   return (
-    <div className="p-6 md:p-8 max-w-[1400px] mx-auto space-y-6 bg-[#FAFAFA] min-h-screen">
-      <h1 className="text-[28px] font-bold text-gray-900 tracking-tight">Submissions</h1>
+    <div className="bg-white min-h-screen space-y-6">
+      <h1 className="text-[24px] font-semibold text-[#0A0A0A]" style={{ fontFamily: "'Inter', sans-serif", lineHeight: "36px", letterSpacing: "0.0703125px" }}>Submissions</h1>
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-gray-200">
         <div className="flex items-center gap-8">
@@ -224,7 +224,7 @@ export default function SubmissionsPage() {
               </table>
             </div>
 
-            <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between bg-[#FAFAFA]">
+            <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
               <div className="text-sm text-gray-500">
                 Showing {totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}&ndash;{Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} submissions
               </div>

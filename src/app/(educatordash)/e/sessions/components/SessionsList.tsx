@@ -19,6 +19,24 @@ interface SessionsListProps {
 
 const ITEMS_PER_PAGE = 10;
 
+function StatusBadge({ status }: { status: string }) {
+  const config: Record<string, { bg: string; text: string; icon?: React.ReactNode }> = {
+    Ongoing: { bg: "bg-[#ECFDF5]", text: "text-[#007A55]" },
+    Scheduled: { bg: "bg-[#EFF6FF]", text: "text-[#1447E6]" },
+    Completed: { bg: "bg-[#F3F4F6]", text: "text-[#4A5565]" },
+    Missed: { bg: "bg-[#FEF2F2]", text: "text-[#DC2626]" },
+  };
+  const c = config[status] || { bg: "bg-[#F3F4F6]", text: "text-[#717182]" };
+  return (
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded ${c.bg} ${c.text}`}
+      style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: "11px", lineHeight: "16px", letterSpacing: "0.0644531px" }}
+    >
+      {status}
+    </span>
+  );
+}
+
 export default function SessionsList({ sessions, onViewDetails, loading: externalLoading }: SessionsListProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [internalLoading] = useState(false);
@@ -38,9 +56,20 @@ export default function SessionsList({ sessions, onViewDetails, loading: externa
 
   const loading = internalLoading || externalLoading;
 
+  const gridCols = "grid-cols-[130px_1fr_110px_70px_130px_120px_90px]";
+  const columns = [
+    { key: "id", label: "Session ID" },
+    { key: "title", label: "Session Title" },
+    { key: "type", label: "Type" },
+    { key: "students", label: "" },
+    { key: "date", label: "Date" },
+    { key: "status", label: "Status" },
+    { key: "actions", label: "Actions" },
+  ];
+
   if (loading) {
     return (
-      <div className="bg-white rounded-[20px] shadow-sm overflow-hidden border border-gray-100 p-2 md:p-6 mt-6">
+      <div className="border border-[rgba(0,0,0,0.1)] rounded-[10px] overflow-hidden bg-white">
         <div className="flex items-center justify-center h-48">
           <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
           <span className="ml-2 text-sm text-gray-500">Loading sessions...</span>
@@ -49,132 +78,151 @@ export default function SessionsList({ sessions, onViewDetails, loading: externa
     );
   }
 
+  if (sessions.length === 0) {
+    return (
+      <div className="border border-[rgba(0,0,0,0.1)] rounded-[10px] overflow-hidden bg-white">
+        <div className="flex items-center justify-center py-12 text-[#717182] text-sm">
+          No sessions found
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white rounded-[20px] shadow-sm overflow-hidden border border-gray-100 p-2 md:p-6 mt-6">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
-          <thead className="sticky top-0 bg-white z-10">
-            <tr className="text-sm text-gray-500 border-b border-gray-100">
-              <th className="font-semibold py-4 px-4 whitespace-nowrap">Session ID</th>
-              <th className="font-semibold py-4 px-4 whitespace-nowrap">Session Title</th>
-              <th className="font-semibold py-4 px-4 whitespace-nowrap">Type</th>
-              <th className="font-semibold py-4 px-4 text-center whitespace-nowrap">
-                <Users size={16} className="mx-auto" />
-              </th>
-              <th className="font-semibold py-4 px-4 whitespace-nowrap">Date</th>
-              <th className="font-semibold py-4 px-4 whitespace-nowrap">Status</th>
-              <th className="font-semibold py-4 px-4 text-center whitespace-nowrap">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sessions.length === 0 ? (
-              <tr>
-                <td colSpan={7} className="text-center py-8 text-gray-500">
-                  No sessions found
-                </td>
-              </tr>
-            ) : (
-              paginatedSessions.map((session, index) => (
-                <tr
-                  key={session.id}
-                  className={`border-b border-gray-50 text-sm hover:bg-gray-50 transition-colors ${
-                    index === paginatedSessions.length - 1 ? 'border-none' : ''
-                  }`}
-                >
-                  <td className="py-4 px-4 font-medium text-gray-900 whitespace-nowrap" title={session.id}>{shortenId(session.id)}</td>
-                  <td className="py-4 px-4 text-gray-600 whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      <span>{session.title}</span>
-                      {hasActiveRescheduleRequest(session) ? (
-                        <span className="rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-orange-600">
-                          Reschedule Requested
-                        </span>
-                      ) : null}
-                    </div>
-                  </td>
-                  <td className="py-4 px-4 text-gray-600 whitespace-nowrap">{session.type}</td>
-                  <td className="py-4 px-4 text-center text-gray-600 whitespace-nowrap">{session.attendees}</td>
-                  <td className="py-4 px-4 text-gray-600 whitespace-nowrap">{session.date}</td>
-                  <td className="py-4 px-4 whitespace-nowrap">
-                    {session.status === 'Ongoing' && (
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-green-200 bg-green-50 text-green-700 text-xs font-medium">
-                        <PlayCircle className="w-3.5 h-3.5" />
-                        Ongoing
-                      </div>
-                    )}
-                    {session.status === 'Scheduled' && (
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-blue-600 text-xs font-medium">
-                        <Circle className="w-3.5 h-3.5" />
-                        Scheduled
-                      </div>
-                    )}
-                    {session.status === 'Completed' && (
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-green-200 bg-green-50 text-green-700 text-xs font-medium">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        Completed
-                      </div>
-                    )}
-                    {session.status === 'Missed' && (
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-red-200 bg-red-50 text-red-600 text-xs font-medium">
-                        <Circle className="w-3.5 h-3.5" />
-                        Missed
-                      </div>
-                    )}
-                  </td>
-                  <td className="py-4 px-4 whitespace-nowrap">
-                    <div className="flex items-center justify-center gap-4">
-                      <Link
-                        href={`/e/assignments/create?sessionId=${session.id}&hideFiles=true`}
-                        className="text-gray-400 hover:text-blue-600 transition-colors"
-                        title="Create Assignment"
-                      >
-                        <Eye size={18} />
-                      </Link>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+    <div className="border border-[rgba(0,0,0,0.1)] rounded-[10px] overflow-hidden bg-white">
+      {/* Header */}
+      <div
+        className={`grid ${gridCols} gap-x-4 items-center bg-[#F8F9FA] border-b border-[rgba(0,0,0,0.1)]`}
+        style={{ height: "45.5px" }}
+      >
+        {columns.map((col) => (
+          <div key={col.key} className="flex items-center px-4 h-full">
+            <span
+              className="text-[14px] font-medium text-[#717182]"
+              style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+            >
+              {col.key === "students" ? (
+                <Users size={14} className="mx-auto" />
+              ) : (
+                col.label
+              )}
+            </span>
+          </div>
+        ))}
       </div>
 
-      {sessions.length > 0 && (
-        <div className="flex items-center justify-between mt-6 text-sm text-gray-500">
-          <span>
-            Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} - {Math.min(currentPage * ITEMS_PER_PAGE, sessions.length)} of {sessions.length}
-          </span>
-          <div className="flex items-center gap-1.5">
-            <button 
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="w-8 h-8 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-              <button
-                key={page}
-                onClick={() => handlePageChange(page)}
-                className={`w-8 h-8 flex items-center justify-center rounded-xl font-medium transition-colors ${
-                  currentPage === page 
-                    ? 'bg-[#111827] text-white' 
-                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                }`}
+      {/* Body */}
+      <div className="divide-y divide-[rgba(0,0,0,0.1)]">
+        {paginatedSessions.map((session, index) => (
+          <div
+            key={session.id}
+            className={`grid ${gridCols} gap-x-4 items-center transition-colors hover:bg-gray-50 cursor-pointer`}
+            style={{ height: "46px" }}
+            onClick={() => onViewDetails?.(session)}
+          >
+            <div className="flex items-center px-4">
+              <span
+                className="text-[14px] font-medium text-[#0A0A0A]"
+                style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+                title={session.id}
               >
-                {page}
+                {shortenId(session.id)}
+              </span>
+            </div>
+            <div className="flex items-center px-4">
+              <span
+                className="text-[14px] text-[#0A0A0A] truncate"
+                style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+              >
+                {session.title}
+                {hasActiveRescheduleRequest(session) && (
+                  <span className="ml-2 rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-orange-600">
+                    Reschedule Requested
+                  </span>
+                )}
+              </span>
+            </div>
+            <div className="flex items-center px-4">
+              <span
+                className="text-[14px] text-[#717182]"
+                style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+              >
+                {session.type}
+              </span>
+            </div>
+            <div className="flex items-center justify-center px-4">
+              <span
+                className="text-[14px] text-[#717182]"
+                style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+              >
+                {session.attendees}
+              </span>
+            </div>
+            <div className="flex items-center px-4">
+              <span
+                className="text-[14px] text-[#717182]"
+                style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+              >
+                {session.date}
+              </span>
+            </div>
+            <div className="flex items-center px-4">
+              <StatusBadge status={session.status} />
+            </div>
+            <div className="flex items-center px-4">
+              <button
+                onClick={(e) => { e.stopPropagation(); onViewDetails?.(session); }}
+                className="flex items-center justify-center w-7 h-7 text-[#717182] hover:text-[#042BFD] hover:bg-blue-50 rounded-lg transition-colors"
+              >
+                <Eye size={14} strokeWidth={1.8} />
               </button>
-            ))}
-            <button 
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="w-8 h-8 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronRight size={16} />
-            </button>
+            </div>
           </div>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-between px-4 py-4 border-t border-[rgba(0,0,0,0.1)]">
+        <span className="text-[12px] text-[#717182]" style={{ fontFamily: "'Inter', sans-serif" }}>
+          Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} - {Math.min(currentPage * ITEMS_PER_PAGE, sessions.length)} of {sessions.length}
+        </span>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="flex items-center justify-center w-8 h-8 border border-[rgba(0,0,0,0.1)] rounded opacity-30 cursor-not-allowed disabled:opacity-30 disabled:cursor-not-allowed"
+            style={{ opacity: currentPage === 1 ? 0.3 : 1, cursor: currentPage === 1 ? "not-allowed" : "pointer" }}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 12L6 8L10 4" stroke="#0A0A0A" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+            <button
+              key={page}
+              onClick={() => handlePageChange(page)}
+              className={`flex items-center justify-center w-8 h-8 border border-[rgba(0,0,0,0.1)] rounded text-[14px] font-medium ${
+                currentPage === page
+                  ? 'bg-[#F3F4F6] text-[#0A0A0A]'
+                  : 'text-[#717182] hover:bg-gray-50'
+              }`}
+              style={{ fontFamily: "'Inter', sans-serif" }}
+            >
+              {page}
+            </button>
+          ))}
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="flex items-center justify-center w-8 h-8 border border-[rgba(0,0,0,0.1)] rounded"
+            style={{ opacity: currentPage === totalPages ? 0.3 : 1, cursor: currentPage === totalPages ? "not-allowed" : "pointer" }}
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 12L10 8L6 4" stroke="#0A0A0A" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
         </div>
-      )}
+      </div>
     </div>
   );
 }

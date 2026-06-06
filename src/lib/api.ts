@@ -924,7 +924,20 @@ export const AdminAPI = {
     }
   },
 
-  createUser: async (payload: { name: string; email: string; role: string; password?: string }) => {
+  createUser: async (payload: {
+    name: string;
+    email: string;
+    password?: string;
+    mobileno?: string;
+    role: string;
+    status?: string;
+    permissions?: Record<string, boolean>;
+    inviteMethod?: "email_invite" | "temp_password";
+    organizationId?: string;
+    sendCredentialsEmail?: boolean;
+    sendInviteEmail?: boolean;
+    metadata?: Record<string, any>;
+  }) => {
     if (!payload.name || !payload.email || !payload.role) {
       throw new Error("Name, email, and role are required.");
     }

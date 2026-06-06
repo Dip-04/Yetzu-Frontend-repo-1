@@ -12,7 +12,7 @@ export default function EducatorDashLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="h-screen flex flex-col font-['Inter'] bg-[#F8F9FA]">
+    <div className="h-screen flex flex-col font-['Inter'] bg-white">
       <Header onMenuClick={() => setIsSidebarOpen(true)} />
 
       <div className="flex flex-1 overflow-hidden relative">
@@ -22,7 +22,7 @@ export default function EducatorDashLayout({
         />
 
         <main className="flex-1 overflow-y-auto w-full custom-scrollbar">
-          <div className="max-w-[1600px] mx-auto min-h-full">
+          <div className="max-w-[1600px] mx-auto min-h-full px-[25px] pt-[25px]">
             {children}
           </div>
         </main>

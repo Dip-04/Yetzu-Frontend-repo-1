@@ -88,29 +88,23 @@ export default function BlogTable({ data, showHeader = true, title, onRowClick, 
   const getBlogId = (blog: Blog) => blog.id || blog._id || "";
 
   return (
-    <div className={`bg-white rounded-2xl border-2 border-gray-100 overflow-hidden w-full ${className}`}>
-      {showHeader && (
-        <div className="flex items-center justify-between p-6">
-          <h1 className="font-semibold">{title || "All Blogs"}</h1>
-        </div>
-      )}
-
+    <div className={`border border-slate-200 rounded-lg overflow-hidden bg-white w-full ${className}`}>
       <div className="overflow-x-auto">
-        <table className="w-full text-sm table-auto">
+        <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-gray-100 border-b border-t border-gray-200">
+            <tr className="border-b bg-[#F8F9FA] border-slate-200">
               {["Title", "Status", "Tags", "Created Date", "Actions"].map((col, idx) => (
-                <th key={idx} className="font-medium text-[14px] text-gray-600 px-7 py-4 text-left">
+                <th key={idx} className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                   {col}
                 </th>
               ))}
             </tr>
           </thead>
 
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-slate-200">
             {(!data || data.length === 0) ? (
               <tr>
-                <td colSpan={5} className="px-7 py-8 text-center text-gray-500">
+                <td colSpan={5} className="px-6 py-12 text-center text-sm text-slate-500">
                   No blogs found
                 </td>
               </tr>
@@ -119,65 +113,65 @@ export default function BlogTable({ data, showHeader = true, title, onRowClick, 
               return (
                 <tr
                   key={blogId || idx}
-                  className={`transition-colors hover:bg-gray-50 cursor-pointer ${selectedBlogId === blogId ? "bg-blue-50/50" : ""}`}
+                  className={`hover:bg-slate-50/50 transition-colors group cursor-pointer ${selectedBlogId === blogId ? "bg-blue-50/50" : ""}`}
                   onClick={() => onRowClick && onRowClick(item)}
                 >
-                  <td className="px-7 py-4">
-                    <div className="font-semibold text-sm text-gray-900">{item.title || "Untitled"}</div>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-slate-900">{item.title || "Untitled"}</div>
                     {item.excerpt && (
-                      <div className="text-xs text-gray-500 mt-1 line-clamp-1">{item.excerpt}</div>
+                      <div className="text-xs text-slate-500 mt-0.5 line-clamp-1">{item.excerpt}</div>
                     )}
                   </td>
-                  <td className="px-7 py-4">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <StatusBadge status={item.status || "draft"} />
                   </td>
-                  <td className="px-7 py-4">
-                    <div className="flex flex-wrap gap-1">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-1">
                       {item.tags && item.tags.length > 0 ? (
                         item.tags.slice(0, 3).map((tag: string, i: number) => (
-                          <span key={i} className="inline-block px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-xs">
+                          <span key={i} className="inline-flex items-center px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-xs font-medium">
                             {tag}
                           </span>
                         ))
                       ) : (
-                        <span className="text-gray-400 text-xs">-</span>
+                        <span className="text-slate-400 text-sm">-</span>
                       )}
                       {item.tags && item.tags.length > 3 && (
-                        <span className="text-xs text-gray-500">+{item.tags.length - 3}</span>
+                        <span className="text-xs text-slate-500">+{item.tags.length - 3}</span>
                       )}
                     </div>
                   </td>
-                  <td className="px-7 py-4 text-gray-500 text-sm">
+                  <td className="px-6 py-4 text-sm text-slate-500 whitespace-nowrap">
                     {item.createdAt || item.created_at
                       ? new Date(item.createdAt || item.created_at!).toLocaleDateString()
                       : "N/A"}
                   </td>
-                  <td className="px-7 py-4">
-                    <div className="flex items-center gap-2">
+                  <td className="px-6 py-4 text-sm text-right whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-1">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           if (onRowClick) onRowClick(item);
                         }}
-                        className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#F0F4FF] text-[#042BFD] hover:bg-[#042BFD] hover:text-white transition-all shadow-sm group/view"
                         title="View"
                       >
                         <EyeIcon />
                       </button>
                       <button
                         onClick={(e) => handleEdit(e, item)}
-                        className="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                        className="p-1.5 rounded-md hover:bg-slate-100 transition-colors text-slate-400 hover:text-blue-600"
                         title="Edit"
                       >
-                        <Pencil size={16} />
+                        <Pencil className="w-4 h-4" />
                       </button>
                       <button
                         onClick={(e) => handleDelete(e, blogId)}
                         disabled={deletingId === blogId}
-                        className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                        className="p-1.5 rounded-md hover:bg-slate-100 transition-colors text-slate-400 hover:text-red-600 disabled:opacity-50"
                         title="Delete"
                       >
-                        <Trash2 size={16} />
+                        <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                   </td>

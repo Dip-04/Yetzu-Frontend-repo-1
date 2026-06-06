@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AlertCircle, CheckCircle, Clock, MessageSquare, Eye, Ticket, Loader2 } from "lucide-react";
+import { Eye, Loader2 } from "lucide-react";
 
 interface Ticket {
   id: string;
@@ -22,52 +22,41 @@ interface TicketTableProps {
   isAdmin?: boolean;
 }
 
-  const getStatusBadge = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "resolved":
-    case "closed":
-      return (
-        <span className="inline-flex items-center bg-[#ECFDF5] text-[#059669] px-3 py-1 rounded-full text-[12px] font-medium">
-          {status === "closed" ? "Closed" : "Resolved"}
-        </span>
-      );
-    case "open":
-      return (
-        <span className="inline-flex items-center bg-[#EFF6FF] text-[#2563EB] px-3 py-1 rounded-full text-[12px] font-medium">
-          Open
-        </span>
-      );
-    case "in_review":
-    case "in review":
-    case "in progress":
-      return (
-        <span className="inline-flex items-center bg-[#FFFBEB] text-[#D97706] px-3 py-1 rounded-full text-[12px] font-medium">
-          {status === "in progress" ? "In Progress" : "In Review"}
-        </span>
-      );
-    case "rejected":
-      return (
-        <span className="inline-flex items-center bg-red-100 text-red-700 px-3 py-1 rounded-full text-[12px] font-medium">
-          Rejected
-        </span>
-      );
-    default:
-      return (
-        <span className="inline-flex items-center bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-[12px] font-medium">
-          {status}
-        </span>
-      );
-  }
-};
+function StatusBadge({ status }: { status: string }) {
+  const config: Record<string, { bg: string; text: string }> = {
+    open: { bg: "bg-[#EFF6FF]", text: "text-[#2563EB]" },
+    in_review: { bg: "bg-[#FFFBEB]", text: "text-[#D97706]" },
+    resolved: { bg: "bg-[#ECFDF5]", text: "text-[#059669]" },
+    closed: { bg: "bg-[#ECFDF5]", text: "text-[#059669]" },
+    rejected: { bg: "bg-[#FEF2F2]", text: "text-[#DC2626]" },
+  };
+  const c = config[status.toLowerCase()] || { bg: "bg-[#F3F4F6]", text: "text-[#717182]" };
+  return (
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded ${c.bg} ${c.text}`}
+      style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: "11px", lineHeight: "16px", letterSpacing: "0.0644531px" }}
+    >
+      {status === "in_review" ? "In Review" : status.charAt(0).toUpperCase() + status.slice(1)}
+    </span>
+  );
+}
 
-const getPriorityColor = (priority: string) => {
-  switch (priority.toLowerCase()) {
-    case "high": return "bg-red-100 text-red-700";
-    case "medium": return "bg-yellow-100 text-yellow-700";
-    case "low": return "bg-green-100 text-green-700";
-    default: return "bg-gray-100 text-gray-600";
-  }
-};
+function PriorityBadge({ priority }: { priority: string }) {
+  const config: Record<string, { bg: string; text: string }> = {
+    high: { bg: "bg-[#FEF2F2]", text: "text-[#DC2626]" },
+    medium: { bg: "bg-[#FFFBEB]", text: "text-[#D97706]" },
+    low: { bg: "bg-[#ECFDF5]", text: "text-[#059669]" },
+  };
+  const c = config[priority.toLowerCase()] || { bg: "bg-[#F3F4F6]", text: "text-[#717182]" };
+  return (
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded ${c.bg} ${c.text}`}
+      style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: "11px", lineHeight: "16px", letterSpacing: "0.0644531px" }}
+    >
+      {priority.charAt(0).toUpperCase() + priority.slice(1)}
+    </span>
+  );
+}
 
 const STATUS_OPTIONS = [
   { value: "open", label: "Open" },
@@ -78,6 +67,16 @@ const STATUS_OPTIONS = [
 
 export default function TicketTable({ tickets, onView, onResolve, onStatusChange, showActions = false, isAdmin = false }: TicketTableProps) {
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  const gridCols = "grid-cols-[1fr_1fr_100px_120px_130px_100px]";
+  const columns = [
+    { key: "subject", label: "Subject" },
+    { key: "from", label: "From" },
+    { key: "priority", label: "Priority" },
+    { key: "status", label: "Status" },
+    { key: "date", label: "Date" },
+    { key: "actions", label: "Actions" },
+  ];
 
   const getDate = (ticket: Ticket) => {
     const dateStr = ticket.createdAt || ticket.created_at;
@@ -94,98 +93,115 @@ export default function TicketTable({ tickets, onView, onResolve, onStatusChange
     }
   };
 
+  if (tickets.length === 0) {
+    return (
+      <div className="border border-[rgba(0,0,0,0.1)] rounded-[10px] overflow-hidden bg-white">
+        <div className="flex items-center justify-center py-12 text-[#717182] text-sm">
+          No tickets found
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[900px]">
-          <thead>
-            <tr className="border-b border-gray-200">
-              <th className="py-4 px-6 text-[14px] font-bold text-gray-900">Subject</th>
-              <th className="py-4 px-6 text-[14px] font-bold text-gray-900">From</th>
-              <th className="py-4 px-6 text-[14px] font-bold text-gray-900">Priority</th>
-              <th className="py-4 px-6 text-[14px] font-bold text-gray-900">Status</th>
-              <th className="py-4 px-6 text-[14px] font-bold text-gray-900">Date</th>
-              {showActions && (
-                <th className="py-4 px-6 text-[14px] font-bold text-gray-900">Actions</th>
-              )}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {tickets.length === 0 ? (
-              <tr>
-                <td colSpan={showActions ? 6 : 5} className="py-12 px-6 text-center">
-                  <Ticket size={48} className="mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-500">No tickets found</p>
-                </td>
-              </tr>
-            ) : (
-              tickets.map((ticket: Ticket) => {
-                const ticketId = ticket.id || ticket._id || "";
-                const isUpdating = updatingId === ticketId;
-                return (
-                  <tr key={ticketId} className="hover:bg-gray-50/50 transition-colors" onClick={() => onView(ticket)}>
-                    <td className="py-5 px-6 text-[14px] text-gray-600">{ticket.subject}</td>
-                    <td className="py-5 px-6 text-[14px] text-gray-600">{ticket.userName || ticket.from || "N/A"}</td>
-                    <td className="py-5 px-6">
-                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${getPriorityColor(ticket.priority)}`}>
-                        {ticket.priority}
-                      </span>
-                    </td>
-                    <td className="py-5 px-6" onClick={(e) => e.stopPropagation()}>
-                      {isAdmin ? (
-                        <div className="relative">
-                          <select
-                            value={ticket.status}
-                            onChange={(e) => handleStatusChange(ticketId, e.target.value)}
-                            disabled={isUpdating}
-                            className="text-xs font-medium px-3 py-1 rounded-full border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-[#042BFD] cursor-pointer disabled:opacity-50"
-                            style={{
-                              backgroundColor: ticket.status === 'resolved' || ticket.status === 'closed' ? '#ECFDF5' :
-                                             ticket.status === 'open' ? '#EFF6FF' :
-                                             ticket.status === 'in_review' || ticket.status === 'in progress' ? '#FFFBEB' :
-                                             ticket.status === 'rejected' ? '#FEE2E2' : '#F3F4F6',
-                              color: ticket.status === 'resolved' || ticket.status === 'closed' ? '#059669' :
-                                     ticket.status === 'open' ? '#2563EB' :
-                                     ticket.status === 'in_review' || ticket.status === 'in progress' ? '#D97706' :
-                                     ticket.status === 'rejected' ? '#DC2626' : '#4B5563'
-                            }}
-                          >
-                            {STATUS_OPTIONS.map(option => (
-                              <option key={option.value} value={option.value}>{option.label}</option>
-                            ))}
-                          </select>
-                          {isUpdating && (
-                            <Loader2 size={14} className="absolute right-2 top-1/2 -translate-y-1/2 animate-spin text-gray-500" />
-                          )}
-                        </div>
-                      ) : (
-                        getStatusBadge(ticket.status)
-                      )}
-                    </td>
-                    <td className="py-5 px-6 text-[14px] text-gray-600">{getDate(ticket)}</td>
-                    {showActions && (
-                      <td className="py-5 px-6">
-                        {ticket.status !== "resolved" && ticket.status !== "closed" && onResolve ? (
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onResolve(ticketId, "");
-                            }}
-                            className="flex items-center gap-1 px-3 py-1.5 text-xs bg-green-100 text-green-700 rounded-lg hover:bg-green-200"
-                          >
-                            <CheckCircle size={12} /> Resolve
-                          </button>
-                        ) : (
-                          <span className="text-xs text-green-600 font-medium">Resolved</span>
-                        )}
-                      </td>
-                    )}
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+    <div className="border border-[rgba(0,0,0,0.1)] rounded-[10px] overflow-hidden bg-white">
+      <div
+        className={`grid ${gridCols} items-center bg-[#F8F9FA] border-b border-[rgba(0,0,0,0.1)]`}
+        style={{ height: "45.5px" }}
+      >
+        {columns.map((col) => (
+          <div key={col.key} className="flex items-center px-4 h-full">
+            <span
+              className="text-[14px] font-medium text-[#717182]"
+              style={{ fontFamily: "'Inter', sans-serif", fontWeight: 500, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+            >
+              {col.label}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div className="divide-y divide-[rgba(0,0,0,0.1)]">
+        {tickets.map((ticket: Ticket) => {
+          const ticketId = ticket.id || ticket._id || "";
+          const isUpdating = updatingId === ticketId;
+          return (
+            <div
+              key={ticketId}
+              className={`grid ${gridCols} items-center transition-colors hover:bg-gray-50 cursor-pointer`}
+              style={{ height: "46px" }}
+              onClick={() => onView(ticket)}
+            >
+              <div className="flex items-center px-4">
+                <span
+                  className="text-[14px] text-[#0A0A0A] truncate"
+                  style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+                >
+                  {ticket.subject}
+                </span>
+              </div>
+              <div className="flex items-center px-4">
+                <span
+                  className="text-[14px] text-[#717182] truncate"
+                  style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+                >
+                  {ticket.userName || ticket.from || "N/A"}
+                </span>
+              </div>
+              <div className="flex items-center px-4">
+                <PriorityBadge priority={ticket.priority} />
+              </div>
+              <div className="flex items-center px-4" onClick={(e) => e.stopPropagation()}>
+                {isAdmin ? (
+                  <div className="relative">
+                    <select
+                      value={ticket.status}
+                      onChange={(e) => handleStatusChange(ticketId, e.target.value)}
+                      disabled={isUpdating}
+                      className="appearance-none px-2 py-0.5 rounded text-[11px] font-medium border border-[rgba(0,0,0,0.1)] bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 cursor-pointer disabled:opacity-50"
+                      style={{
+                        fontFamily: "'Inter', sans-serif",
+                        backgroundColor:
+                          ticket.status === "resolved" || ticket.status === "closed" ? "#ECFDF5" :
+                          ticket.status === "open" ? "#EFF6FF" :
+                          ticket.status === "in_review" ? "#FFFBEB" :
+                          ticket.status === "rejected" ? "#FEF2F2" : "#F3F4F6",
+                        color:
+                          ticket.status === "resolved" || ticket.status === "closed" ? "#059669" :
+                          ticket.status === "open" ? "#2563EB" :
+                          ticket.status === "in_review" ? "#D97706" :
+                          ticket.status === "rejected" ? "#DC2626" : "#4B5563",
+                      }}
+                    >
+                      {STATUS_OPTIONS.map(option => (
+                        <option key={option.value} value={option.value}>{option.label}</option>
+                      ))}
+                    </select>
+                    {isUpdating && <Loader2 size={14} className="absolute right-2 top-1/2 -translate-y-1/2 animate-spin text-gray-500" />}
+                  </div>
+                ) : (
+                  <StatusBadge status={ticket.status} />
+                )}
+              </div>
+              <div className="flex items-center px-4">
+                <span
+                  className="text-[14px] text-[#717182]"
+                  style={{ fontFamily: "'Inter', sans-serif", fontWeight: 400, fontSize: "14px", lineHeight: "21px", letterSpacing: "-0.150391px" }}
+                >
+                  {getDate(ticket)}
+                </span>
+              </div>
+              <div className="flex items-center px-4">
+                <button
+                  onClick={(e) => { e.stopPropagation(); onView(ticket); }}
+                  className="flex items-center justify-center w-7 h-7 text-[#717182] hover:text-[#042BFD] hover:bg-blue-50 rounded-lg transition-colors"
+                >
+                  <Eye size={14} strokeWidth={1.8} />
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

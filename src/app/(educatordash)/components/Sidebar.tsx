@@ -51,7 +51,7 @@ export default function EducatorSidebar({ isOpen, onClose }: SidebarProps) {
       <aside
         className={`
                 fixed md:static inset-y-0 right-0 md:left-0 z-50
-                w-[280px] h-full bg-white
+                w-[240px] h-full bg-white
                 flex flex-col
                 transform transition-all duration-500 ease-in-out
                 ${isOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"}

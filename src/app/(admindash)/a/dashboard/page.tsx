@@ -62,7 +62,7 @@ export default function AdminDashboardPage() {
       {/* --- HEADER SECTION --- */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl md:text-4xl font-bold text-[#021165] tracking-tight">Overview</h1>
+          <h1 className="text-[24px] font-semibold text-[#0A0A0A]" style={{ fontFamily: "'Inter', sans-serif", lineHeight: "36px", letterSpacing: "0.0703125px" }}>Overview</h1>
           <p className="text-sm text-gray-500 font-medium mt-1">Monitor your platform's performance and key metrics</p>
         </div>
       </div>
