@@ -95,6 +95,7 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
 
   const submitFeedback = async () => {
     if (!reviewRemark.trim()) return;
+    if (isReviewing || isUploading) return;
     setIsReviewing(true);
     let uploadedUrl = "";
     if (feedbackFile) {
@@ -142,6 +143,11 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error("File must be under 10MB.");
+        e.target.value = "";
+        return;
+      }
       setFeedbackFile(file);
       setFeedbackFileName(file.name);
     }
@@ -335,7 +341,7 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
                   type="text"
                   value={reviewRemark}
                   onChange={(e) => setReviewRemark(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && submitFeedback()}
+                  onKeyDown={(e) => e.key === "Enter" && !isReviewing && !isUploading && submitFeedback()}
                   placeholder="Type your feedback..."
                   className="w-full pl-4 pr-12 py-3.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-400 bg-white shadow-sm transition-all"
                 />
