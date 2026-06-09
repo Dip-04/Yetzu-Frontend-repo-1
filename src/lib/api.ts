@@ -504,7 +504,7 @@ export const EducatorAPI = {
       const response = await authApi.post("/api/educator/reschedule/list", {});
       return dataOf(response);
     } catch (error) {
-      logApiFailure("EducatorAPI.getRescheduleRequests.primary", error);
+      console.warn("[API:EducatorAPI.getRescheduleRequests.primary] failed. Using session-derived fallback.", (error as any)?.message);
       // Fallback: fetch sessions and extract reschedule requests
       try {
         const sessionsRes = await EducatorAPI.getSessions();

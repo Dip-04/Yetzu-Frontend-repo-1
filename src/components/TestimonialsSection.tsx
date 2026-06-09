@@ -5,8 +5,25 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Quote } from "lucide-react";
 
-export default function Testimonials() {
-  const testimonials = [
+interface Testimonial {
+  name: string;
+  role: string;
+  text: string;
+  avatar: string;
+}
+
+interface TestimonialsSectionProps {
+  badge?: string;
+  heading?: string;
+  subheading?: string;
+  testimonials?: Testimonial[];
+}
+
+export default function Testimonials({
+  badge = "Trust",
+  heading = "Learners who chose guidance over guesswork",
+  subheading = "Read how medical students, researchers, and professionals used Yetzu mentorship, cohorts, and assignments to move from uncertainty to publication-ready work.",
+  testimonials = [
     {
       name: "Sohab Alam",
       role: "Neurosurgeon",
@@ -37,9 +54,8 @@ export default function Testimonials() {
       text: "The entire learning journey felt personalized and truly empowering — a great experience overall.",
       avatar: "/images/Avatar.png",
     },
-  ];
-
-  // Extended testimonials array for mobile infinite scroll (show 4 at a time)
+  ],
+}) {
   const extendedTestimonials = [
     ...testimonials,
     ...testimonials,
@@ -165,14 +181,13 @@ export default function Testimonials() {
       {/* Section Header */}
       <div className="relative z-10 text-center max-w-4xl">
         <div className="inline-block bg-[#E1E4EA] rounded-full px-4 py-1 text-[#021165] text-sm mb-3">
-          Testimonials
+          {badge}
         </div>
         <h2 className="text-[#021165] text-3xl md:text-5xl font-semibold mb-3">
-          Trusted by Students and Educators Worldwide
+          {heading}
         </h2>
         <p className="text-[#333] max-w-3xl mx-auto">
-          Explore stories from learners around the world on how Yetzu mentorship
-          helped them reach their academic and career goals.
+          {subheading}
         </p>
       </div>
 

@@ -7,40 +7,58 @@ import SubHeading from "@/components/Typography/SubHeading";
 import Paragraph from "@/components/Typography/Paragraph";
 import Button from "../ui/Button";
 
-const faqs = [
-  {
-    id: 1,
-    question: "Your Question goes here?",
-    answer:
-      "Accordion description goes here. Try to keep it under 2 lines so it looks good and minimal.",
-  },
-  {
-    id: 2,
-    question: "Your Question goes here?",
-    answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ut erat id nunc convallis facilisis.",
-  },
-  {
-    id: 3,
-    question: "Your Question goes here?",
-    answer:
-      "Accordion description goes here. Try to keep it under 2 lines so it looks good and minimal.",
-  },
-  {
-    id: 4,
-    question: "Your Question goes here?",
-    answer:
-      "This can be any short piece of information your users frequently ask.",
-  },
-  {
-    id: 5,
-    question: "Your Question goes here?",
-    answer:
-      "Make sure to provide clear and concise answers for best user experience.",
-  },
-];
+interface FAQItemData {
+  id: number;
+  question: string;
+  answer: string;
+}
 
-export default function FAQSection() {
+interface FAQSectionProps {
+  badge?: string;
+  heading?: string;
+  faqs?: FAQItemData[];
+  ctaText?: string;
+  ctaLabel?: string;
+}
+
+export default function FAQSection({
+  badge = "Questions",
+  heading = "Clear answers to your most common doubts.",
+  faqs = [
+    {
+      id: 1,
+      question: "Your Question goes here?",
+      answer:
+        "Accordion description goes here. Try to keep it under 2 lines so it looks good and minimal.",
+    },
+    {
+      id: 2,
+      question: "Your Question goes here?",
+      answer:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque ut erat id nunc convallis facilisis.",
+    },
+    {
+      id: 3,
+      question: "Your Question goes here?",
+      answer:
+        "Accordion description goes here. Try to keep it under 2 lines so it looks good and minimal.",
+    },
+    {
+      id: 4,
+      question: "Your Question goes here?",
+      answer:
+        "This can be any short piece of information your users frequently ask.",
+    },
+    {
+      id: 5,
+      question: "Your Question goes here?",
+      answer:
+        "Make sure to provide clear and concise answers for best user experience.",
+    },
+  ],
+  ctaText = "Still have questions?",
+  ctaLabel = "Ask Here",
+}: FAQSectionProps) {
   const [openId, setOpenId] = useState<number | null>(null);
 
   const toggle = (id: number) => {
@@ -52,23 +70,23 @@ export default function FAQSection() {
       <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
         <div className="flex flex-col justify-between space-y-8">
           <div>
-            <SubHeading text="FAQ" />
+            <SubHeading text={badge} />
             <Paragraph
-              text="Know answers to all of your questions"
+              text={heading}
               className="mx-0"
             />
           </div>
 
           <div className="bg-blue-50 p-6 rounded-2xl shadow-none max-w-sm">
             <h3 className="text-lg font-semibold text-gray-900 mb-1">
-              Still have questions?
+              {ctaText}
             </h3>
             <p className="text-gray-600 text-sm mb-4">
               Can't find the answer to your questions? Send us an email and
               we'll get back to you as soon as possible.
             </p>
             <Button variant="primary" className="!w-fit !h-[40px] px-6">
-              Ask Here
+              {ctaLabel}
             </Button>
           </div>
         </div>

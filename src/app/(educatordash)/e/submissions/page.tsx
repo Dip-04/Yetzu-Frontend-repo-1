@@ -129,7 +129,7 @@ export default function SubmissionsPage() {
   };
 
   return (
-    <div className="bg-white min-h-screen space-y-6">
+    <div className="bg-white space-y-6 pb-8">
       <h1 className="text-[24px] font-semibold text-[#0A0A0A]" style={{ fontFamily: "'Inter', sans-serif", lineHeight: "36px", letterSpacing: "0.0703125px" }}>Submissions</h1>
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-gray-200">

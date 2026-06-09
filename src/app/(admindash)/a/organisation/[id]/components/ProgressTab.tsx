@@ -11,9 +11,11 @@ const SummaryCard = ({ value, label, valueColor }: { value: string, label: strin
 
 type ProgressTabProps = {
   students?: any[];
+  avgCompletionRate?: number;
+  sessionsJoined?: number;
 };
 
-export default function ProgressTab({ students }: ProgressTabProps) {
+export default function ProgressTab({ students, avgCompletionRate = 0 }: ProgressTabProps) {
   const topPerformersRaw = (students && students.length > 0)
     ? students
       .map((s: any) => ({
@@ -31,7 +33,7 @@ export default function ProgressTab({ students }: ProgressTabProps) {
       
       {/* Top Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <SummaryCard value="67%" label="Avg Progress" valueColor="text-blue-600" />
+        <SummaryCard value={`${avgCompletionRate}%`} label="Avg Progress" valueColor="text-blue-600" />
         <SummaryCard value="82 students" label="On Track" valueColor="text-green-500" />
         <SummaryCard value="18 students" label="At Risk" valueColor="text-red-500" />
       </div>

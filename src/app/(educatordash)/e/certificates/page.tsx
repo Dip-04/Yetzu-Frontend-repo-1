@@ -69,10 +69,10 @@ export default function EducatorCertificatesPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#F8F9FA] font-sans flex flex-col">
+    <div className="w-full font-sans flex flex-col pb-8">
       {/* HEADER */}
-      <div className="bg-white px-6 md:px-10 py-4 border-b border-gray-200 shrink-0">
-        <div className="max-w-[1600px] mx-auto">
+      <div className="bg-white py-4 border-b border-gray-200 shrink-0">
+        <div className="w-full">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h1 className="text-[26px] font-bold text-gray-900 mb-1">Certificates</h1>
@@ -93,7 +93,7 @@ export default function EducatorCertificatesPage() {
       </div>
 
       {/* MAIN CONTENT */}
-      <div className="flex-1 p-4 md:p-10 max-w-[1600px] mx-auto w-full">
+      <div className="flex-1 py-6 w-full">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 size={32} className="animate-spin text-[#6366F1]" />

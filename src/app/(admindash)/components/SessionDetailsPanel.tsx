@@ -99,7 +99,21 @@ export default function SessionDetailsPanel({ session, onClose, onUpdate }: Prop
     if (!currentSession) return;
     setIsSaving(true);
     try {
-      await AdminAPI.updateSession(currentSession.id, editData);
+      const payload = { ...editData };
+      if (payload.type) {
+        const typeLower = String(payload.type).toLowerCase();
+        if (typeLower === "1:1" || typeLower === "1-1" || typeLower === "mentorship") {
+          payload.type = "1:1";
+        } else if (typeLower === "certification course" || typeLower === "certification") {
+          payload.type = "certification";
+        } else if (typeLower === "cohort") {
+          payload.type = "cohort";
+        } else if (typeLower === "webinar") {
+          payload.type = "webinar";
+        }
+        payload.sessionType = payload.type;
+      }
+      await AdminAPI.updateSession(currentSession.id, payload);
       toast.success("Session updated successfully");
       setIsEditing(false);
       // Refresh session data

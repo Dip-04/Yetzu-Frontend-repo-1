@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { Search, RefreshCw, ChevronRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Search, RefreshCw } from 'lucide-react';
 import SessionsList from './components/SessionsList';
 import CalendarView from './components/CalendarView';
-import SessionDetailsDrawer from './components/SessionDetailsDrawer';
 import { Session } from './types';
 import { EducatorAPI, asArray } from '@/lib/api';
 import { shortenId } from '@/lib/utils/shortenId';
@@ -20,19 +20,17 @@ const hasActiveRescheduleRequests = (session: Session) =>
   (session.rescheduleRequests || []).some(isActiveRescheduleRequest);
 
 export default function EducatorSessionsPage() {
+    const router = useRouter();
     const [activeTab, setActiveTab] = useState<'All' | 'Upcoming' | 'Completed' | 'Missed'>('All');
     const [activeView, setActiveView] = useState<'Sessions List' | 'Calendar View'>('Sessions List');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [selectedSession, setSelectedSession] = useState<Session | null>(null);
     const [sessions, setSessions] = useState<Session[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const handleViewDetails = (session: Session) => {
-        setSelectedSession(session);
-        setIsDrawerOpen(true);
+        router.push(`/e/sessions/${session.id}`);
     };
-    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const fetchSessions = async () => {
@@ -81,10 +79,36 @@ export default function EducatorSessionsPage() {
                         }),
                     ];
 
+                    let sType = "Webinar";
+                    if (item.type) {
+                        if (typeof item.type === "object") {
+                            sType = item.type.name || item.type.type || item.type.displayName || "Webinar";
+                        } else {
+                            sType = item.type;
+                        }
+                    } else if (item.sessionType) {
+                        if (typeof item.sessionType === "object") {
+                            sType = item.sessionType.name || item.sessionType.type || item.sessionType.displayName || "Webinar";
+                        } else {
+                            sType = item.sessionType;
+                        }
+                    }
+
+                    const sTypeLower = String(sType || "").toLowerCase();
+                    if (sTypeLower === "webinar") {
+                        sType = "Webinar";
+                    } else if (sTypeLower === "cohort") {
+                        sType = "Cohort";
+                    } else if (sTypeLower === "1:1" || sTypeLower === "1-1" || sTypeLower === "mentorship") {
+                        sType = "1:1";
+                    } else if (sTypeLower === "certification" || sTypeLower === "certification course") {
+                        sType = "Certification Course";
+                    }
+
                     return {
                         id,
                         title: item.title || item.sessionTitle || item.courseTitle || "Session",
-                        type: item.type || item.sessionType || "Webinar",
+                        type: sType,
                         attendees: studentsCount,
                         date: rawDate ? dateTime.toLocaleDateString() : "TBD",
                         dateTime,
@@ -108,6 +132,17 @@ export default function EducatorSessionsPage() {
         };
         fetchSessions();
     }, []);
+
+    // Redirect to detail page automatically if URL query param sessionId is present
+    useEffect(() => {
+        if (sessions.length > 0 && typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            const querySessionId = params.get("sessionId") || params.get("id");
+            if (querySessionId) {
+                router.push(`/e/sessions/${querySessionId}`);
+            }
+        }
+    }, [sessions, router]);
 
     const filteredSessions = useMemo(() => {
         return sessions.filter(session => {
@@ -139,7 +174,7 @@ export default function EducatorSessionsPage() {
     ];
 
     return (
-        <div className="flex flex-col min-h-screen bg-white">
+        <div className="flex flex-col bg-white pb-8">
             {/* Header */}
             <div className="pb-6">
                 <h1 className="text-[24px] font-semibold text-[#0A0A0A]" style={{ fontFamily: "'Inter', sans-serif", lineHeight: "36px", letterSpacing: "0.0703125px" }}>Sessions</h1>
@@ -270,11 +305,6 @@ export default function EducatorSessionsPage() {
                 ) : null}
             </div>
 
-            <SessionDetailsDrawer
-                isOpen={isDrawerOpen}
-                onClose={() => setIsDrawerOpen(false)}
-                session={selectedSession}
-            />
         </div>
     );
 }

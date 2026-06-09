@@ -90,7 +90,7 @@ export default function AssignmentDetailPage({ params }: { params: Promise<{ id:
 
   if (loading) {
     return (
-      <div className="p-6 md:p-8 max-w-[1400px] mx-auto min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+      <div className="p-6 md:p-8 min-h-screen bg-[#FAFAFA] flex items-center justify-center">
         <div className="flex items-center gap-3 text-gray-500">
           <Loader2 className="w-5 h-5 animate-spin" />
           <span>Loading assignment...</span>
@@ -101,7 +101,7 @@ export default function AssignmentDetailPage({ params }: { params: Promise<{ id:
 
   if (!data || error) {
     return (
-      <div className="p-6 md:p-8 max-w-[1400px] mx-auto min-h-screen bg-[#FAFAFA] flex items-center justify-center">
+      <div className="p-6 md:p-8 min-h-screen bg-[#FAFAFA] flex items-center justify-center">
         <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 max-w-lg text-center">
           <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-red-500 mx-auto mb-4">
             <AlertCircle size={28} />
@@ -151,7 +151,7 @@ export default function AssignmentDetailPage({ params }: { params: Promise<{ id:
   const submittedCount = submissionStats.submitted || submissions.length;
 
   return (
-    <div className="p-6 md:p-8 max-w-[1400px] mx-auto space-y-6 bg-[#FAFAFA] min-h-screen">
+    <div className="p-6 md:p-8 space-y-6 bg-[#FAFAFA] min-h-screen">
       <div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
         <Link href="/e/sessions" className="hover:text-gray-700">Sessions</Link>
         <ChevronRight className="w-4 h-4" />

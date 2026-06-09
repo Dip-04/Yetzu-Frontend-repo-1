@@ -1,4 +1,12 @@
-export default function VideoSection() {
+interface VideoSectionProps {
+  heading?: string;
+  youtubeEmbedUrl?: string;
+}
+
+export default function VideoSection({
+  heading = "A platform built by mentors who've walked your path",
+  youtubeEmbedUrl = "https://www.youtube.com/embed/VCPGMjCW0is?rel=0&modestbranding=1",
+}: VideoSectionProps) {
   return (
     <section
       className="w-full mx-auto px-4 sm:px-6 md:px-12 lg:px-[108px] 
@@ -6,8 +14,8 @@ export default function VideoSection() {
              bg-white py-12 md:py-14 lg:py-16"
     >
       {/* Heading */}
-      <h2 className="font-inter font-semibold text-[38px] sm:text-[38px] md:text-[40px] lg:text-[40px] text-[#021165] text-center leading-[100%] px-4 tracking-[-0.7%]">
-        Lorem Ipsum Dolor Self Amet
+      <h2 className="font-inter font-semibold text-[26px] sm:text-[32px] md:text-[40px] lg:text-[40px] text-[#021165] text-center leading-[1.2] px-4 tracking-[-0.7%]">
+        {heading}
       </h2>
 
       {/* Video Wrapper */}

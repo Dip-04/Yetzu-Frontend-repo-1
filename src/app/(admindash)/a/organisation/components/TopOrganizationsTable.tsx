@@ -3,25 +3,55 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AdminAPI, asArray } from '@/lib/api';
+import type { TimeRange } from '../page';
 
 const mapOrganization = (org: any, index: number) => {
   const students = Number(org.students || org.totalStudents || org.studentCount || org.studentsCount || 0);
   const activeUsers = Number(org.activeUsers || org.activeStudents || org.active || 0);
   const activePercent = Number(org.activePercent ?? org.activePercentage ?? (students ? Math.round((activeUsers / students) * 100) : 0));
+  const rawRevenue = org.revenue || org.revenueGenerated || 0;
+  const formattedRevenue = typeof rawRevenue === 'number' ? `$${rawRevenue.toLocaleString()}` : rawRevenue;
 
   return {
-    id: org.id || org._id || org.organizationId || index + 1,
+    id: org.id || org._id || org.organizationId || org.orgId || index + 1,
     name: org.name || org.organizationName || 'Untitled Organization',
     students,
     activeUsers,
     activePercent,
-    revenue: org.revenue || org.revenueGenerated || '$0',
-    completionRate: Number(org.completionRate || org.sessionCompletionRate || 0),
+    revenue: formattedRevenue,
+    completionRate: Number(org.completionRate || org.avgCompletionRate || org.sessionCompletionRate || 0),
+    status: String(org.status || 'active').toLowerCase(),
+    subscriptionStatus: String(org.subscriptionStatus || '').toLowerCase(),
   };
 };
 
-export default function TopOrganizationsTable() {
+function dateRangeLabel(timeRange: TimeRange) {
+  const today = new Date();
+  let start: Date;
+  switch (timeRange) {
+    case '1M': start = new Date(today); start.setMonth(start.getMonth() - 1); break;
+    case '3M': start = new Date(today); start.setMonth(start.getMonth() - 3); break;
+    case '6M': start = new Date(today); start.setMonth(start.getMonth() - 6); break;
+    case '1Y': start = new Date(today); start.setFullYear(start.getFullYear() - 1); break;
+    default: start = new Date(today); start.setFullYear(start.getFullYear() - 2); break;
+  }
+  const fmt = (d: Date) => `${d.getDate()} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]}`;
+  return `${fmt(start)} - ${fmt(today)}`;
+}
+
+function columnLabels(timeRange: TimeRange) {
+  const range = dateRangeLabel(timeRange);
+  return {
+    students: `Students (${range})`,
+    active: `Active (${range})`,
+    revenue: `Revenue (${range})`,
+    completion: `Completion (${range})`,
+  };
+}
+
+export default function TopOrganizationsTable({ timeRange }: { timeRange: TimeRange }) {
   const [organizationsData, setOrganizationsData] = useState<any[]>([]);
+  const labels = columnLabels(timeRange);
 
   useEffect(() => {
     const loadOrganizations = async () => {
@@ -47,23 +77,25 @@ export default function TopOrganizationsTable() {
       </div>
 
       <div className="overflow-x-auto w-full">
-        <table className="w-full text-left border-collapse min-w-[800px]">
+        <table className="w-full text-left border-collapse min-w-[800px] table-auto">
           <thead>
             <tr className="bg-[#FAFAFA] border-b border-gray-100">
-              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500 w-[20%]">Org Name</th>
-              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500 w-[15%]">Students</th>
-              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500 w-[15%]">Active Users</th>
-              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500 w-[15%]">Revenue</th>
-              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500 w-[20%]">Session Completion Rate</th>
-              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500 w-[10%] text-right">Status</th>
-              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500 w-[5%] text-right">Action</th>
+              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500">Org Name</th>
+              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500">{labels.students}</th>
+              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500">{labels.active}</th>
+              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500">{labels.revenue}</th>
+              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500">{labels.completion}</th>
+              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500 text-right">Status</th>
+              <th className="py-3.5 px-5 text-xs font-semibold text-gray-500 text-right">Action</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {organizationsData.map((org, index) => (
               <tr key={org.id || index} className="hover:bg-gray-50/50 transition-colors group">
                 <td className="py-4 px-5 text-sm font-semibold text-[#3B82F6]">
-                  {org.name}
+                  <Link href={`/a/organisation/${org.id}`} className="hover:underline">
+                    {org.name}
+                  </Link>
                 </td>
                 <td className="py-4 px-5 text-[13px] font-medium text-gray-600">
                   {org.students}
@@ -86,8 +118,12 @@ export default function TopOrganizationsTable() {
                   </div>
                 </td>
                 <td className="py-4 px-5 text-right">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-[#ECFDF5] text-[#10B981]">
-                    Active
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold ${
+                    org.status === 'suspended' ? 'bg-red-50 text-red-600' :
+                    org.status === 'inactive' ? 'bg-gray-100 text-gray-500' :
+                    'bg-[#ECFDF5] text-[#10B981]'
+                  }`}>
+                    {org.status === 'suspended' ? 'Suspended' : org.status === 'inactive' ? 'Inactive' : 'Active'}
                   </span>
                 </td>
                 <td className="py-4 px-5 text-right">

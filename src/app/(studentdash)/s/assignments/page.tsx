@@ -330,15 +330,15 @@ export default function AssignmentPage() {
       </div>
 
       {/* --- MAIN CONTENT AREA --- */}
-      <div className="px-4 md:px-10 max-w-[1600px] mx-auto mt-2">
+      <div className="px-4 md:px-10  max-w-[1600px] mx-auto mt-6">
         
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center h-[40vh]">
+          <div className="flex flex-col  items-center justify-center h-[40vh]">
             <div className="h-8 w-8 border-4 border-[#042BFD] border-t-transparent rounded-full animate-spin mb-4" />
             <p className="text-gray-500 font-medium text-sm">Loading assignments...</p>
           </div>
         ) : error ? (
-          <div className="flex flex-col items-center justify-center h-[40vh] bg-white rounded-xl border border-gray-200">
+          <div className="flex flex-col  items-center justify-center h-[40vh] bg-white rounded-xl border border-gray-200">
             <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mb-4 text-red-400">
               <AlertCircle size={32} />
             </div>

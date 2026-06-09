@@ -13,21 +13,65 @@ import {
   LogOut,
   User,
   LayoutDashboard,
+  ShoppingCart,
+  LayoutGrid,
+  Calendar,
+  Send,
+  Ticket,
+  CheckCircle2,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import useSession from "@/hooks/useSession";
 import { useLogoutMutation } from "@/lib/queries/identityService/useIdentityService";
 import Button from "./ui/Button";
+import { useCart } from "@/providers/CartProvider";
+import { StudentAPI, asArray } from "@/lib/api";
+import { getTimeAgo } from "@/lib/utils/dateUtils";
 
 const Navbar = () => {
-  const { user: { name, email, id = "", role = "" } = {} } = useSession();
+  const { user } = useSession();
+  const contextName = user?.name || "";
+  const contextEmail = user?.email || "";
+  const id = user?.id || "";
+  const role = user?.role || "";
+
+  const [studentProfile, setStudentProfile] = useState<{ name: string; email: string } | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (role?.toLowerCase() === "student") {
+        try {
+          const res = await StudentAPI.me();
+          const userData = res?.user || res?.data?.user || res?.data || res;
+          if (userData) {
+            setStudentProfile({
+              name: userData.name || userData.Name || "",
+              email: userData.email || userData.Email || "",
+            });
+          }
+        } catch (error) {
+          console.error("Failed to fetch student profile in Navbar:", error);
+        }
+      }
+    };
+    fetchProfile();
+  }, [role]);
+
+  const name = studentProfile?.name || contextName;
+  const email = studentProfile?.email || contextEmail;
   const { mutateAsync: logout } = useLogoutMutation();
+  const { cartCount } = useCart();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(true);
 
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const notifRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -37,11 +81,51 @@ const Navbar = () => {
       ) {
         setIsUserMenuOpen(false);
       }
+      if (
+        notifRef.current &&
+        !notifRef.current.contains(event.target as Node)
+      ) {
+        setIsNotifOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Fetch student notifications on mount and when role changes
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      if (role?.toLowerCase() === "student") {
+        try {
+          const notifRes = await StudentAPI.getNotifications();
+          const apiNotifications = asArray(
+            notifRes?.data?.notifications ||
+            notifRes?.notifications ||
+            notifRes?.data ||
+            notifRes
+          );
+          setNotifications(apiNotifications);
+          setUnreadCount(
+            notifRes?.data?.summary?.newMessages ??
+            notifRes?.summary?.newMessages ??
+            apiNotifications.filter((item: any) => item.unread || item.isUnread || !item.read).length
+          );
+        } catch (error) {
+          console.error("Failed to fetch student notifications in Navbar:", error);
+          setNotifications([]);
+          setUnreadCount(0);
+        }
+      }
+    };
+
+    fetchNotifications();
+  }, [role]);
+
+  const markAllAsRead = () => {
+    setUnreadCount(0);
+    setNotifications(notifications.map((n) => ({ ...n, unread: false })));
+  };
 
   // Prevent body scroll when sidebar is open
   useEffect(() => {
@@ -71,21 +155,35 @@ const Navbar = () => {
       case "educator":
         return "/e/dashboard";
       case "student":
-        return "/s/overview";
+        return "/s/dashboard";
       default:
         return "/s/dashboard";
     }
   };
 
-  const userMenuItems = [
-    { href: getDashboardLink(), label: "Dashboard", icon: LayoutDashboard },
-    { href: "/profile/courses", label: "My Courses", icon: FileText },
-    { href: "/profile/submissions", label: "My Submissions", icon: FileText },
-    { href: "/profile/awards", label: "Awards", icon: Award },
-    { href: "/profile/notifications", label: "Notifications", icon: Bell },
-    { href: "/profile", label: "My Profile", icon: User },
-    { href: "/profile/settings", label: "Settings", icon: Settings },
-  ];
+  const getUserMenuItems = () => {
+    if (role?.toLowerCase() === "student") {
+      return [
+        { href: "/s/dashboard", label: "Overview", icon: LayoutGrid },
+        { href: "/s/sessions", label: "Sessions", icon: Calendar },
+        { href: "/s/assignments", label: "Assignments", icon: FileText },
+        { href: "/s/certificate", label: "Certificates", icon: Award },
+        { href: "/s/chat", label: "Chat", icon: Send },
+        { href: "/s/tickets", label: "Tickets", icon: Ticket },
+      ];
+    }
+    return [
+      { href: getDashboardLink(), label: "Dashboard", icon: LayoutDashboard },
+      { href: "/profile/courses", label: "My Courses", icon: FileText },
+      { href: "/profile/submissions", label: "My Submissions", icon: FileText },
+      { href: "/profile/awards", label: "Awards", icon: Award },
+      { href: "/profile/notifications", label: "Notifications", icon: Bell },
+      { href: "/profile", label: "My Profile", icon: User },
+      { href: "/profile/settings", label: "Settings", icon: Settings },
+    ];
+  };
+
+  const menuItemsToUse = getUserMenuItems();
 
   return (
     <>
@@ -120,15 +218,116 @@ const Navbar = () => {
 
           {/* Right: User Actions */}
           <div className="flex items-center gap-4">
+            {/* Shopping Cart */}
+            <Link
+              href="/cart"
+              className="relative p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 flex items-center justify-center text-gray-700"
+            >
+              <ShoppingCart size={20} />
+              {cartCount > 0 && (
+                <span className="absolute top-0.5 right-0.5 bg-[#042BFD] text-white text-[10px] font-bold w-4.5 h-4.5 rounded-full flex items-center justify-center border border-white">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+
             {/* Notification Bell (Desktop - only when logged in) */}
-            {name && (
+            {name && role?.toLowerCase() === "student" ? (
+              <div className="hidden lg:block relative" ref={notifRef}>
+                <button
+                  onClick={() => setIsNotifOpen(!isNotifOpen)}
+                  className={`p-2 hover:bg-gray-100 rounded-full transition-colors duration-200 relative ${
+                    isNotifOpen ? "bg-gray-100" : ""
+                  }`}
+                >
+                  <Bell size={20} className="text-gray-700" />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border border-white"></span>
+                  )}
+                </button>
+
+                {isNotifOpen && (
+                  <div
+                    className="absolute right-0 mt-2 w-[380px] md:w-[420px] bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden cursor-default animate-in slide-in-from-top-2 duration-200"
+                  >
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                      <div className="flex items-center gap-2.5">
+                        <h2 className="text-[16px] font-semibold text-gray-900">Notifications</h2>
+                        {unreadCount > 0 && (
+                          <span className="bg-[#E0E7FF] text-[#4F39F6] text-[11px] font-semibold px-2 py-0.5 rounded-full">
+                            {unreadCount} new
+                          </span>
+                        )}
+                      </div>
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={markAllAsRead}
+                          className="text-[12px] font-medium text-[#042BFD] hover:text-blue-800 transition-colors"
+                        >
+                          Mark all as read
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Body */}
+                    <div className="max-h-[400px] overflow-y-auto custom-scrollbar pb-2">
+                      {notifications.length > 0 ? (
+                        <div className="flex flex-col">
+                          {notifications.map((notif, idx) => (
+                            <div
+                              key={notif.id || idx}
+                              className="flex items-start gap-4 px-5 py-4 sm:px-4 sm:py-3 hover:bg-gray-50/80 transition-colors border-b border-gray-50 cursor-pointer"
+                            >
+                              <div className={`w-10 h-10 sm:w-9 sm:h-9 rounded-full flex items-center justify-center shrink-0 ${notif.unread ? "bg-[#E0E7FF] text-[#4F39F6]" : "bg-[#F8FAFC] text-gray-400"}`}>
+                                <Bell size={17} strokeWidth={1.5} />
+                              </div>
+
+                              <div className="flex-1 min-w-0 pr-2">
+                                <h4 className={`text-[14px] sm:text-[13px] leading-snug mb-0.5 ${notif.unread ? "font-semibold text-gray-900" : "font-medium text-gray-700"}`}>
+                                  {notif.title || "Notification"}
+                                </h4>
+                                <p className="text-[13px] sm:text-[12px] text-gray-500 mb-1.5 truncate font-normal">
+                                  {notif.subtitle || notif.message}
+                                </p>
+                                <p className="text-[11px] text-gray-400 font-normal">
+                                  {getTimeAgo(notif.createdAt || notif.time)}
+                                </p>
+                              </div>
+
+                              <div className="w-2 pt-1.5 shrink-0 flex justify-center">
+                                {notif.unread && (
+                                  <div className="w-[7px] h-[7px] bg-[#042BFD] rounded-full" />
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+                          <div className="w-12 h-12 rounded-full bg-[#EBF0FF] text-[#042BFD] flex items-center justify-center mb-4">
+                            <CheckCircle2 size={24} strokeWidth={1.5} />
+                          </div>
+                          <h3 className="text-[15px] font-semibold text-gray-900 mb-1.5">
+                            You're all caught up 🎉
+                          </h3>
+                          <p className="text-[13px] text-gray-500 font-normal">
+                            We'll notify you when something new happens.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : name ? (
               <button className="hidden lg:flex relative p-2 hover:bg-gray-100 rounded-full transition-colors duration-200">
                 <Bell size={20} className="text-gray-700" />
                 {hasUnreadNotifications && (
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
                 )}
               </button>
-            )}
+            ) : null}
 
             {/* User Menu or Login Button (Desktop) */}
             {name ? (
@@ -160,7 +359,7 @@ const Navbar = () => {
 
                     {/* Menu Items */}
                     <div className="py-2">
-                      {userMenuItems.map((item) => {
+                      {menuItemsToUse.map((item) => {
                         const Icon = item.icon;
                         return (
                           <Link
@@ -273,7 +472,7 @@ const Navbar = () => {
               {/* User Menu Items (Mobile - only when logged in) */}
               {name && (
                 <div className="pt-4 mt-4 border-t border-gray-200 space-y-1">
-                  {userMenuItems.map((item) => {
+                  {menuItemsToUse.map((item) => {
                     const Icon = item.icon;
                     return (
                       <Link

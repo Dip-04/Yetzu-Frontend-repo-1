@@ -202,7 +202,7 @@ export default function SubmissionDetailPage({ params }: { params: Promise<{ id:
   const reviewDone = status === "reviewed" || status === "review done";
 
   return (
-    <div className="p-6 md:p-8 max-w-[1400px] mx-auto space-y-6 bg-[#FAFAFA] min-h-screen">
+    <div className="p-6 md:p-8 space-y-6 bg-[#FAFAFA] min-h-screen">
       <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
         <Link href="/e/sessions" className="hover:text-gray-700 transition-colors">Sessions</Link>
         <ChevronRight className="w-4 h-4" />

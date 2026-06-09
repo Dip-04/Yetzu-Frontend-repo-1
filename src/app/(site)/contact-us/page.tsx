@@ -3,7 +3,7 @@
 import ContactForm from "./components/ContactForm";
 import OurOffices from "./components/OurOffices";
 import ResourceCards from "./components/ResourceCards";
-import FAQSection from "@/components/shared/FAQSection";
+import PageFAQSection from "@/components/shared/PageFAQSection";
 import BookSlotSection from "./components/BookSlotSection";
 
 export default function ContactPage() {
@@ -12,7 +12,7 @@ export default function ContactPage() {
       <ContactForm />
       <OurOffices />
       <ResourceCards />
-      <FAQSection />
+      <PageFAQSection pageKey="contact" />
       <BookSlotSection />
     </>
   );

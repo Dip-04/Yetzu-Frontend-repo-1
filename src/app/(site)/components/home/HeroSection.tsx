@@ -2,7 +2,30 @@
 
 import Image from "next/image";
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  studentCount?: string;
+  studentAvatars?: string[];
+  headingMobile?: string[];
+  headingDesktop?: string[];
+  subheading?: string;
+  heroImage?: string;
+  kpis?: Array<{ num: string; label: string }>;
+}
+
+export default function HeroSection({
+  studentCount = "150+ Students Enrolled",
+  studentAvatars = ["/images/Avatar (1).png", "/images/Avatar (2).png", "/images/Avatar.png"],
+  headingMobile = ["Your Ultimate Academic", "Mentorship & Learning Ecosystem"],
+  headingDesktop = ["Your Ultimate Academic", "Mentorship & Learning Ecosystem"],
+  subheading = "Unlock Your Potential with Personalized Mentorship, Milestone Based Assignments, and Expert Academic Support-All in One Intuitive Platform.",
+  heroImage = "/images/Hero Section.png",
+  kpis = [
+    { num: "200+", label: "Community Members" },
+    { num: "24+", label: "Institutes Affiliated" },
+    { num: "30k+", label: "Mentorship Hours" },
+    { num: "100+", label: "Students Mentored" },
+  ],
+}: HeroSectionProps) {
   return (
     <section className="relative text-center min-h-auto md:min-h-[calc(100vh-80px)] flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] overflow-hidden bg-gradient-to-b from-[#F8FAFF] to-white py-8 sm:py-12 md:py-6">
       {/* Background Gradient Behind Hero Image */}
@@ -11,46 +34,35 @@ export default function HeroSection() {
       {/* Avatars + Student count */}
       <div className="flex justify-center items-center gap-2 mb-6 md:mb-3 relative z-10 flex-wrap">
         <div className="flex -space-x-2">
-          <Image
-            src="/images/Avatar (1).png"
-            alt="Student 1"
-            width={32}
-            height={32}
-            className="w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-white"
-          />
-          <Image
-            src="/images/Avatar (2).png"
-            alt="Student 2"
-            width={32}
-            height={32}
-            className="w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-white"
-          />
-          <Image
-            src="/images/Avatar.png"
-            alt="Student 3"
-            width={32}
-            height={32}
-            className="w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-white"
-          />
+          {studentAvatars.map((src, i) => (
+            <Image
+              key={i}
+              src={src}
+              alt={`Student ${i + 1}`}
+              width={32}
+              height={32}
+              className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white"
+            />
+          ))}
         </div>
-        <p className="text-[14px] md:text-base text-[#021165] font-sfpro font-normal">
-          150+ Students Enrolled
+        <p className="text-[12px] md:text-base text-[#021165] font-sfpro font-normal">
+          {studentCount}
         </p>
       </div>
 
       {/* Mobile H1 */}
       <h1
         className="md:hidden font-inter font-semibold 
-        text-[28px] sm:text-[40px] 
-        leading-[34px] sm:leading-[48px] 
+        text-[18px] sm:text-[28px] 
+        leading-[24px] sm:leading-[36px] 
         tracking-tight text-[#252525] 
-        max-w-[90%] mx-auto mb-4 md:mb-6 relative z-20"
+        max-w-[95%] mx-auto mb-4 md:mb-6 relative z-20"
       >
-        <span className="block">Your Ultimate</span>
-        <span className="block">Academic</span>
-        <span className="block text-[#042BFD]">Mentorship &amp;</span>
-        <span className="block text-[#042BFD]">Learning</span>
-        <span className="block text-[#042BFD]">Ecosystem</span>
+        {headingMobile.map((line, i) => (
+          <span key={i} className={`block${i >= 1 ? ' text-[#042BFD]' : ''}`}>
+            {line}
+          </span>
+        ))}
       </h1>
 
       {/* Desktop H1 */}
@@ -61,50 +73,45 @@ export default function HeroSection() {
         tracking-tight text-[#252525] 
         md:max-w-5xl mx-auto mb-4 md:mb-6 relative z-20"
       >
-        <span className="block">Your Ultimate Academic</span>
-        <span className="block text-[#042BFD]">
-          Mentorship &amp; Learning Ecosystem
-        </span>
+        {headingDesktop.map((line, i) => (
+          <span key={i} className={`block${i >= 1 ? ' text-[#042BFD]' : ''}`}>
+            {line}
+          </span>
+        ))}
       </h1>
 
       {/* Subheading */}
-      <p className="text-[#252525] max-w-[95%] md:max-w-3xl mx-auto text-[14px] sm:text-[16px] md:text-[18px] leading-[17px] sm:leading-[19px] md:leading-[21px] font-sfpro font-normal relative z-20 mb-8 md:mb-6">
-        Unlock Your Potential with Personalized Mentorship, Milestone Based
-        Assignments, and Expert Academic Support-All in One Intuitive Platform.
+      <p className="text-[#252525] max-w-[95%] md:max-w-3xl mx-auto text-[13px] sm:text-[16px] md:text-[18px] leading-[1.4] font-sfpro font-normal relative z-20 mb-8 md:mb-6">
+        {subheading}
       </p>
 
       {/* Hero Image */}
       <div className="flex justify-center relative z-20 mb-6 md:mb-8">
         <Image
-          src="/images/Hero Section.png"
+          src={heroImage}
           alt="Mentors"
           width={1100}
           height={600}
-          className="w-[95%] sm:w-[90%] md:w-[950px] lg:w-[1100px] object-contain md:scale-105 max-h-[240px] md:max-h-none"
+          className="w-[95%] sm:w-[90%] md:w-[950px] lg:w-[1100px] object-contain md:scale-105 max-h-[220px] md:max-h-none"
         />
       </div>
 
       {/* Stats Section */}
       <div
-        className="bg-[#252525] text-white rounded-[16px] py-6 px-6 sm:px-8 w-full max-w-[1220px] mx-auto shadow-none relative z-30 md:-mt-32 lg:-mt-40"
-        style={{ marginTop: "-85px" }}
+        className="bg-[#252525] text-white rounded-[16px] py-4 px-3 sm:px-8 w-full max-w-[1220px] mx-auto shadow-none relative z-30 md:-mt-32 lg:-mt-40"
+        style={{ marginTop: "-70px" }}
       >
         {/* Mobile: 2x2 Grid */}
-        <div className="grid grid-cols-2 gap-4 md:hidden">
-          {[
-            { num: "200+", label: "Community Members" },
-            { num: "24+", label: "Institutes Affiliated" },
-            { num: "30k+", label: "Mentorship Hours" },
-            { num: "100+", label: "Students Mentored" },
-          ].map((item, i) => (
+        <div className="grid grid-cols-2 gap-2 md:hidden">
+          {kpis.map((item, i) => (
             <div
               key={i}
-              className="flex flex-col items-center justify-center gap-1 bg-white rounded-[16px] shadow-md p-6 h-[107px]"
+              className="flex flex-col items-center justify-center gap-1 bg-white rounded-[12px] shadow-md p-2 min-h-[85px]"
             >
-              <h3 className="font-inter font-bold text-[32px] leading-[39px] text-center text-[#021165] w-full mb-[2px]">
+              <h3 className="font-inter font-bold text-[20px] leading-tight text-center text-[#021165] w-full">
                 {item.num}
               </h3>
-              <p className="font-sfpro font-normal text-[18px] leading-[21px] text-center tracking-[-0.03em] text-[#252525] w-full">
+              <p className="font-sfpro font-normal text-[10px] leading-tight text-center tracking-tight text-[#252525] w-full line-clamp-2">
                 {item.label}
               </p>
             </div>
@@ -113,12 +120,7 @@ export default function HeroSection() {
 
         {/* Desktop: Horizontal Scroll */}
         <div className="hidden md:flex flex-nowrap justify-center gap-6 overflow-x-auto">
-          {[
-            { num: "200+", label: "Community Members" },
-            { num: "24+", label: "Institutes Affiliated" },
-            { num: "30k+", label: "Mentorship Hours" },
-            { num: "100+", label: "Students Mentored" },
-          ].map((item, i) => (
+          {kpis.map((item, i) => (
             <div
               key={i}
               className="flex flex-col items-center justify-center gap-2 w-[267px] min-w-[267px] flex-shrink-0 h-[164px] bg-white rounded-[16px] shadow-md transition-transform p-[24px]"

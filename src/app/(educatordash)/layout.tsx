@@ -22,7 +22,7 @@ export default function EducatorDashLayout({
         />
 
         <main className="flex-1 overflow-y-auto w-full custom-scrollbar">
-          <div className="max-w-[1600px] mx-auto min-h-full px-[25px] pt-[25px]">
+          <div className="min-h-full px-[25px] pt-[25px]">
             {children}
           </div>
         </main>

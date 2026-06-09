@@ -306,7 +306,7 @@ function CreateAssignmentContent() {
   );
 
   return (
-    <div className="p-6 md:p-8 max-w-[1400px] mx-auto space-y-8 bg-[#FAFAFA] min-h-screen relative pb-32">
+    <div className="p-6 md:p-8 space-y-8 bg-[#FAFAFA] min-h-screen relative pb-32">
       <div className="flex items-center gap-4 border-b border-gray-200 pb-6">
         <Link href="/e/assignments" className="w-10 h-10 flex items-center justify-center border border-gray-200 bg-white rounded-xl hover:bg-gray-50 transition-colors shadow-sm">
           <ChevronLeft className="w-5 h-5 text-gray-600" />
@@ -331,7 +331,7 @@ function CreateAssignmentContent() {
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 border-t border-gray-200 bg-[#FAFAFA] p-6 z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
-        <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <button
             onClick={() => setStep(prev => Math.max(1, prev - 1))}
             className={`flex items-center gap-2 px-6 py-3 border border-gray-200 rounded-xl bg-white text-sm font-medium transition-colors shadow-sm ${step === 1 ? 'text-gray-300 cursor-not-allowed opacity-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'}`}

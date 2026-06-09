@@ -1,22 +1,67 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import type { TimeRange } from '../page';
 
-const data = [
-  { name: 'Oct', created: 26, students: 26 },
-  { name: 'Nov', created: 38, students: 30 },
-  { name: 'Dec', created: 40, students: 35 },
-  { name: 'Jan', created: 42, students: 38 },
-  { name: 'Feb', created: 45, students: 43 },
-  { name: 'Mar', created: 47, students: 47 },
-  { name: 'Apr', created: null, students: null },
-  { name: 'May', created: null, students: null },
-  { name: 'Jun', created: null, students: null },
-];
+const ranges: TimeRange[] = ['1M', '3M', '6M', '1Y', 'All'];
 
-export default function OrganizationGrowthChart() {
-  const [timeRange, setTimeRange] = useState('1M');
-  const ranges = ['1M', '3M', '6M', '1Y', 'All'];
+function formatDate(d: Date) {
+  const day = d.getDate();
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${day} ${months[d.getMonth()]}`;
+}
+
+function generateData(timeRange: TimeRange) {
+  const today = new Date();
+  let start: Date;
+
+  switch (timeRange) {
+    case '1M':
+      start = new Date(today);
+      start.setMonth(start.getMonth() - 1);
+      break;
+    case '3M':
+      start = new Date(today);
+      start.setMonth(start.getMonth() - 3);
+      break;
+    case '6M':
+      start = new Date(today);
+      start.setMonth(start.getMonth() - 6);
+      break;
+    case '1Y':
+      start = new Date(today);
+      start.setFullYear(start.getFullYear() - 1);
+      break;
+    default: // All
+      start = new Date(today);
+      start.setFullYear(start.getFullYear() - 2);
+      break;
+  }
+
+  const points: { name: string; created: number; students: number }[] = [];
+  const cursor = new Date(start);
+  let baseCreated = 20;
+  let baseStudents = 18;
+
+  while (cursor <= today) {
+    baseCreated += Math.floor(Math.random() * 5) + 1;
+    baseStudents += Math.floor(Math.random() * 4) + 1;
+    points.push({
+      name: formatDate(cursor),
+      created: baseCreated,
+      students: baseStudents,
+    });
+    cursor.setDate(cursor.getDate() + 5);
+  }
+
+  return points;
+}
+
+export default function OrganizationGrowthChart({ timeRange, onTimeRangeChange }: { timeRange: TimeRange; onTimeRangeChange: (r: TimeRange) => void }) {
+  const data = useMemo(() => generateData(timeRange), [timeRange]);
+  const maxVal = Math.max(...data.flatMap(d => [d.created ?? 0, d.students ?? 0]), 10);
+  const yMax = Math.ceil(maxVal / 10) * 10;
+  const yTicks = Array.from({ length: 5 }, (_, i) => Math.round((yMax / 4) * i));
 
   return (
     <div className="bg-white rounded-2xl border shadow-sm border-gray-100 p-5 col-span-1 lg:col-span-2">
@@ -26,7 +71,7 @@ export default function OrganizationGrowthChart() {
           {ranges.map((range) => (
             <button
               key={range}
-              onClick={() => setTimeRange(range)}
+              onClick={() => onTimeRangeChange(range)}
               className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${
                 timeRange === range 
                   ? 'bg-white shadow-sm text-gray-800 border border-gray-200/60' 
@@ -54,8 +99,8 @@ export default function OrganizationGrowthChart() {
               axisLine={false} 
               tickLine={false} 
               tick={{ fontSize: 11, fill: '#9CA3AF' }}
-              domain={[0, 52]}
-              ticks={[0, 13, 26, 39, 52]}
+              domain={[0, yMax]}
+              ticks={yTicks}
               dx={-5}
             />
             <Tooltip 

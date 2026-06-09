@@ -44,7 +44,25 @@ export default function DashNavbar({
   onMenuClick,
   onNotificationToggle,
 }: DashNavbarProps) {
-  const { user } = useSession();
+  const { user: sessionUser } = useSession();
+  const [studentProfile, setStudentProfile] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await StudentAPI.me();
+        const userData = res?.user || res?.data?.user || res?.data || res;
+        if (userData) {
+          setStudentProfile(userData);
+        }
+      } catch (error) {
+        console.error("Failed to fetch student profile in DashNavbar:", error);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  const user = studentProfile || sessionUser;
   
   // Profile State
   const [isProfileOpen, setIsProfileOpen] = useState(false);

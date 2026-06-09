@@ -5,8 +5,8 @@ import CourseCard, { CourseCardSkeleton } from "./components/CourseCard";
 import CoursesHero from "./components/CoursesHero";
 import CourseFilters from "./components/CourseFilters";
 import CertificationSection from "./components/CertificationSection";
-import FAQSection from "@/components/shared/FAQSection";
-import Testimonials from "@/components/TestimonialsSection";
+import PageFAQSection from "@/components/shared/PageFAQSection";
+import PageTestimonialsSection from "@/components/shared/PageTestimonialsSection";
 import PromoCards from "./components/PromoCards";
 import BookSlotSection from "@/app/(site)/contact-us/components/BookSlotSection";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -135,9 +135,9 @@ export default function CoursesPage() {
                     </div>
                 </div>
             </section>
-            <Testimonials />
+            <PageTestimonialsSection pageKey="courses" />
             <CertificationSection />
-            <FAQSection />
+            <PageFAQSection pageKey="courses" />
             <PromoCards />
             <BookSlotSection />
         </main>

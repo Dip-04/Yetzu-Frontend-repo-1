@@ -212,7 +212,7 @@ export default function SessionsPage() {
             tab: (isPast ? "completed" : "upcoming") as SessionTab,
             isFocusToday: false,
             startIso,
-            webinerLink: course.webinerLink || "",
+            webinerLink: course.webinerLink || course.cohortLink || course.mentorshipLink || course.joinUrl || "",
             thumbnail: getImageUrl(course.thumbnail || ""),
             hasRescheduleRequest: hasActiveRescheduleRequest(course) || hasActiveRescheduleRequest(item),
           };

@@ -9,6 +9,8 @@ import AvatarStack from "@/components/ui/AvatarStack";
 import { PaymentAPI } from "@/lib/api";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import { useCart } from "@/providers/CartProvider";
+import CourseHoverCard from "@/components/shared/CourseHoverCard";
 
 interface CourseCardProps {
   course: Course;
@@ -16,6 +18,22 @@ interface CourseCardProps {
 
 export default function CourseCard({ course }: CourseCardProps) {
   const [isBuying, setIsBuying] = useState(false);
+  const { addToCart, isInCart } = useCart();
+
+  const [isHovered, setIsHovered] = useState(false);
+  const [hoveredPosition, setHoveredPosition] = useState<"left" | "right">("right");
+
+  const handleMouseEnter = (e: React.MouseEvent) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const screenWidth = window.innerWidth;
+    const position = rect.left + rect.width / 2 > screenWidth / 2 ? "left" : "right";
+    setHoveredPosition(position);
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
 
   const formattedStart = (startDate: string) => {
     if (!startDate) return "";
@@ -68,7 +86,11 @@ const handleEnroll = async () => {
   };
 
   return (
-    <div className="bg-white rounded-[32px] border border-[#EEF0FB] overflow-hidden flex flex-col h-full p-5 shadow-sm hover:shadow-md transition-shadow duration-300">
+    <div
+      className="relative group bg-white rounded-[32px] border border-[#EEF0FB] flex flex-col h-full p-5 shadow-sm hover:shadow-md transition-shadow duration-300"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
 
       {/* Whole Card Click → Details */}
       <Link href={`/courses/${course?._id}`} className="flex flex-col flex-grow group">
@@ -102,7 +124,7 @@ const handleEnroll = async () => {
           </h3>
 
           <p className="text-sm text-[#7A7A7A] leading-relaxed line-clamp-2 mb-2">
-            {course.description}
+             {course.description}
           </p>
 
           <div className="mb-6">
@@ -126,16 +148,37 @@ const handleEnroll = async () => {
           </Button>
         </Link>
 
-        {/* Enroll Now */}
-        <Button
-          onClick={handleEnroll}
-          disabled={isBuying}
-          className="!rounded-xl !h-[44px] !text-sm w-full"
-        >
-          {isBuying ? "Processing..." : "Enroll Now"}
-        </Button>
+        {/* Add to Cart / Go to Cart */}
+        {isInCart(course._id) ? (
+          <Link href="/cart" className="w-full">
+            <Button
+              variant="secondary"
+              className="!rounded-xl !h-[44px] !text-sm w-full"
+            >
+              Go to Cart
+            </Button>
+          </Link>
+        ) : (
+          <Button
+            onClick={() => addToCart(course)}
+            className="!rounded-xl !h-[44px] !text-sm w-full"
+          >
+            Add to Cart
+          </Button>
+        )}
 
       </div>
+
+      {isHovered && (
+        <div className="hidden lg:block">
+          <CourseHoverCard
+            courseId={course._id}
+            position={hoveredPosition}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={handleMouseLeave}
+          />
+        </div>
+      )}
     </div>
   );
 }

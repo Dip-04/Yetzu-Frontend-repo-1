@@ -33,6 +33,43 @@ interface FocusItem {
   assignmentId?: string;
 }
 
+const getSessionTypeStyle = (type?: any) => {
+  let sType = "webinar";
+  if (type) {
+    if (typeof type === "object") {
+      sType = String(type.name || type.type || type.displayName || "webinar").toLowerCase();
+    } else {
+      sType = String(type).toLowerCase();
+    }
+  }
+
+  if (sType.includes("1-1") || sType.includes("1:1") || sType.includes("one-on-one") || sType.includes("mentorship")) {
+    return {
+      gradientFrom: "from-[#E3DCFA]",
+      watermarkIcon: "/admin-dashboard/Vector (3).png",
+      watermarkColor: "text-[#7C3AED]/10",
+      badgeColor: "bg-[#7C3AED] text-white",
+      badgeLabel: "1-1 Session",
+    };
+  } else if (sType.includes("cohort")) {
+    return {
+      gradientFrom: "from-[#DBF7F9]",
+      watermarkIcon: "/admin-dashboard/Vector (4).png",
+      watermarkColor: "text-[#0EA5E9]/10",
+      badgeColor: "bg-[#0EA5E9] text-white",
+      badgeLabel: "Cohort",
+    };
+  } else {
+    return {
+      gradientFrom: "from-[#FCF1DE]",
+      watermarkIcon: "/admin-dashboard/Vector (5).png",
+      watermarkColor: "text-[#F59E0B]/10",
+      badgeColor: "bg-[#F59E0B] text-white",
+      badgeLabel: "Webinar",
+    };
+  }
+};
+
 export default function FocusWeekly() {
   const [items, setItems] = useState<FocusItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -67,21 +104,24 @@ export default function FocusWeekly() {
         .slice(0, 2);
       
       const nextItems: any[] = [
-        ...upcomingSessions.map((session: any, index: number) => ({
-          id: `session-${session.id || session._id || index}`,
-          title: session.title || session.sessionTitle || session.courseTitle || "Upcoming Session",
-          badgeLabel: index === 0 ? "TODAY" : null,
-          badgeColor: "bg-[#7C3AED] text-white",
-          watermarkIcon: "/images/video-chat.svg",
-          watermarkColor: "text-[#7C3AED]/10",
-          date: new Date(session.date || session.startDateTime || Date.now()).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }),
-          time: session.time || session.startTime || null,
-          buttonText: "View Details",
-          buttonType: "outline" as const,
-          gradientFrom: "from-[#F3E8FF]",
-          type: "session" as const,
-          sessionId: session.id || session._id,
-        })),
+        ...upcomingSessions.map((session: any, index: number) => {
+          const typeStyle = getSessionTypeStyle(session.type || session.sessionType);
+          return {
+            id: `session-${session.id || session._id || index}`,
+            title: session.title || session.sessionTitle || session.courseTitle || "Upcoming Session",
+            badgeLabel: typeStyle.badgeLabel,
+            badgeColor: typeStyle.badgeColor,
+            watermarkIcon: typeStyle.watermarkIcon,
+            watermarkColor: typeStyle.watermarkColor,
+            date: new Date(session.date || session.startDateTime || Date.now()).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }),
+            time: session.time || session.startTime || null,
+            buttonText: "View Details",
+            buttonType: "outline" as const,
+            gradientFrom: typeStyle.gradientFrom,
+            type: "session" as const,
+            sessionId: session.id || session._id,
+          };
+        }),
         ...pendingAssignments.map((assignment: any) => ({
           id: `assignment-${assignment.id || assignment._id}`,
           title: assignment.title || assignment.assignmentTitle || "Pending Assignment",
@@ -112,7 +152,7 @@ export default function FocusWeekly() {
 
   const handleCardClick = (item: FocusItem) => {
     if (item.type === "session") {
-      router.push(`/e/sessions`);
+      router.push(`/e/sessions/${item.sessionId}`);
     } else {
       router.push(`/e/assignments`);
     }

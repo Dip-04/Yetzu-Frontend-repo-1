@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed:cms": "node scripts/seed-cms.cjs"
   },
   "dependencies": {
     "@nivo/line": "^0.99.0",

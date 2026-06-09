@@ -266,10 +266,22 @@ export default function CreateSession({ onBack, onCreated }: CreateSessionProps)
       const normalizedType = normalizeSessionType(sessionType);
       const formData = new FormData();
 
+      let apiSessionType = "webinar";
+      if (sessionType === "1:1") {
+        apiSessionType = "1:1";
+      } else if (sessionType === "Certification Course") {
+        apiSessionType = "certification";
+      } else if (sessionType === "Cohort") {
+        apiSessionType = "cohort";
+      } else if (sessionType === "Webinar") {
+        apiSessionType = "webinar";
+      }
+
       formData.append("title", sessionTitle.trim());
       formData.append("description", description.trim());
       formData.append("sessionCode", sessionCode || generateSessionCode(normalizedType));
-      formData.append("sessionType", normalizedType);
+      formData.append("sessionType", apiSessionType);
+      formData.append("type", apiSessionType);
       formData.append("category", category);
       formData.append("assignmentEnabled", assignmentEnabled ? "true" : "false");
       formData.append("certificateEnabled", certificateEnabled ? "true" : "false");

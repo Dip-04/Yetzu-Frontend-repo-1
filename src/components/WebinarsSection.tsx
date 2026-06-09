@@ -5,6 +5,9 @@ import { useGetCourses } from "@/lib/queries/courses/useCoursesService";
 import Button from "./ui/Button";
 import { getImageUrl } from "@/lib/utils/imageUtils";
 import Link from "next/link";
+import { useState } from "react";
+import { useCart } from "@/providers/CartProvider";
+import CourseHoverCard from "@/components/shared/CourseHoverCard";
 
 const DEMO_COURSES = [
   {
@@ -92,6 +95,22 @@ const formatSchedule = (scheduleDate: string, startTime: string) => {
 export default function WebinarsSection() {
   const { data: courses, error, isLoading } = useGetCourses();
   const displayCourses = courses && courses.length > 0 ? courses : DEMO_COURSES;
+  const { addToCart, isInCart } = useCart();
+
+  const [hoveredCourseId, setHoveredCourseId] = useState<string | null>(null);
+  const [hoveredPosition, setHoveredPosition] = useState<"left" | "right">("right");
+
+  const handleMouseEnter = (e: React.MouseEvent, courseId: string) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const screenWidth = window.innerWidth;
+    const position = rect.left + rect.width / 2 > screenWidth / 2 ? "left" : "right";
+    setHoveredCourseId(courseId);
+    setHoveredPosition(position);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredCourseId(null);
+  };
 
   return (
     <section
@@ -131,9 +150,11 @@ export default function WebinarsSection() {
           {displayCourses.slice(0, 3).map((course) => (
             <div
               key={course._id}
-              className="w-full bg-white rounded-[16px] shadow-[0px_4px_16px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col"
+              className="relative group w-full bg-white rounded-[16px] shadow-[0px_4px_16px_rgba(0,0,0,0.08)] flex flex-col"
+              onMouseEnter={(e) => handleMouseEnter(e, course._id)}
+              onMouseLeave={handleMouseLeave}
             >
-              <div className="relative w-full h-[200px] flex-shrink-0">
+              <div className="relative w-full h-[200px] flex-shrink-0 overflow-hidden rounded-t-[16px]">
                 <Image
                   src={getImageUrl(course.thumbnail)}
                   alt={course.title}
@@ -150,7 +171,7 @@ export default function WebinarsSection() {
                 </div>
               </div>
 
-              <div className="p-[20px] flex flex-col gap-[16px]">
+              <div className="p-[20px] flex flex-col gap-[16px] flex-1">
                 <h3
                   className="font-inter font-semibold text-[20px] leading-[24px] tracking-[-0.02em] text-[#252525] line-clamp-2"
                   style={{ fontFamily: "var(--font-inter)" }}
@@ -180,22 +201,43 @@ export default function WebinarsSection() {
                 <div className="flex gap-[12px] mt-auto">
                   <Link href={`/courses/${course._id}`} className="flex-1">
                     <button
-                      className="w-full h-[40px] border border-[#042BFD] text-[#042BFD] bg-white rounded-[8px] text-[14px] leading-[16px] hover:bg-[#F0F2FF] transition-colors font-['SF_Pro']"
+                      className="w-full h-[40px] border border-[#042BFD] text-[#042BFD] bg-white rounded-[8px] text-[14px] leading-[16px] hover:bg-[#F0F2FF] transition-colors font-['SF_Pro'] cursor-pointer"
                       style={{ fontFamily: "var(--font-sfpro)" }}
                     >
                       View Details
                     </button>
                   </Link>
-                  <Link href="/login" className="flex-1">
+                  {isInCart(course._id) ? (
+                    <Link href="/cart" className="flex-1">
+                      <button
+                        className="w-full h-[40px] border border-[#042BFD] text-[#042BFD] bg-white rounded-[8px] text-[14px] leading-[16px] hover:bg-[#F0F2FF] transition-colors font-['SF_Pro'] cursor-pointer"
+                        style={{ fontFamily: "var(--font-sfpro)" }}
+                      >
+                        Go to Cart
+                      </button>
+                    </Link>
+                  ) : (
                     <button
-                      className="w-full h-[40px] bg-[#042BFD] text-white rounded-[8px] text-[14px] leading-[16px] hover:bg-[#0325D7] transition-colors font-['SF_Pro']"
+                      onClick={() => addToCart(course)}
+                      className="flex-1 w-full h-[40px] bg-[#042BFD] text-white rounded-[8px] text-[14px] leading-[16px] hover:bg-[#0325D7] transition-colors font-['SF_Pro'] cursor-pointer"
                       style={{ fontFamily: "var(--font-sfpro)" }}
                     >
-                      Enrol
+                      Add to Cart
                     </button>
-                  </Link>
+                  )}
                 </div>
               </div>
+
+              {hoveredCourseId === course._id && (
+                <div className="hidden lg:block">
+                  <CourseHoverCard
+                    courseId={course._id}
+                    position={hoveredPosition}
+                    onMouseEnter={() => setHoveredCourseId(course._id)}
+                    onMouseLeave={handleMouseLeave}
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -204,9 +246,11 @@ export default function WebinarsSection() {
           {displayCourses.slice(3, 6).map((course) => (
             <div
               key={course._id}
-              className="w-full bg-white rounded-[16px] shadow-[0px_4px_16px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col"
+              className="relative group w-full bg-white rounded-[16px] shadow-[0px_4px_16px_rgba(0,0,0,0.08)] flex flex-col"
+              onMouseEnter={(e) => handleMouseEnter(e, course._id)}
+              onMouseLeave={handleMouseLeave}
             >
-              <div className="relative w-full h-[200px] flex-shrink-0">
+              <div className="relative w-full h-[200px] flex-shrink-0 overflow-hidden rounded-t-[16px]">
                 <Image
                   src={getImageUrl(course.thumbnail)}
                   alt={course.title}
@@ -223,7 +267,7 @@ export default function WebinarsSection() {
                 </div>
               </div>
 
-              <div className="p-[20px] flex flex-col gap-[16px]">
+              <div className="p-[20px] flex flex-col gap-[16px] flex-1">
                 <h3
                   className="font-inter font-semibold text-[20px] leading-[24px] tracking-[-0.02em] text-[#252525] line-clamp-2"
                   style={{ fontFamily: "var(--font-inter)" }}
@@ -253,22 +297,43 @@ export default function WebinarsSection() {
                 <div className="flex gap-[12px] mt-auto">
                   <Link href={`/courses/${course._id}`} className="flex-1">
                     <button
-                      className="w-full h-[40px] border border-[#042BFD] text-[#042BFD] bg-white rounded-[8px] text-[14px] leading-[16px] hover:bg-[#F0F2FF] transition-colors font-['SF_Pro']"
+                      className="w-full h-[40px] border border-[#042BFD] text-[#042BFD] bg-white rounded-[8px] text-[14px] leading-[16px] hover:bg-[#F0F2FF] transition-colors font-['SF_Pro'] cursor-pointer"
                       style={{ fontFamily: "var(--font-sfpro)" }}
                     >
                       View Details
                     </button>
                   </Link>
-                  <Link href="/login" className="flex-1">
+                  {isInCart(course._id) ? (
+                    <Link href="/cart" className="flex-1">
+                      <button
+                        className="w-full h-[40px] border border-[#042BFD] text-[#042BFD] bg-white rounded-[8px] text-[14px] leading-[16px] hover:bg-[#F0F2FF] transition-colors font-['SF_Pro'] cursor-pointer"
+                        style={{ fontFamily: "var(--font-sfpro)" }}
+                      >
+                        Go to Cart
+                      </button>
+                    </Link>
+                  ) : (
                     <button
-                      className="w-full h-[40px] bg-[#042BFD] text-white rounded-[8px] text-[14px] leading-[16px] hover:bg-[#0325D7] transition-colors font-['SF_Pro']"
+                      onClick={() => addToCart(course)}
+                      className="flex-1 w-full h-[40px] bg-[#042BFD] text-white rounded-[8px] text-[14px] leading-[16px] hover:bg-[#0325D7] transition-colors font-['SF_Pro'] cursor-pointer"
                       style={{ fontFamily: "var(--font-sfpro)" }}
                     >
-                      Enrol
+                      Add to Cart
                     </button>
-                  </Link>
+                  )}
                 </div>
               </div>
+
+              {hoveredCourseId === course._id && (
+                <div className="hidden lg:block">
+                  <CourseHoverCard
+                    courseId={course._id}
+                    position={hoveredPosition}
+                    onMouseEnter={() => setHoveredCourseId(course._id)}
+                    onMouseLeave={handleMouseLeave}
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>

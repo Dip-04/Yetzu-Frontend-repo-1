@@ -37,13 +37,15 @@ interface ImageUploadProps {
   label: string;
   dimensions?: string;
   maxSize?: string;
+  value?: string;
+  onChange?: (url: string) => void;
 }
 
-export function ImageUpload({ label, dimensions = "36 x 36", maxSize = "10 MB" }: ImageUploadProps) {
+export function ImageUpload({ label, dimensions = "36 x 36", maxSize = "10 MB", value, onChange }: ImageUploadProps) {
   return (
     <div className="mb-4">
       <label className="block text-sm font-medium text-slate-700 mb-2">{label}</label>
-      <UploadBox dimensions={dimensions} maxSize={maxSize} />
+      <UploadBox dimensions={dimensions} maxSize={maxSize} value={value} onChange={onChange} />
     </div>
   );
 }

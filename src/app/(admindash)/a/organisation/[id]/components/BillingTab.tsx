@@ -10,7 +10,7 @@ const SummaryCard = ({ value, label, valueColor }: { value: string, label: strin
 
 const formatCurrency = (amount: number) => `$${(amount || 0).toLocaleString()}`;
 
-export default function BillingTab({ billingCycle, revenue, invoices: propInvoices }: { billingCycle?: string; revenue?: number; invoices?: any[] }) {
+export default function BillingTab({ billingCycle, revenue, invoices: propInvoices, payments }: { billingCycle?: string; revenue?: number; invoices?: any[]; payments?: any[] }) {
   const invoices = (propInvoices && propInvoices.length > 0) ? propInvoices : [];
 
   return (

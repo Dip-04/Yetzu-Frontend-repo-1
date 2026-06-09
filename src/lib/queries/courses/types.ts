@@ -30,6 +30,8 @@ export interface Course {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  educatorRating?: number;
+  educatorQualification?: string;
 }
 
 export interface CoursesResponse {

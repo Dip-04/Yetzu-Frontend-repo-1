@@ -9,6 +9,7 @@ import ToastProvider from "@/providers/ToastProvider";
 import { SessionProvider } from "@/providers/SessionProvider";
 // Provider for React Query - handles server state management, caching, and data fetching
 import { QueryClientWrapper } from "@/providers/QueryClientProvider";
+import { CartProvider } from "@/providers/CartProvider";
 
 // Configure Inter font with Latin subset and create a CSS variable
 // This variable (--font-inter) can be used in CSS/SCSS files
@@ -67,10 +68,12 @@ export default function RootLayout({
         <QueryClientWrapper>
           {/* SessionProvider: Manages user authentication state across the app */}
           <SessionProvider>
-            {/* Render the nested page content (e.g., page.tsx, about/page.tsx, etc.) */}
-            {children}
-            {/* ToastProvider: Renders toast notifications container - typically positioned fixed */}
-            <ToastProvider />
+            <CartProvider>
+              {/* Render the nested page content (e.g., page.tsx, about/page.tsx, etc.) */}
+              {children}
+              {/* ToastProvider: Renders toast notifications container - typically positioned fixed */}
+              <ToastProvider />
+            </CartProvider>
           </SessionProvider>
         </QueryClientWrapper>
       </body>

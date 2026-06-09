@@ -70,6 +70,17 @@ export default function AllSessions({ data }: Props) {
           sessionType = item.sessionType;
         }
 
+        const sTypeLower = sessionType.toLowerCase();
+        if (sTypeLower === "webinar") {
+          sessionType = "Webinar";
+        } else if (sTypeLower === "cohort") {
+          sessionType = "Cohort";
+        } else if (sTypeLower === "1:1" || sTypeLower === "1-1" || sTypeLower === "mentorship") {
+          sessionType = "1:1";
+        } else if (sTypeLower === "certification" || sTypeLower === "certification course") {
+          sessionType = "Certification Course";
+        }
+
         let studentsCount = 0;
         const stu = item.students;
         if (typeof stu === 'number' && !isNaN(stu)) {
@@ -137,6 +148,17 @@ export default function AllSessions({ data }: Props) {
           sessionType = typ.name || typ.type || typ.displayName || "Webinar";
         } else if (item.sessionType) {
           sessionType = item.sessionType;
+        }
+
+        const sTypeLower = sessionType.toLowerCase();
+        if (sTypeLower === "webinar") {
+          sessionType = "Webinar";
+        } else if (sTypeLower === "cohort") {
+          sessionType = "Cohort";
+        } else if (sTypeLower === "1:1" || sTypeLower === "1-1" || sTypeLower === "mentorship") {
+          sessionType = "1:1";
+        } else if (sTypeLower === "certification" || sTypeLower === "certification course") {
+          sessionType = "Certification Course";
         }
 
         let studentsCount = 0;
@@ -219,8 +241,9 @@ export default function AllSessions({ data }: Props) {
       type: "checkboxes",
       options: [
         { label: "Webinar", value: "Webinar" },
-        { label: "Workshop", value: "Workshop" },
-        { label: "Course", value: "Course" },
+        { label: "Cohort", value: "Cohort" },
+        { label: "1:1", value: "1:1" },
+        { label: "Certification Course", value: "Certification Course" },
       ],
     },
     {

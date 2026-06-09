@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Search, ChevronDown, Bell } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Search, ChevronDown } from "lucide-react";
 import { CMSSidebar } from "./components/CMSSidebar";
 
 import { HeroSectionEditor } from "./components/HeroSectionEditor";
@@ -39,90 +39,187 @@ import { ContactFormEditor } from "./components/ContactFormEditor";
 import { OurOfficesEditor } from "./components/OurOfficesEditor";
 import { ContactResourceCardsEditor } from "./components/ContactResourceCardsEditor";
 
-type EditorComponent = React.FC<{}>;
+import { CMSApi } from "@/lib/api/cmsApi";
+import { SECTION_KEY_MAP, getDefaultSectionData } from "./sectionConfig";
+
+interface EditorProps {
+  data: Record<string, unknown>;
+  onChange: (data: Record<string, unknown>) => void;
+  pageKey: string;
+}
+
+type EditorComponent = React.FC<EditorProps>;
 
 const SECTION_EDITORS: Record<string, Record<string, EditorComponent>> = {
   home: {
-    "Hero Section": HeroSectionEditor,
-    "Video Section": VideoSectionEditor,
-    "Webinars Section": WebinarsSectionEditor,
-    "1:1 Mentorship": MentorshipSectionEditor,
-    "Assignment Support": AssignmentSupportSectionEditor,
-    "Testimonials": TestimonialsSectionEditor,
-    "Join Community": JoinCommunitySectionEditor,
-    "Programs & Webinars": ProgramsWebinarsSectionEditor,
-    "Resources": ResourcesSectionEditor,
-    "FAQs": FAQSectionEditor,
-    "Trusted By Leaders": TrustedByLeadersEditor,
+    "Hero Section": HeroSectionEditor as EditorComponent,
+    "Video Section": VideoSectionEditor as EditorComponent,
+    "Webinars Section": WebinarsSectionEditor as EditorComponent,
+    "1:1 Mentorship": MentorshipSectionEditor as EditorComponent,
+    "Assignment Support": AssignmentSupportSectionEditor as EditorComponent,
+    "Testimonials": TestimonialsSectionEditor as EditorComponent,
+    "Join Community": JoinCommunitySectionEditor as EditorComponent,
+    "Programs & Webinars": ProgramsWebinarsSectionEditor as EditorComponent,
+    "Resources": ResourcesSectionEditor as EditorComponent,
+    "FAQs": FAQSectionEditor as EditorComponent,
+    "Trusted By Leaders": TrustedByLeadersEditor as EditorComponent,
   },
   about: {
-    "About Hero": AboutHeroSectionEditor,
-    "Founder Story": FounderStoryEditor,
-    "Team Section": TeamSectionEditor,
-    "Mission & Vision": MissionVisionSectionEditor,
-    "Initiatives": InitiativesSectionEditor,
-    "Purpose & Belief": PurposeBeliefSectionEditor,
-    "Our Impact": OurImpactSectionEditor,
-    "Trusted By Leaders": TrustedByLeadersEditor,
+    "About Hero": AboutHeroSectionEditor as EditorComponent,
+    "Founder Story": FounderStoryEditor as EditorComponent,
+    "Team Section": TeamSectionEditor as EditorComponent,
+    "Mission & Vision": MissionVisionSectionEditor as EditorComponent,
+    "Initiatives": InitiativesSectionEditor as EditorComponent,
+    "Purpose & Belief": PurposeBeliefSectionEditor as EditorComponent,
+    "Our Impact": OurImpactSectionEditor as EditorComponent,
+    "Trusted By Leaders": TrustedByLeadersEditor as EditorComponent,
   },
   courses: {
-    "Courses Hero": CoursesHeroEditor,
-    "Course Filters": CourseFiltersEditor,
-    "Course Cards": CourseCardsEditor,
-    "Testimonials": TestimonialsSectionEditor,
-    "Certification": CertificationSectionEditor,
-    "FAQs": FAQSectionEditor,
-    "Promo Cards": PromoCardsEditor,
-    "Book Slot": BookSlotSectionEditor,
+    "Courses Hero": CoursesHeroEditor as EditorComponent,
+    "Course Filters": CourseFiltersEditor as EditorComponent,
+    "Course Cards": CourseCardsEditor as EditorComponent,
+    "Testimonials": TestimonialsSectionEditor as EditorComponent,
+    "Certification": CertificationSectionEditor as EditorComponent,
+    "FAQs": FAQSectionEditor as EditorComponent,
+    "Promo Cards": PromoCardsEditor as EditorComponent,
+    "Book Slot": BookSlotSectionEditor as EditorComponent,
   },
   assignments: {
-    "Meet The Brains": MeetTheBrainsEditor,
-    "Assignment Workflow Steps": AssignmentWorkflowsEditor,
-    "Assignment Workflow": AssignmentWorkflowEditor,
-    "FAQs": FAQSectionEditor,
+    "Meet The Brains": MeetTheBrainsEditor as EditorComponent,
+    "Assignment Workflow Steps": AssignmentWorkflowsEditor as EditorComponent,
+    "Assignment Workflow": AssignmentWorkflowEditor as EditorComponent,
+    "FAQs": FAQSectionEditor as EditorComponent,
   },
   contact: {
-    "Contact Form": ContactFormEditor,
-    "Our Offices": OurOfficesEditor,
-    "Resource Cards": ContactResourceCardsEditor,
-    "FAQs": FAQSectionEditor,
-    "Book Slot": BookSlotSectionEditor,
+    "Contact Form": ContactFormEditor as EditorComponent,
+    "Our Offices": OurOfficesEditor as EditorComponent,
+    "Resource Cards": ContactResourceCardsEditor as EditorComponent,
+    "FAQs": FAQSectionEditor as EditorComponent,
+    "Book Slot": BookSlotSectionEditor as EditorComponent,
   },
 };
 
 export default function CMSPage() {
   const [activePage, setActivePage] = useState("home");
   const [activeSection, setActiveSection] = useState("Hero Section");
+  const [sectionsData, setSectionsData] = useState<Record<string, Record<string, unknown>>>({});
+  const [dirty, setDirty] = useState<Set<string>>(new Set());
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
 
   const pageEditors = SECTION_EDITORS[activePage];
   const EditorComponent = pageEditors ? pageEditors[activeSection] : null;
+
+  const loadPageData = useCallback(async (page: string) => {
+    setLoading(true);
+    const keys = SECTION_KEY_MAP[page];
+    if (!keys) {
+      setSectionsData({});
+      setLoading(false);
+      return;
+    }
+
+    const results: Record<string, Record<string, unknown>> = {};
+    const entries = Object.entries(keys);
+
+    await Promise.all(
+      entries.map(async ([displayName, sectionKey]) => {
+        const section = await CMSApi.getSection(page, sectionKey);
+        results[displayName] = (section?.data ?? getDefaultSectionData(page, displayName)) as Record<string, unknown>;
+      })
+    );
+
+    setSectionsData(results);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    loadPageData(activePage);
+  }, [activePage, loadPageData]);
 
   const handlePageSelect = (page: string) => {
     setActivePage(page);
     const firstSection = Object.keys(SECTION_EDITORS[page] || {})[0] || "";
     setActiveSection(firstSection);
+    setDirty(new Set());
+    setSaveStatus("idle");
+  };
+
+  const handleDataChange = (displayName: string, newData: Record<string, unknown>) => {
+    setSectionsData((prev) => ({ ...prev, [displayName]: newData }));
+    setDirty((prev) => new Set(prev).add(displayName));
+    setSaveStatus("idle");
+  };
+
+  const handleSave = async () => {
+    if (dirty.size === 0) return;
+    setSaving(true);
+    setSaveStatus("saving");
+
+    const keys = SECTION_KEY_MAP[activePage];
+    let allSuccess = true;
+
+    for (const displayName of dirty) {
+      const sectionKey = keys?.[displayName];
+      const data = sectionsData[displayName];
+      if (sectionKey && data) {
+        const ok = await CMSApi.updateSection(activePage, sectionKey, { data });
+        if (!ok) allSuccess = false;
+      }
+    }
+
+    if (allSuccess) {
+      setDirty(new Set());
+      setSaveStatus("success");
+    } else {
+      setSaveStatus("error");
+    }
+    setSaving(false);
   };
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-[24px] font-semibold text-[#0A0A0A]" style={{ fontFamily: "'Inter', sans-serif", lineHeight: "36px", letterSpacing: "0.0703125px" }}>
+          <h1
+            className="text-[24px] font-semibold text-[#0A0A0A]"
+            style={{
+              fontFamily: "'Inter', sans-serif",
+              lineHeight: "36px",
+              letterSpacing: "0.0703125px",
+            }}
+          >
             Content Management System
           </h1>
           <p className="text-sm text-gray-500 font-medium mt-1">
-            Edit and manage content for all public pages. Changes are static for now — backend integration coming later.
+            {saveStatus === "success"
+              ? "All changes saved successfully."
+              : saveStatus === "error"
+                ? "Some changes failed to save. Please try again."
+                : saveStatus === "saving"
+                  ? "Saving changes..."
+                  : dirty.size > 0
+                    ? `${dirty.size} section(s) have unsaved changes.`
+                    : "Edit and manage content for all public pages."}
           </p>
         </div>
-        <button className="px-6 py-2.5 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors">
-          Update CMS
+        <button
+          onClick={handleSave}
+          disabled={dirty.size === 0 || saving}
+          className={`px-6 py-2.5 text-sm font-medium text-white rounded-lg transition-colors ${
+            dirty.size === 0
+              ? "bg-slate-300 cursor-not-allowed"
+              : saving
+                ? "bg-slate-500 cursor-wait"
+                : "bg-slate-900 hover:bg-slate-800"
+          }`}
+        >
+          {saving ? "Saving..." : dirty.size > 0 ? `Save Changes (${dirty.size})` : "Update CMS"}
         </button>
       </div>
 
-      {/* Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        {/* Page Selector */}
         <div className="relative w-56">
           <select
             value={activePage}
@@ -140,7 +237,6 @@ export default function CMSPage() {
           </div>
         </div>
 
-        {/* Search */}
         <div className="relative w-full sm:max-w-[400px]">
           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
             <Search className="h-4 w-4 text-slate-400" />
@@ -153,7 +249,6 @@ export default function CMSPage() {
         </div>
       </div>
 
-      {/* Main Content Area */}
       <div className="flex flex-col md:flex-row gap-10">
         <CMSSidebar
           activePage={activePage}
@@ -163,8 +258,16 @@ export default function CMSPage() {
         />
 
         <div className="flex-1 max-w-4xl pt-2">
-          {EditorComponent ? (
-            <EditorComponent />
+          {loading ? (
+            <div className="flex items-center justify-center h-full text-slate-400 p-12">
+              Loading section data...
+            </div>
+          ) : EditorComponent ? (
+            <EditorComponent
+              data={sectionsData[activeSection] ?? getDefaultSectionData(activePage, activeSection)}
+              onChange={(newData) => handleDataChange(activeSection, newData)}
+              pageKey={activePage}
+            />
           ) : (
             <div className="flex items-center justify-center h-full text-slate-400 p-12 bg-slate-50 rounded-lg border border-dashed border-slate-200">
               Select a section to edit from the sidebar

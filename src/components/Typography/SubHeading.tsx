@@ -7,10 +7,10 @@ interface SubHeadingProps {
 }
 
 const sizeMap = {
-    1: "text-[46px] leading-[120%] md:leading-[50px]",
-    2: "text-[36px] leading-[120%] md:leading-[42px]",
-    3: "text-[30px] leading-[120%] md:leading-[36px]",
-    4: "text-[24px] leading-[120%] md:leading-[30px]",
+    1: "text-[28px] md:text-[46px] leading-[1.2] md:leading-[50px]",
+    2: "text-[24px] md:text-[36px] leading-[1.2] md:leading-[42px]",
+    3: "text-[20px] md:text-[30px] leading-[1.2] md:leading-[36px]",
+    4: "text-[18px] md:text-[24px] leading-[1.2] md:leading-[30px]",
 };
 
 const SubHeading = ({ text, level = 1, className }: SubHeadingProps) => {

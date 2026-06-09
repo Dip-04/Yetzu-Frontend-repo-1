@@ -18,6 +18,14 @@ export default function OrganizationProfilePage({ params }: { params: Promise<{ 
   const [sessionsList, setSessionsList] = useState<any[]>([]);
   const [studentsList, setStudentsList] = useState<any[]>([]);
   const [invoicesList, setInvoicesList] = useState<any[]>([]);
+  const [paymentsList, setPaymentsList] = useState<any[]>([]);
+  const [orgHealthScore, setOrgHealthScore] = useState<number>(0);
+  const [engagementScore, setEngagementScore] = useState<number>(0);
+  const [progressScore, setProgressScore] = useState<number>(0);
+  const [paymentScore, setPaymentScore] = useState<number>(0);
+  const [avgCompletionRate, setAvgCompletionRate] = useState<number>(0);
+  const [sessionsJoined, setSessionsJoined] = useState<number>(0);
+  const [quickStats, setQuickStats] = useState<any>({});
 
   useEffect(() => {
     const loadOrganization = async () => {
@@ -31,6 +39,14 @@ export default function OrganizationProfilePage({ params }: { params: Promise<{ 
         setSessionsList(allData?.sessions || []);
         setStudentsList(allData?.students || []);
         setInvoicesList(allData?.invoices || []);
+        setPaymentsList(allData?.payments || []);
+        setOrgHealthScore(allData?.orgHealthScore ?? org?.orgHealthScore ?? 0);
+        setEngagementScore(allData?.engagementScore ?? org?.engagementScore ?? 0);
+        setProgressScore(allData?.progressScore ?? org?.progressScore ?? 0);
+        setPaymentScore(allData?.paymentScore ?? org?.paymentScore ?? 0);
+        setAvgCompletionRate(allData?.avgCompletionRate ?? org?.avgCompletionRate ?? 0);
+        setSessionsJoined(allData?.sessionsJoined ?? org?.sessionsJoined ?? 0);
+        setQuickStats(allData?.quickStats ?? org?.quickStats ?? {});
       } catch (error) {
         console.error('Failed to fetch organization:', error);
       }
@@ -129,12 +145,36 @@ export default function OrganizationProfilePage({ params }: { params: Promise<{ 
 
       {/* Tab Content */}
       <div className="w-full">
-        {activeTab === 'overview' && <OverviewTab organization={organization} />}
+        {activeTab === 'overview' && (
+          <OverviewTab
+            organization={organization}
+            orgHealthScore={orgHealthScore}
+            engagementScore={engagementScore}
+            progressScore={progressScore}
+            paymentScore={paymentScore}
+            avgCompletionRate={avgCompletionRate}
+            sessionsJoined={sessionsJoined}
+            quickStats={quickStats}
+          />
+        )}
         {activeTab === 'students' && <StudentsTab students={studentsList} />}
         {activeTab === 'permissions' && <PermissionsTab permissions={organization?.permissions} />}
         {activeTab === 'sessions' && <SessionsTab sessions={sessionsList} />}
-        {activeTab === 'progress' && <ProgressTab students={studentsList} />}
-        {activeTab === 'billing' && <BillingTab billingCycle={organization?.billingCycle} revenue={organization?.revenue} invoices={invoicesList} />}
+        {activeTab === 'progress' && (
+          <ProgressTab
+            students={studentsList}
+            avgCompletionRate={avgCompletionRate}
+            sessionsJoined={sessionsJoined}
+          />
+        )}
+        {activeTab === 'billing' && (
+          <BillingTab
+            billingCycle={organization?.billingCycle}
+            revenue={organization?.revenueGenerated || organization?.revenue || 0}
+            invoices={invoicesList}
+            payments={paymentsList}
+          />
+        )}
       </div>
     </div>
   );

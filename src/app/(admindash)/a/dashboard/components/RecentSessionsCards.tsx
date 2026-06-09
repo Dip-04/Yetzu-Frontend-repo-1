@@ -15,19 +15,27 @@ interface RecentSessionsCardsProps {
   onSelect: (session: Session) => void;
 }
 
-const cardStyles = [
-  { gradient: "bg-gradient-to-b from-[#E3DCFA] to-white" },
-  { gradient: "bg-gradient-to-b from-[#DBF7F9] to-white" },
-  { gradient: "bg-gradient-to-b from-[#FCF1DE] to-white" },
-  { gradient: "bg-gradient-to-b from-[#DBF7F9] to-white" },
-  { gradient: "bg-gradient-to-b from-[#E3DCFA] to-white" },
-];
+const getAdminSessionStyle = (type?: string) => {
+  const norm = String(type || "").toLowerCase();
+  if (norm.includes("1-1") || norm.includes("1:1") || norm.includes("one-on-one") || norm.includes("mentorship")) {
+    return {
+      gradient: "bg-gradient-to-b from-[#E3DCFA] to-white",
+      vector: "/admin-dashboard/Vector (3).png",
+    };
+  } else if (norm.includes("cohort")) {
+    return {
+      gradient: "bg-gradient-to-b from-[#DBF7F9] to-white",
+      vector: "/admin-dashboard/Vector (4).png",
+    };
+  } else {
+    return {
+      gradient: "bg-gradient-to-b from-[#FCF1DE] to-white",
+      vector: "/admin-dashboard/Vector (5).png",
+    };
+  }
+};
 
 export default function RecentSessionsCards({ sessions, onSelect }: RecentSessionsCardsProps) {
-  const shuffledImages = useMemo(() => {
-    return sessions.map(() => vectorImages[Math.floor(Math.random() * vectorImages.length)]);
-  }, [sessions]);
-
   if (!sessions || sessions.length === 0) {
     return (
       <div className="flex flex-wrap gap-[16px]">
@@ -40,8 +48,8 @@ export default function RecentSessionsCards({ sessions, onSelect }: RecentSessio
 
   return (
     <div className="flex flex-wrap gap-[16px]">
-      {sessions.slice(0, 5).map((session, index) => {
-        const style = cardStyles[index % cardStyles.length];
+      {sessions.slice(0, 5).map((session) => {
+        const style = getAdminSessionStyle(session.type);
         return (
           <div
             key={session.id}
@@ -58,7 +66,7 @@ export default function RecentSessionsCards({ sessions, onSelect }: RecentSessio
               
               {/* Vector Image */}
               <div className="absolute left-4 top-4 w-12 h-12 flex items-center justify-center rounded-lg bg-white/50 backdrop-blur-sm border border-black/5 shadow-sm">
-                <img src={shuffledImages[index]} alt="" className="w-8 h-8 object-contain" />
+                <img src={style.vector} alt="" className="w-8 h-8 object-contain" />
               </div>
             </div>
 

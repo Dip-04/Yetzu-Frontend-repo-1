@@ -133,24 +133,24 @@ export default function EducatorTicketsPage() {
 
   if (isLoading) {
     return (
-      <div className="w-full min-h-screen bg-[#F8F9FA] flex items-center justify-center">
+      <div className="w-full h-48 bg-[#F8F9FA] flex items-center justify-center">
         <Loader2 size={32} className="animate-spin text-[#6366F1]" />
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#F8F9FA] font-sans flex flex-col">
+    <div className="w-full font-sans flex flex-col pb-8">
       {/* --- FULL WIDTH WHITE HEADER --- */}
-      <div className="bg-white px-6 md:px-10 py-4 border-b border-gray-200 shrink-0">
-        <div className="max-w-[1600px] mx-auto">
+      <div className="bg-white py-4 border-b border-gray-200 shrink-0">
+        <div className="w-full">
           <h1 className="text-[26px] font-bold text-gray-900 mb-1">My Tickets</h1>
           <p className="text-[14px] text-gray-500">View and manage your support tickets</p>
         </div>
       </div>
 
       {/* --- MAIN GRAY CONTENT AREA --- */}
-      <div className="flex-1 p-4 md:p-10 max-w-[1600px] mx-auto w-full">
+      <div className="flex-1 py-6 w-full">
         {/* --- TOP ACTION CARD --- */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white rounded-xl border border-gray-200 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-6 flex flex-col h-full">

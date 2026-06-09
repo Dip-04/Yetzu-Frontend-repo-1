@@ -1,10 +1,12 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   useGetCourseById,
   useGetCourses,
 } from "@/lib/queries/courses/useCoursesService";
+import useSession from "@/hooks/useSession";
+import toast from "react-hot-toast";
 import Image from "next/image";
 import {
   Loader2,
@@ -32,8 +34,8 @@ import CourseCard, {
   CourseCardSkeleton,
 } from "@/app/(site)/courses/components/CourseCard";
 import { useMemo, useState } from "react";
-import TestimonialsSection from "@/components/TestimonialsSection";
-import FAQSection from "@/components/shared/FAQSection";
+import PageTestimonialsSection from "@/components/shared/PageTestimonialsSection";
+import PageFAQSection from "@/components/shared/PageFAQSection";
 import MentorCard from "@/components/MentorCard";
 import { getImageUrl } from "@/lib/utils/imageUtils";
 import Button from "@/components/ui/Button";
@@ -41,24 +43,33 @@ import MainHeading from "@/components/Typography/MainHeading";
 import AvatarStack from "@/components/ui/AvatarStack";
 import SubHeading from "@/components/Typography/SubHeading";
 import { PaymentAPI, StudentAPI } from "@/lib/api";
+import { useCart } from "@/providers/CartProvider";
 
 export default function CourseDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const courseId = params?.courseId as string;
 
   const { data: course, isLoading, isError } = useGetCourseById(courseId);
   const { data: allCourses, isLoading: isCoursesLoading } = useGetCourses();
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+  const { addToCart, isInCart } = useCart();
+  const { isUserLoggedIn } = useSession();
 
   const randomCourses = useMemo(() => {
     if (!allCourses || !courseId) return [];
     const otherCourses = allCourses.filter((c) => c._id !== courseId);
     const shuffled = [...otherCourses].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, 3);
-  }, [allCourses, courseId, Math.random()]);
+  }, [allCourses, courseId]);
 
-const handleBuyNow = async () => {
+  const handleBuyNow = async () => {
     if (!course || isCreatingOrder) return;
+    if (!isUserLoggedIn) {
+      toast.error("Please log in to purchase this course.");
+      router.push(`/login?callback=/courses/${courseId}`);
+      return;
+    }
     setIsCreatingOrder(true);
     try {
       let amount = Number(course.cost || 0);
@@ -82,13 +93,11 @@ const handleBuyNow = async () => {
       
       console.log("Payment verified:", paymentResult);
       
-      alert(`Enrolled successfully in ${course.title}! Check your dashboard for session details.`);
-      
-      // Optionally redirect to dashboard
-      // router.push("/s/dashboard");
+      toast.success(`Enrolled successfully in ${course.title}! Check your dashboard for details.`);
+      router.push("/s/dashboard");
     } catch (error: any) {
       console.error("Payment failed:", error);
-      alert(error?.message || "Unable to complete enrollment. Please try again.");
+      toast.error(error?.message || "Unable to complete enrollment. Please try again.");
     } finally {
       setIsCreatingOrder(false);
     }
@@ -340,9 +349,32 @@ const handleBuyNow = async () => {
                     <span>Duration: {course.duration}</span>
                   </div>
                 </div>
-                <Button className="w-full" disabled={!course.isActive || isCreatingOrder} onClick={handleBuyNow}>
-                  {isCreatingOrder ? "Creating Order..." : "Buy Now"}
-                </Button>
+                <div className="space-y-3">
+                  {isInCart(courseId) ? (
+                    <Link href="/cart" className="w-full block">
+                      <Button variant="secondary" className="w-full">
+                        Go to Cart
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Button
+                      variant="primary"
+                      className="w-full"
+                      disabled={!course.isActive}
+                      onClick={() => addToCart(course)}
+                    >
+                      Add to Cart
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    disabled={!course.isActive || isCreatingOrder}
+                    onClick={handleBuyNow}
+                  >
+                    {isCreatingOrder ? "Creating Order..." : "Buy Now"}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
@@ -375,8 +407,8 @@ const handleBuyNow = async () => {
           </div>
         </div>
       </section>
-      <TestimonialsSection />
-      <FAQSection />
+      <PageTestimonialsSection pageKey="courses" />
+      <PageFAQSection pageKey="courses" />
     </main>
   );
 }
