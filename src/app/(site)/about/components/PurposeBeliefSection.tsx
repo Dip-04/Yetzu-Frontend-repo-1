@@ -4,12 +4,12 @@ import Image from "next/image";
 
 export default function PurposeBeliefSection() {
   return (
-    <section className="w-full px-4 sm:px-6 md:px-12 lg:px-[108px] py-12 md:py-14 lg:py-16">
-      <div className="w-full max-w-[1440px] mx-auto">
+    <section className="w-full px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12 md:py-14 lg:py-16">
+      <div className="w-full max-w-[1224px] mx-auto">
         <div className="flex flex-col gap-10 lg:gap-12">
           <div className="flex flex-col lg:flex-row justify-between items-start gap-6 lg:gap-8">
             <div className="flex-1 flex flex-col gap-4 lg:gap-6">
-              <h2 className="text-[32px] text-[#021165] sm:text-[40px] lg:text-5xl font-semibold mb-4">
+              <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] capitalize">
                 Purpose & Belief
               </h2>
               <p className="text-sm sm:text-base max-w-md text-gray-600">

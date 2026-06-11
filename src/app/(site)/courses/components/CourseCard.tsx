@@ -87,86 +87,85 @@ const handleEnroll = async () => {
 
   return (
     <div
-      className="relative group bg-white rounded-[32px] border border-[#EEF0FB] flex flex-col h-full p-5 shadow-sm hover:shadow-md transition-shadow duration-300"
+      className="relative group bg-white rounded-[16px] flex flex-col w-full min-h-[452px] h-auto p-[12px] gap-[8px] shadow-[0_16px_32px_-12px_rgba(31,30,130,0.1)] transition-shadow duration-300 mx-auto"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+      {/* Thumbnail + Date + Avatars (wrapped in Link for clickability) */}
+      <Link href={`/courses/${course?._id}`} className="relative rounded-[12px] overflow-hidden w-full h-[220px] flex-shrink-0 block">
+        <Image
+          src={getImageUrl(course.thumbnail)}
+          alt={course.title}
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+        />
 
-      {/* Whole Card Click → Details */}
-      <Link href={`/courses/${course?._id}`} className="flex flex-col flex-grow group">
-
-        {/* Image */}
-        <div className="relative rounded-[24px] overflow-hidden w-full h-[220px] mb-6">
-          <Image
-            src={getImageUrl(course.thumbnail)}
-            alt={course.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-
-          {/* Date */}
-          <div className="absolute top-3 right-3">
-            <div className="bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full text-[10px] font-bold text-[#021165] border border-[#EEF0FB]">
-              {formattedStart(course?.startDateTime)}
-            </div>
-          </div>
-
-          {/* Avatars */}
-          <div className="absolute bottom-3 left-3">
-            <AvatarStack count={course.enrolledCount || 5} size={32} />
+        {/* Date Pill */}
+        <div className="absolute top-[16px] right-[18px] z-10">
+          <div className="bg-[#E6EAFF] px-[16px] py-[8px] h-[30px] rounded-full flex items-center justify-center text-[12px] font-normal text-[#021165] leading-[14px] font-sans">
+            {formattedStart(course?.startDateTime)}
           </div>
         </div>
 
-        {/* Content */}
-        <div className="flex flex-col flex-grow gap-2 px-1">
-          <h3 className="text-xl font-bold text-[#1B1B1B] leading-tight line-clamp-2 group-hover:text-[#021165] transition-colors">
-            {course.title}
-          </h3>
-
-          <p className="text-sm text-[#7A7A7A] leading-relaxed line-clamp-2 mb-2">
-             {course.description}
-          </p>
-
-          <div className="mb-6">
-            <span className="text-2xl font-bold text-[#252525]">
-              {course.cost === 0 ? "Free" : `₹${course.cost.toFixed(2)}`}
-            </span>
-          </div>
+        {/* Avatar Stack */}
+        <div className="absolute bottom-[16px] left-[18px] z-10">
+          <AvatarStack count={course.enrolledCount || 5} size={36} />
         </div>
       </Link>
 
-      {/* Buttons */}
-      <div className="grid grid-cols-2 gap-4 mt-auto pt-4">
-
-        {/* View Details */}
-        <Link href={`/courses/${course?._id}`} className="w-full">
-          <Button
-            variant="secondary"
-            className="!rounded-xl !h-[44px] !text-sm w-full"
-          >
-            View Details
-          </Button>
+      {/* Content Container */}
+      <div className="flex flex-col justify-between items-start p-[12px] gap-[20px] w-full min-h-[200px] h-auto flex-shrink-0">
+        
+        {/* Text Block (wrapped in Link for clickability) */}
+        <Link href={`/courses/${course?._id}`} className="flex flex-col items-start gap-[8px] w-full block hover:opacity-95 transition-opacity">
+          <h3 className="text-[26px] font-medium text-[#252525] leading-[31px] tracking-[-0.05em] w-full font-sans">
+            {course.title}
+          </h3>
+          <p className="text-[16px] font-normal text-[#5C5C5C] leading-[19px] tracking-[-0.03em] line-clamp-2 w-full font-sans">
+            {course.description}
+          </p>
+          <div className="text-[26px] font-medium text-[#252525] leading-[31px] tracking-[-0.05em] font-sans">
+            {course.cost === 0 ? "Free" : `₹${course.cost.toFixed(2)}`}
+          </div>
         </Link>
 
-        {/* Add to Cart / Go to Cart */}
-        {isInCart(course._id) ? (
-          <Link href="/cart" className="w-full">
+        {/* Buttons Row */}
+        <div className="flex flex-row items-center gap-[24px] w-full h-[40px]">
+          {/* View Details */}
+          <Link href={`/courses/${course?._id}`} className="flex-1">
             <Button
               variant="secondary"
-              className="!rounded-xl !h-[44px] !text-sm w-full"
+              rounded="lg"
+              className="!h-10 !text-[16px] !leading-[19px] py-[8px] px-[16px] !rounded-lg w-full flex items-center justify-center tracking-[-0.03em] font-normal shadow-[0_2px_4px_rgba(31,30,130,0.04)] bg-white border border-[#294BFD] text-[#042BFD] hover:bg-[#042BFD] hover:text-white transition"
             >
-              Go to Cart
+              View Details
             </Button>
           </Link>
-        ) : (
-          <Button
-            onClick={() => addToCart(course)}
-            className="!rounded-xl !h-[44px] !text-sm w-full"
-          >
-            Add to Cart
-          </Button>
-        )}
 
+          {/* Add to Cart / Go to Cart */}
+          {isInCart(course._id) ? (
+            <Link href="/cart" className="flex-1">
+              <Button
+                variant="secondary"
+                rounded="lg"
+                className="!h-10 !text-[16px] !leading-[19px] py-[8px] px-[16px] !rounded-lg w-full flex items-center justify-center tracking-[-0.03em] font-normal shadow-[0_2px_4px_rgba(31,30,130,0.04)] bg-white border border-[#294BFD] text-[#042BFD] hover:bg-[#042BFD] hover:text-white transition"
+              >
+                Go to Cart
+              </Button>
+            </Link>
+          ) : (
+            <div className="flex-1">
+              <Button
+                onClick={() => addToCart(course)}
+                variant="primary"
+                rounded="lg"
+                className="!h-10 !text-[16px] !leading-[19px] py-[8px] px-[16px] !rounded-lg w-full flex items-center justify-center tracking-[-0.03em] font-normal shadow-[0_2px_4px_rgba(31,30,130,0.04)] bg-[#042BFD] text-white hover:bg-[#021DC0]"
+              >
+                Add to Cart
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
 
       {isHovered && (

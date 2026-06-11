@@ -97,7 +97,7 @@ export default function CartPage() {
       className="min-h-screen bg-white py-12 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] text-[#252525]"
       style={{ fontFamily: "var(--font-sfpro)" }}
     >
-      <div className="w-full">
+      <div className="w-full max-w-[1224px] mx-auto">
         {/* Title */}
         <h1
           className="font-inter font-bold text-[32px] md:text-[40px] text-[#021165] mb-2"
@@ -112,7 +112,7 @@ export default function CartPage() {
             <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mb-6">
               <ShieldCheck className="w-10 h-10 text-[#042BFD] opacity-60" />
             </div>
-            <h2 className="font-inter font-semibold text-2xl text-[#021165] mb-2">
+            <h2 className="font-inter font-medium text-2xl text-[#021165] mb-2">
               Your cart is empty
             </h2>
             <p className="text-gray-500 max-w-md mb-8">

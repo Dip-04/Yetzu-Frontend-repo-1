@@ -21,7 +21,7 @@ export default function BlogDetailsHeader({
 }: BlogDetailsHeaderProps) {
   return (
     <section className="w-full flex justify-center bg-[linear-gradient(180deg,rgba(255,255,255,0.3)_0%,rgba(121,143,255,0.144)_47.61%,rgba(255,255,255,0.3)_100%)]">
-      <div className="w-full max-w-[1440px] flex flex-col items-start px-6 py-12 md:px-[148px] md:py-[52px] gap-10 md:gap-[68px]">
+      <div className="w-full max-w-[1224px] flex flex-col items-start px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12 md:py-[52px] gap-10 md:gap-[68px]">
 
         {/* Title + Subtitle + Date */}
         <div className="flex flex-col gap-6 w-full max-w-[987px]">

@@ -23,29 +23,36 @@ const getTypeStyles = (type: string) => {
   }
 };
 
+const ITEMS_PER_PAGE = 6;
+
 export default function LiveActivityFeed() {
   const [activityData, setActivityData] = useState<ActivityItem[]>([]);
+  const [page, setPage] = useState(1);
+  const totalPages = Math.max(1, Math.ceil(activityData.length / ITEMS_PER_PAGE));
 
   useEffect(() => {
-    const fetchActivity = async () => {
-      try {
-        const response = await AdminAPI.getActivity({ page: 1, limit: 6 });
-        setActivityData(asArray(response).map((item: any, index: number) => ({
-          id: item.id || String(index),
-          message: item.title || item.description || item.message || "Activity update",
-          timestamp: item.timeAgo || item.timestamp || item.createdAt || "",
-          minutesAgo: item.minutesAgo || 0,
-          type: String(item.type || "user").toLowerCase() as ActivityItem["type"],
-        })));
-      } catch {
-        setActivityData([]);
-      }
-    };
     fetchActivity();
   }, []);
 
+  const fetchActivity = async () => {
+    try {
+      const response = await AdminAPI.getActivity({ page: 1, limit: 50 });
+      setActivityData(asArray(response).map((item: any, index: number) => ({
+        id: item.id || String(index),
+        message: item.title || item.description || item.message || "Activity update",
+        timestamp: item.timeAgo || item.timestamp || item.createdAt || "",
+        minutesAgo: item.minutesAgo || 0,
+        type: String(item.type || "user").toLowerCase() as ActivityItem["type"],
+      })));
+    } catch {
+      setActivityData([]);
+    }
+  };
+
+  const paginatedData = activityData.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+
   return (
-    <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-6 sm:p-8 w-full group hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-500">
+    <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-6 sm:p-8 w-full group hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-500 flex flex-col">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl">
@@ -62,10 +69,10 @@ export default function LiveActivityFeed() {
         </div>
       </div>
 
-      <div className="space-y-6 relative before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-px before:bg-gray-100">
+      <div className="space-y-6 relative before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-px before:bg-gray-100 flex-1 overflow-y-auto custom-scrollbar" style={{ maxHeight: '35vh' }}>
         {activityData.length === 0 ? (
           <p className="text-sm text-gray-500 pl-14">No recent activity.</p>
-        ) : activityData.map((data) => (
+        ) : paginatedData.map((data) => (
           <div key={data.id} className="flex gap-4 relative group/item">
             <div className={`w-10 h-10 rounded-xl shrink-0 z-10 flex items-center justify-center border-4 border-white shadow-sm transition-transform group-hover/item:scale-110 duration-300 ${getTypeStyles(data.type)}`}>
                <div className="w-1.5 h-1.5 rounded-full bg-current" />
@@ -82,6 +89,22 @@ export default function LiveActivityFeed() {
               </div>
             </div>
           </div>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-center gap-2 mt-auto pt-4">
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+          <button
+            key={p}
+            onClick={() => setPage(p)}
+            className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+              page === p
+                ? "bg-[#021165] text-white"
+                : "bg-gray-50 text-gray-500 hover:bg-gray-100 border border-gray-100"
+            }`}
+          >
+            {p}
+          </button>
         ))}
       </div>
     </div>

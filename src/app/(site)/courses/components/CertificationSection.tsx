@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { Figma } from "lucide-react";
-import SubHeading from "@/components/Typography/SubHeading";
 import Button from "@/components/ui/Button";
 import Paragraph from "@/components/Typography/Paragraph";
 
@@ -31,10 +30,12 @@ export default function CertificationSection() {
   return (
     <section className="relative px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px]">
       <div className="absolute inset-0 bg-[linear-gradient(180deg,#FFFFFF_0%,#E2E7FF_50.01%,#FFFFFF_100%)] z-0"></div>
-      <div className="max-w-7xl mx-auto py-10 relative">
-        <div className="flex flex-col md:flex-row md:items-end justify-between items-center gap-6 mb-16">
-          <SubHeading text="Get certified by Yetzu" level={1} />
-          <Button variant="secondary" style={{ width: "180px" }}>
+      <div className="max-w-[1224px] mx-auto py-10 relative">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full mb-16 gap-4 md:gap-6">
+          <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] max-w-full md:max-w-[658px] capitalize">
+            Get certified by Yetzu
+          </h2>
+          <Button variant="primary" className="!w-fit px-8 !h-[48px] whitespace-nowrap">
             Learn More
           </Button>
         </div>
@@ -47,7 +48,7 @@ export default function CertificationSection() {
                   <Figma className="w-6 h-6" />
                 </div>
                 <div>
-                  <SubHeading text={step.title} level={4} />
+                  <h4 className="font-inter font-medium text-[18px] md:text-[24px] leading-[1.2] md:leading-[30px] tracking-[-0.06em] text-[#021165] capitalize">{step.title}</h4>
                   <Paragraph
                     text={step.description}
                     className="text-gray-500 text-md"

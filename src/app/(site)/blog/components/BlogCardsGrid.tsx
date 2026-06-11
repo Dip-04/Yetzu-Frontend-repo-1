@@ -140,33 +140,37 @@ export default function BlogCardsGrid() {
         {/* Featured Blog Card */}
         {featuredPost && (
           <Link href={`/blog/${getBlogId(featuredPost)}`}>
-            <div className="mb-12 bg-white rounded-[24px] overflow-hidden shadow-none hover:shadow-md transition-all duration-300 cursor-pointer">
-              <div className="flex flex-col md:flex-row md:min-h-[500px]">
-                {/* Left Content */}
-                <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                  <span className="inline-block px-4 py-1.5 bg-[#E6EAFF] text-[#042BFD] rounded-full text-sm font-medium mb-6 w-fit">
-                    Featured
+            <div className="mb-12 bg-white rounded-[20px] shadow-[0px_16px_32px_-12px_rgba(31,30,130,0.1)] p-4 md:pt-[16px] md:pb-[16px] md:pl-[19px] md:pr-[16px] gap-6 md:gap-[40px] flex flex-col md:flex-row justify-between items-center md:items-stretch transition-all duration-300 hover:shadow-lg cursor-pointer">
+              {/* Left Content */}
+              <div className="w-full md:w-[554px] md:h-[465px] flex flex-col justify-between items-start py-[12px] px-[4px] gap-6 md:gap-[24px]">
+                <div className="flex flex-col items-start gap-4 md:gap-[24px] w-full md:w-[546px]">
+                  {/* Tag / Pill */}
+                  <span className="flex items-center justify-center px-4 py-2 bg-[#E6EAFF] rounded-full text-[#021165] font-sfpro text-[12px] font-normal leading-[14px] h-[30px] w-fit">
+                    Our Latest
                   </span>
-                  <h2 className="font-inter font-semibold text-[24px] md:text-[32px] lg:text-[36px] leading-[1.3] tracking-[-0.03em] text-[#252525] mb-4">
+                  {/* Title */}
+                  <h2 className="font-inter font-semibold text-[24px] sm:text-[30px] md:text-[38px] leading-[1.2] md:leading-[46px] tracking-[-0.007em] text-[#252525] w-full max-w-[546px]">
                     {featuredPost.title}
                   </h2>
-                  <p className="text-[#7C7C7C] text-[14px] md:text-[16px] leading-[150%] mb-6">
+                  {/* Description */}
+                  <p className="font-sfpro font-normal text-[15px] md:text-[18px] leading-[1.3] md:leading-[21px] tracking-[-0.03em] text-[#5C5C5C] w-full max-w-[546px]">
                     {featuredPost.excerpt || featuredPost.content?.substring(0, 150) + "..." || "No description available"}
                   </p>
-                  <p className="text-[#7C7C7C] text-[14px]">
-                    {formatDate(featuredPost.createdAt || featuredPost.created_at)}
-                  </p>
                 </div>
+                {/* Date */}
+                <p className="font-sfpro font-normal text-[12px] leading-[14px] text-black">
+                  {formatDate(featuredPost.createdAt || featuredPost.created_at)}
+                </p>
+              </div>
 
-                {/* Right Image */}
-                <div className="w-full md:w-1/2 relative min-h-[300px] md:min-h-[500px]">
-                  <Image
-                    src={getBlogImage(featuredPost)}
-                    alt={featuredPost.title}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
+              {/* Right Image */}
+              <div className="relative w-full md:w-[629px] h-[250px] sm:h-[350px] md:h-[465px] rounded-[20px] overflow-hidden flex-shrink-0">
+                <Image
+                  src={getBlogImage(featuredPost)}
+                  alt={featuredPost.title}
+                  fill
+                  className="object-cover"
+                />
               </div>
             </div>
           </Link>
@@ -249,7 +253,7 @@ export default function BlogCardsGrid() {
                       <p className="text-[12px] text-[#7C7C7C] group-hover:text-white mb-2">
                         {formatDate(post.createdAt || post.created_at)}
                       </p>
-                      <h3 className="font-inter font-semibold text-[18px] leading-[1.4] tracking-[-0.02em] text-[#252525] group-hover:text-white mb-3">
+                      <h3 className="font-inter font-medium text-[18px] leading-[1.4] tracking-[-0.02em] text-[#252525] group-hover:text-white mb-3">
                         {post.title}
                       </h3>
                       <p className="text-[14px] text-[#7C7C7C] group-hover:text-white leading-[150%]">

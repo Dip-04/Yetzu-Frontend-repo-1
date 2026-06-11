@@ -23,7 +23,13 @@ html {
   box-sizing: inherit;
 }
 
+@theme {
+  --font-inter: var(--font-inter);
+  --font-sfpro: var(--font-sfpro);
+}
+
 body {
+  font-family: var(--font-inter);
   overflow-x: hidden;
   width: 100%;
   position: relative;

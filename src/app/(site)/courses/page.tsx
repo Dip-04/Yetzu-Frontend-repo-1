@@ -8,9 +8,10 @@ import CertificationSection from "./components/CertificationSection";
 import PageFAQSection from "@/components/shared/PageFAQSection";
 import PageTestimonialsSection from "@/components/shared/PageTestimonialsSection";
 import PromoCards from "./components/PromoCards";
+import CustomTestimonials from "./components/CustomTestimonials";
 import BookSlotSection from "@/app/(site)/contact-us/components/BookSlotSection";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import AvatarStack from "@/components/ui/AvatarStack";
 import Button from "@/components/ui/Button";
 import { AlertCircle } from "lucide-react";
@@ -20,7 +21,8 @@ export default function CoursesPage() {
     const [search, setSearch] = useState("");
     const [sortBy, setSortBy] = useState("");
     const [category, setCategory] = useState("");
-    const [sessionType, setSessionType] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const ITEMS_PER_PAGE = 6;
 
     const { data: courses, isLoading, isError } = useGetCourses();
     const debouncedSearch = useDebounce(search, 300);
@@ -31,11 +33,9 @@ export default function CoursesPage() {
       return [...vals] as string[];
     }, [courses]);
 
-    const sessionTypes = useMemo(() => {
-      if (!courses) return [];
-      const vals = new Set(courses.map((c: any) => c.sessionType).filter(Boolean));
-      return [...vals] as string[];
-    }, [courses]);
+    useEffect(() => {
+      setCurrentPage(1);
+    }, [debouncedSearch, sortBy, category]);
 
     const filtered = useMemo(() => {
       if (!courses) return [];
@@ -49,10 +49,6 @@ export default function CoursesPage() {
         );
       }
 
-      if (sessionType) {
-        list = list.filter(c => c.sessionType === sessionType);
-      }
-
       if (category) {
         list = list.filter(c => c.category === category);
       }
@@ -60,19 +56,27 @@ export default function CoursesPage() {
       if (sortBy === "price-asc") list.sort((a, b) => (a.finalPrice ?? a.cost ?? 0) - (b.finalPrice ?? b.cost ?? 0));
       else if (sortBy === "price-desc") list.sort((a, b) => (b.finalPrice ?? b.cost ?? 0) - (a.finalPrice ?? a.cost ?? 0));
       else if (sortBy === "date-asc") list.sort((a, b) => new Date(a.startDateTime || 0).getTime() - new Date(b.startDateTime || 0).getTime());
-      else if (sortBy === "date-desc") list.sort((a, b) => new Date(b.startDateTime || 0).getTime() - new Date(a.startDateTime || 0).getTime());
+      else if (sortBy === "date-desc") list.sort((a, b) => new Date(b.startDateTime || 0).getTime() - new Date(b.startDateTime || 0).getTime());
       else if (sortBy === "title-asc") list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
       else if (sortBy === "title-desc") list.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
 
       return list;
-    }, [courses, debouncedSearch, sortBy, category, sessionType]);
+    }, [courses, debouncedSearch, sortBy, category]);
+
+    const totalPages = useMemo(() => {
+      return Math.ceil(filtered.length / ITEMS_PER_PAGE);
+    }, [filtered]);
+
+    const paginatedCourses = useMemo(() => {
+      return filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+    }, [filtered, currentPage]);
 
     return (
         <main className="min-h-screen bg-white pb-20">
             <CoursesHero />
 
             <section className="relative bg-[#F7F8FC]">
-                <div className="w-full px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] pb-16 md:pb-24">
+                <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-10 lg:px-16 pb-16 md:pb-24">
 
                     <CourseFilters
                         search={search}
@@ -82,9 +86,6 @@ export default function CoursesPage() {
                         category={category}
                         setCategory={setCategory}
                         categories={categories}
-                        sessionTypes={sessionTypes}
-                        sessionType={sessionType}
-                        setSessionType={setSessionType}
                     />
 
                     <div className="mt-2">
@@ -123,20 +124,44 @@ export default function CoursesPage() {
                             </div>
                         )}
 
-                        {!isLoading && !isError && filtered.length > 0 && (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
-                                {filtered.map((course) => (
-                                    <div key={course._id} className="h-full">
-                                        <CourseCard course={course} />
+                        {!isLoading && !isError && paginatedCourses.length > 0 && (
+                            <div className="flex flex-col gap-12">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+                                    {paginatedCourses.map((course) => (
+                                        <div key={course._id} className="h-full">
+                                            <CourseCard course={course} />
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Pagination Page Numbers */}
+                                {totalPages > 1 && (
+                                    <div className="flex justify-center items-center gap-2 mt-4">
+                                        {Array.from({ length: totalPages }, (_, idx) => {
+                                            const pageNum = idx + 1;
+                                            return (
+                                                <button
+                                                    key={pageNum}
+                                                    onClick={() => setCurrentPage(pageNum)}
+                                                    className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-semibold transition-all duration-200 select-none cursor-pointer ${
+                                                        currentPage === pageNum
+                                                            ? "bg-[#042BFD] text-white shadow-[0_2px_4px_rgba(31,30,130,0.04)]"
+                                                            : "bg-white border border-[#EEF0FB] text-[#404040] hover:border-[#042BFD] hover:text-[#042BFD]"
+                                                    }`}
+                                                >
+                                                    {pageNum}
+                                                </button>
+                                            );
+                                        })}
                                     </div>
-                                ))}
+                                )}
                             </div>
                         )}
                     </div>
                 </div>
             </section>
-            <PageTestimonialsSection pageKey="courses" />
             <CertificationSection />
+            <CustomTestimonials />
             <PageFAQSection pageKey="courses" />
             <PromoCards />
             <BookSlotSection />

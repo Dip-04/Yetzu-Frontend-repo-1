@@ -9,10 +9,10 @@ import Image from "next/image";
 export default function MeetTheBrains() {
     return (
         <section
-            className="relative w-full py-16 sm:py-20 px-4 sm:px-6 lg:px-10 flex flex-col items-center overflow-hidden"
+            className="relative w-full py-16 sm:py-20 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] flex flex-col items-center overflow-hidden"
         >
             <div className="absolute inset-0 bg-[linear-gradient(180deg,#FFFFFF_0%,#E2E7FF_50.01%,#FFFFFF_100%)] z-0"></div>
-            <div className="w-full max-w-7xl flex flex-col items-center text-center relative">
+            <div className="w-full max-w-[1224px] flex flex-col items-center text-center relative">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}

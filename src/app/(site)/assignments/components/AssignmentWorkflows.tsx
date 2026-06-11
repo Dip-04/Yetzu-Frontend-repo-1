@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import SubHeading from "@/components/Typography/SubHeading";
 import Paragraph from "@/components/Typography/Paragraph";
 import Button from "@/components/ui/Button";
 
@@ -41,22 +40,24 @@ export default function AssignmentWorkflowWithSteps() {
   const [activeStep, setActiveStep] = useState(2);
 
   return (
-    <section className="w-full bg-white py-12 px-4 sm:px-6 lg:px-10 flex flex-col items-center overflow-hidden">
-      <div className="w-full max-w-7xl flex flex-col md:flex-row items-start md:items-center justify-between mb-12">
-        <div className="max-w-2xl">
-          <SubHeading text="Assignments Workflow" />
+    <section className="w-full bg-white py-12 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] flex flex-col items-center overflow-hidden">
+      <div className="w-full max-w-[1224px] flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4 md:gap-6">
+        <div className="max-w-full md:max-w-[658px]">
+          <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] capitalize">
+            Assignments Workflow
+          </h2>
           <Paragraph
             text="Experience personalized coaching and strategic academic support that
                         adapts to your unique goals and challenges for measurable growth and
                         confidence."
           />
         </div>
-        <Button variant="primary" className="mt-6 md:mt-0 !w-fit px-6">
+        <Button variant="primary" className="!w-fit px-8 !h-[48px] whitespace-nowrap">
           Try it out!
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center max-w-7xl w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center max-w-[1224px] w-full">
         <div className="flex flex-col gap-8 pl-0 sm:pl-0 md:pl-5 w-full">
           {steps.map((step) => {
             const isActive = activeStep === step.id;

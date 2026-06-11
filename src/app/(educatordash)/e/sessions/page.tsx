@@ -101,7 +101,7 @@ export default function EducatorSessionsPage() {
                         sType = "Cohort";
                     } else if (sTypeLower === "1:1" || sTypeLower === "1-1" || sTypeLower === "mentorship") {
                         sType = "1:1";
-                    } else if (sTypeLower === "certification" || sTypeLower === "certification course") {
+                    } else if (sTypeLower === "certification" || sTypeLower === "certification course" || sTypeLower === "certification_course" || sTypeLower === "course") {
                         sType = "Certification Course";
                     }
 

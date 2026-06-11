@@ -13,13 +13,10 @@ export default function ProgramsWebinarsSection({
   subheading = "Explore upcoming webinars and programs led by experienced educators with dates, times, and mentors clearly listed so you can plan with confidence.",
 }: ProgramsWebinarsSectionProps) {
   return (
-    <div className="w-full bg-white px-4 sm:px-6 lg:px-[100px] py-6 sm:py-12 md:py-16 lg:py-20 flex flex-col items-center">
+    <div className="w-full bg-white px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-6 sm:py-12 md:py-16 lg:py-20 flex flex-col items-center">
       {/* Header Section */}
       <div className="text-center mb-[32px] md:mb-[52px]">
-        <h2
-          className="font-inter font-medium text-[28px] sm:text-[36px] md:text-[46px] leading-[1.2] md:leading-[56px] tracking-[-0.06em] text-[#021165] mb-[16px]"
-          style={{ fontFamily: "var(--font-inter)" }}
-        >
+        <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] mb-[16px] capitalize">
           {heading}
         </h2>
         <p
@@ -31,7 +28,7 @@ export default function ProgramsWebinarsSection({
       </div>
 
       {/* Main Content Grid - 1220x790 */}
-      <div className="w-full max-w-[1220px] min-h-auto lg:h-[790px] flex flex-col lg:flex-row gap-[24px]">
+      <div className="w-full max-w-[1224px] min-h-auto lg:h-[790px] flex flex-col lg:flex-row gap-[24px]">
         {/* Left Large Card - 598x790 */}
         <div className="relative w-full lg:w-[598px] min-h-[460px] md:min-h-[500px] lg:h-[790px] rounded-[20px] overflow-hidden flex-shrink-0">
           {/* Background Image */}

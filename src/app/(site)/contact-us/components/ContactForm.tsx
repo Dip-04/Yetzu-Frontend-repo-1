@@ -39,8 +39,8 @@ const ContactForm = () => {
   });
 
   return (
-    <section className="bg-[#164CFF] min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 py-16 sm:py-20">
-      <div className="max-w-7xl w-full flex flex-col lg:flex-row items-start justify-between gap-12 lg:gap-20">
+    <section className="bg-[#164CFF] min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-16 sm:py-20">
+      <div className="max-w-[1224px] w-full flex flex-col lg:flex-row items-start justify-between gap-12 lg:gap-20">
         {/* LEFT SECTION */}
         <div className="text-white w-full lg:w-1/2 flex flex-col justify-between h-full">
           <div className="flex flex-col space-y-6 sm:space-y-8">
@@ -63,7 +63,7 @@ const ContactForm = () => {
           </div>
 
           <div className="mt-16 sm:mt-24 space-y-4">
-            <h2 className="text-lg sm:text-xl font-semibold">
+            <h2 className="text-lg sm:text-xl font-medium">
               Customer Support
             </h2>
             <p className="text-white/80 text-sm sm:text-base leading-relaxed max-w-sm">
@@ -256,7 +256,7 @@ const ContactForm = () => {
           ) : (
             <div className="flex flex-col items-center text-center space-y-4 py-10 px-4">
               <CheckCircle2 className="text-green-500 w-16 h-16 mb-2" />
-              <h3 className="text-2xl font-semibold text-gray-800">
+              <h3 className="text-2xl font-medium text-gray-800">
                 Thank you!
               </h3>
               <p className="text-gray-600 text-sm sm:text-base max-w-sm">

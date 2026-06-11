@@ -16,7 +16,7 @@ export default function BlogHeroSection() {
         </div>
 
         {/* Subtitle */}
-        <p className="text-[#7C7C7C] font-[SF Pro] text-[14px] md:text-[16px] leading-[150%] tracking-[-0.03em] text-left">
+        <p className="text-[#7C7C7C] font-sfpro text-[14px] md:text-[16px] leading-[150%] tracking-[-0.03em] text-left">
           All educational materials, course content, documentation, and tools
           and are protected by copyright.
         </p>

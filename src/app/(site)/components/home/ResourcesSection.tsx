@@ -68,16 +68,16 @@ export default function ResourcesSection({
   return (
     <section className="bg-gradient-to-b from-white via-[#E2E7FF] to-white py-[60px] md:py-[80px] px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px]">
       <div className="w-full max-w-[1224px] mx-auto">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-[40px] md:mb-[52px] gap-4">
-          <div className="w-full md:w-3/4">
-            <h2 className="font-[Inter] font-medium text-[28px] md:text-[36px] lg:text-[46px] leading-[120%] lg:leading-[100%] tracking-[-0.06em] text-[#021165]">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full mb-[40px] md:mb-[52px] gap-4 md:gap-6">
+          <div className="max-w-full md:max-w-[658px]">
+            <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] capitalize">
               {heading}
             </h2>
             <p className="mt-4 text-[#252525] text-[14px] md:text-base font-[SF Pro] max-w-full md:max-w-2xl">
               {subheading}
             </p>
           </div>
-          <Button variant="primary" className="mt-4 md:mt-0 !w-fit px-6">
+          <Button variant="primary" className="!w-fit px-8 !h-[48px] whitespace-nowrap">
             {ctaLabel}
           </Button>
         </div>
@@ -88,7 +88,7 @@ export default function ResourcesSection({
               <span className="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full mb-3 md:mb-4">
                 {featured.tag}
               </span>
-              <h3 className="font-[Inter] font-semibold text-[18px] md:text-[22px] leading-[120%] lg:leading-[100%] tracking-[-0.06em] text-[#252525] mb-2 md:mb-3">
+              <h3 className="font-[Inter] font-medium text-[18px] md:text-[22px] leading-[120%] lg:leading-[100%] tracking-[-0.06em] text-[#252525] mb-2 md:mb-3">
                 {featured.title}
               </h3>
               <p className="font-[SF Pro] font-normal text-[13px] md:text-[14px] leading-[150%] text-[#252525CC]">
@@ -137,7 +137,7 @@ export default function ResourcesSection({
                 />
               </div>
               <div className="p-4 md:p-6">
-                <h4 className="font-[Inter] font-semibold text-[18px] md:text-[22px] leading-[120%] lg:leading-[100%] tracking-[-0.06em] text-[#252525] mb-2">
+                <h4 className="font-[Inter] font-medium text-[18px] md:text-[22px] leading-[120%] lg:leading-[100%] tracking-[-0.06em] text-[#252525] mb-2">
                   {item.title}
                 </h4>
                 <p className="font-[SF Pro] text-[13px] md:text-[14px] font-normal text-[#252525CC] mb-3 md:mb-4 line-clamp-3">
@@ -151,7 +151,7 @@ export default function ResourcesSection({
                     height={32}
                     className="w-8 h-8 rounded-full"
                   />
-                  <div>
+<div className="w-full md:w-3/4">
                     <p className="text-sm font-medium text-[#252525]">
                       {item.author}
                     </p>

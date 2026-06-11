@@ -112,10 +112,6 @@ authApi.interceptors.response.use(
         Cookies.remove("refreshToken");
         Cookies.remove("isUserLoggedIn");
         Cookies.remove("userId");
-
-        if (typeof window !== "undefined") {
-          window.location.href = "/login";
-        }
       }
     }
 

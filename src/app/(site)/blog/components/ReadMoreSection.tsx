@@ -35,7 +35,7 @@ export default function ReadMoreSection() {
     <section className="w-full bg-white px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12 md:py-16">
       <div className="w-full max-w-[1224px] mx-auto">
         {/* Section Title */}
-        <h2 className="font-inter font-bold text-[32px] md:text-[42px] leading-[1.2] tracking-[-0.04em] text-[#042BFD] mb-10">
+        <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] capitalize mb-10">
           Read more
         </h2>
 
@@ -57,7 +57,7 @@ export default function ReadMoreSection() {
                 {/* Content */}
                 <div className="p-6">
                   <p className="text-[12px] text-[#7C7C7C] mb-2">{blog.date}</p>
-                  <h3 className="font-inter font-semibold text-[18px] leading-[1.4] tracking-[-0.02em] text-[#252525] mb-3">
+                  <h3 className="font-inter font-medium text-[18px] leading-[1.4] tracking-[-0.02em] text-[#252525] mb-3">
                     {blog.title}
                   </h3>
                   <p className="text-[14px] text-[#7C7C7C] leading-[150%]">

@@ -8,9 +8,6 @@ interface CourseFiltersProps {
   category: string;
   setCategory: (value: string) => void;
   categories: string[];
-  sessionTypes: string[];
-  sessionType: string;
-  setSessionType: (value: string) => void;
 }
 
 export default function CourseFilters({
@@ -21,9 +18,6 @@ export default function CourseFilters({
   category,
   setCategory,
   categories,
-  sessionTypes,
-  sessionType,
-  setSessionType,
 }: CourseFiltersProps) {
   return (
     <div className="w-full py-8">
@@ -61,25 +55,6 @@ export default function CourseFilters({
               <option value="date-desc">Date: Latest</option>
               <option value="title-asc">Name: A-Z</option>
               <option value="title-desc">Name: Z-A</option>
-            </select>
-          </div>
-          <div className="relative min-w-[180px]">
-            <select
-              value={sessionType}
-              onChange={(e) => setSessionType(e.target.value)}
-              className="w-full px-4 py-3.5 bg-[#F5F5F5] border border-[#EEF0FB] rounded-xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer"
-              style={{
-                backgroundImage: `url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A7A7A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")`,
-                backgroundPosition: 'right 12px center',
-                backgroundSize: '16px',
-                backgroundRepeat: 'no-repeat',
-                paddingRight: '36px'
-              }}
-            >
-              <option value="">All Types</option>
-              {sessionTypes.map((t) => (
-                <option key={t} value={t}>{t}</option>
-              ))}
             </select>
           </div>
           <div className="relative min-w-[180px]">

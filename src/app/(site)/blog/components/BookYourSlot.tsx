@@ -8,7 +8,7 @@ export default function BookYourSlot() {
       <div className="w-full max-w-[1224px] mx-auto">
         <div className="bg-gradient-to-br from-[#E6EAFF] to-[#F5F7FF] rounded-[28px] px-8 md:px-16 py-12 md:py-16 text-center shadow-none">
           {/* Heading */}
-          <h2 className="font-inter font-semibold text-[28px] md:text-[38px] lg:text-[46px] leading-[1.2] tracking-[-0.04em] text-[#252525] mb-4">
+          <h2 className="font-inter font-medium text-[28px] md:text-[38px] lg:text-[46px] leading-[1.2] tracking-[-0.04em] text-[#252525] mb-4">
             <span className="text-[#042BFD]">Book</span> Your Slot Today
           </h2>
 
@@ -19,7 +19,7 @@ export default function BookYourSlot() {
           </p>
 
           {/* Button */}
-          <Button variant="primary" className="!w-fit px-8 !h-[52px]">
+          <Button variant="primary" className="!w-fit px-8 !h-[52px] mx-auto">
             Get Invested In Your Academic Success
           </Button>
         </div>

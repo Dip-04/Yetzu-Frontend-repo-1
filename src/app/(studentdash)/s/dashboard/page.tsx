@@ -87,12 +87,22 @@ const formatOldDate = (value: any) => {
 
 const mapCatalogCourse = (course: any) => {
   const id = String(course._id || course.id || course.courseId || "");
+  
+  const rawType = course.type || course.sessionType || "Webinar";
+  const typeLower = String(rawType).toLowerCase();
+  let displayType = "Webinar";
+  if (typeLower === "webinar") displayType = "Webinar";
+  else if (typeLower === "cohort") displayType = "Cohort";
+  else if (typeLower === "1:1" || typeLower === "1-1" || typeLower === "mentorship") displayType = "1:1";
+  else if (typeLower === "certification" || typeLower === "certification course" || typeLower === "certification_course" || typeLower === "course") displayType = "Certification Course";
+
   return {
     ...course,
     id,
     title: course.title || course.courseTitle || "Untitled Course",
     subtitle: course.subtitle || course.description || "Learn from top educators in this interactive session.",
-    type: course.type || course.sessionType || "Webinar",
+    category: course.category || "General",
+    type: displayType,
     educatorName: course.educatorName || course.educator?.name || course.mentorName || "TBA",
     thumbnail: getImageUrl(course.thumbnail || ""),
     startDateTime: course.startDateTime || course.scheduleDate || course.date || "",
@@ -142,14 +152,28 @@ export default function OverviewPage() {
 
       const upcomingSessions = enrolledFromApi.map((ec: any, i: number) => {
         const course = ec.course || ec.fullCourseData || ec;
-        const themes = ['purple', 'teal', 'orange'];
+        const rawType = String(course.sessionType || course.type || ec.sessionType || ec.type || "webinar").toLowerCase();
+        
+        let displayType = "Webinar";
+        if (rawType === "webinar") displayType = "Webinar";
+        else if (rawType === "cohort") displayType = "Cohort";
+        else if (rawType === "1:1" || rawType === "1-1" || rawType === "mentorship") displayType = "1:1";
+        else if (rawType === "certification" || rawType === "certification course" || rawType === "certification_course" || rawType === "course") displayType = "Certification Course";
+
+        let theme = "purple";
+        if (rawType.includes("cohort")) theme = "teal";
+        else if (rawType.includes("1:1") || rawType.includes("1-1") || rawType.includes("mentorship")) theme = "orange";
+        else if (rawType.includes("certification") || rawType.includes("course")) theme = "teal";
+
         return {
           id: ec.sessionId || ec.courseId || ec._id || ec.id || `session-${i}`,
           title: ec.courseTitle || course.title || "Untitled Session",
+          description: course.subtitle || course.description || ec.description || ec.courseDescription || "Learn from top educators in this interactive session.",
+          displayType,
           date: formatOldDate(ec.startDateTime || course.startDateTime),
           time: (ec.startDateTime || course.startDateTime) ?
             new Date(ec.startDateTime || course.startDateTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "TBA",
-          theme: themes[i % themes.length],
+          theme,
           sessionLink: ec.webinerLink || ec.webinarLink || ec.sessionLink || course.webinerLink || course.webinarLink || course.cohortLink || "",
           startDateTime: ec.startDateTime || course.startDateTime || "",
           progress: ec.progress || course.progress || 0,
@@ -253,7 +277,7 @@ export default function OverviewPage() {
   
   if (isLoading) {
     return (
-      <main className="md:p-6 lg:p-8 max-w-[1600px] font-sans mx-auto min-h-screen bg-gray-50 flex items-center justify-center">
+      <main className="md:p-6 lg:p-8 font-sans min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-500 font-medium">Loading your dashboard...</p>
@@ -288,10 +312,16 @@ export default function OverviewPage() {
   const focusThisWeek: any[] = [];
   if (upcomingSessions.length > 0) {
     const todaySession = upcomingSessions[0];
+    let focusType = "purple";
+    if (todaySession.displayType === "Cohort") focusType = "blue";
+    else if (todaySession.displayType === "1:1") focusType = "orange";
+    else if (todaySession.displayType === "Certification Course") focusType = "green";
+
     focusThisWeek.push({
       id: "focus-session-0",
-      type: "purple",
+      type: focusType,
       title: todaySession.title,
+      description: todaySession.description,
       date: todaySession.date,
       time: todaySession.time,
       badgeText: "TODAY",
@@ -306,6 +336,7 @@ export default function OverviewPage() {
       id: "focus-assignment-0",
       type: "green",
       title: pendingAssignments[0].title,
+      description: pendingAssignments[0].subtitle,
       date: `Due on: ${pendingAssignments[0].due}`,
       time: null,
       badgeText: "Due Soon",
@@ -323,7 +354,7 @@ export default function OverviewPage() {
   ];
 
   return (
-    <main className="md:p-6 lg:p-8 max-w-[1600px] font-sans mx-auto flex flex-col gap-5 md:bg-gray-50 min-h-screen overflow-x-hidden pb-24 lg:pb-8">
+    <main className="md:p-6 lg:p-8 font-sans flex flex-col gap-5 md:bg-gray-50 min-h-screen overflow-x-hidden pb-24 lg:pb-8">
       
         {dashboardError && (
           <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
@@ -476,7 +507,8 @@ export default function OverviewPage() {
                           )}
 
                           <div className={`relative z-20 flex-1 flex flex-col h-full justify-end ${!item.badgeText ? 'mt-18' : 'mt-3'}`}>
-                            <h3 className="text-[15px] font-bold text-gray-900 leading-snug mb-3">{item.title}</h3>
+                            <h3 className="text-[15px] font-bold text-gray-900 leading-snug mb-1">{item.title}</h3>
+                            {item.description && <p className="text-[12px] text-gray-500 mb-3 line-clamp-2 leading-relaxed">{item.description}</p>}
                             <div className="flex flex-wrap items-center gap-4 text-[13px] font-medium text-gray-500 mb-6">
                               <span className="flex items-center gap-1.5 whitespace-nowrap"><Calendar size={14} /> {item.date}</span>
                               {item.time && <span className="flex items-center gap-1.5 whitespace-nowrap"><Clock size={14} /> {item.time}</span>}
@@ -511,13 +543,24 @@ export default function OverviewPage() {
                   <span className="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-0.5 rounded-full">{upcomingSessions.length}</span>
                 </div>
                 
-                <div className="flex overflow-x-auto space-x-4 md:space-x-0 md:flex-col md:space-y-4 flex-1 px-4 md:px-0 pb-4 md:pb-0 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                  {upcomingSessions.length > 0 ? upcomingSessions.map((session : any) => {
+                <div className="flex overflow-x-auto space-x-4 md:space-x-0 md:flex-col md:space-y-4 flex-1 px-4 md:px-0 pb-4 md:pb-0 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] max-h-[600px] overflow-hidden">
+                  {upcomingSessions.length > 0 ? upcomingSessions.slice(0, 3).map((session : any) => {
                     const theme = getUpcomingTheme(session.theme);
                     return (
                       <div key={session.id} className={`border ${theme.border} rounded-xl p-1 overflow-hidden flex flex-col ${theme.background} shadow-[0_2px_8px_rgba(0,0,0,0.02)] min-w-[280px] w-[85vw] md:min-w-0 md:w-auto shrink-0 snap-center md:snap-align-none`}>
                         <div className="p-4 bg-white rounded-xl flex-1">
-                          <h3 className="text-[15px] font-bold text-gray-900 mb-4 leading-snug">{session.title}</h3>
+                          <div className="flex justify-between items-start mb-2">
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                              session.displayType === "Webinar" ? "bg-purple-100 text-purple-700" :
+                              session.displayType === "Cohort" ? "bg-teal-100 text-teal-700" :
+                              session.displayType === "1:1" ? "bg-orange-100 text-orange-700" :
+                              "bg-green-100 text-green-700"
+                            }`}>
+                              {session.displayType}
+                            </span>
+                          </div>
+                          <h3 className="text-[15px] font-bold text-gray-900 mb-1 leading-snug">{session.title}</h3>
+                          <p className="text-[12px] text-gray-500 mb-4 line-clamp-2 leading-relaxed">{session.description}</p>
                           <div className="flex flex-wrap items-center gap-2">
                             <span className="flex items-center gap-1.5 text-[13px] text-gray-600 border border-gray-200 px-2.5 py-1.5 rounded-lg whitespace-nowrap">
                               <Calendar size={14} className="shrink-0 text-gray-400" /> {session.date}
@@ -534,10 +577,15 @@ export default function OverviewPage() {
                         </Link>
                       </div>
                     );
-                  }) : (
+                  }                  ) : (
                     <p className="text-[14px] text-gray-500 w-full text-center px-4 md:px-0">No upcoming sessions.</p>
                   )}
                 </div>
+                {upcomingSessions.length > 3 && (
+                  <Link href="/s/sessions" className="mt-3 flex items-center justify-center gap-1 text-[13px] font-medium text-gray-600 hover:text-gray-900 transition-colors px-4 md:px-0 shrink-0">
+                    View All Sessions <ExternalLink size={14} />
+                  </Link>
+                )}
               </div>
 
               {/* Pending Assignments */}
@@ -547,8 +595,8 @@ export default function OverviewPage() {
                   <span className="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-0.5 rounded-full">{pendingAssignments.length}</span>
                 </div>
                 
-                <div className="flex overflow-x-auto space-x-4 md:space-x-0 md:flex-col md:space-y-4 flex-1 px-4 md:px-0 pb-4 md:pb-0 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                  {pendingAssignments.length > 0 ? pendingAssignments.map((assignment :any ) => (
+                <div className="flex overflow-x-auto space-x-4 md:space-x-0 md:flex-col md:space-y-4 flex-1 px-4 md:px-0 pb-4 md:pb-0 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] max-h-[600px] overflow-hidden">
+                  {pendingAssignments.length > 0 ? pendingAssignments.slice(0, 3).map((assignment :any ) => (
                     <div key={assignment.id} className="border border-gray-200 rounded-xl overflow-hidden flex p-1 bg-[#F5F6FF] flex-col shadow-[0_2px_8px_rgba(0,0,0,0.02)] min-w-[280px] w-[85vw] md:min-w-0 md:w-auto shrink-0 snap-center md:snap-align-none">
                       <div className="p-4 bg-white rounded-xl mb-2 flex-1">
                         <h3 className="text-[15px] font-bold text-gray-900 mb-4 leading-snug">{assignment.title}</h3>
@@ -568,10 +616,15 @@ export default function OverviewPage() {
                         </button>
                       </Link>
                     </div>
-                  )) : (
+                  )                  ) : (
                     <p className="text-[14px] text-gray-500 w-full text-center px-4 md:px-0">No pending assignments.</p>
                   )}
                 </div>
+                {pendingAssignments.length > 3 && (
+                  <Link href="/s/assignments" className="mt-3 flex items-center justify-center gap-1 text-[13px] font-medium text-gray-600 hover:text-gray-900 transition-colors px-4 md:px-0 shrink-0">
+                    View All Assignments <ExternalLink size={14} />
+                  </Link>
+                )}
               </div>
 
               {/* Explore - Unpurchased Courses */}
@@ -581,8 +634,8 @@ export default function OverviewPage() {
                   <span className="bg-gray-100 text-gray-500 text-[10px] font-bold px-2 py-0.5 rounded-full">{availableCourses.length}</span>
                 </div>
 
-                <div className="flex overflow-x-auto space-x-4 md:space-x-0 md:flex-col md:space-y-4 flex-1 px-4 md:px-0 pb-4 md:pb-0 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                  {availableCourses.length > 0 ? availableCourses.slice(0, 4).map((course :any, index: number) => {
+                <div className="flex overflow-x-auto space-x-4 md:space-x-0 md:flex-col md:space-y-4 flex-1 px-4 md:px-0 pb-4 md:pb-0 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] max-h-[600px] overflow-hidden">
+                  {availableCourses.length > 0 ? availableCourses.slice(0, 3).map((course :any, index: number) => {
                     const theme = getExploreTheme(index);
                     return (
                     <div key={course.id} className={`border border-gray-200 rounded-xl overflow-hidden flex p-1 flex-col shadow-[0_2px_8px_rgba(0,0,0,0.02)] min-w-[280px] w-[85vw] md:min-w-0 md:w-auto shrink-0 snap-center md:snap-align-none`} style={{ backgroundColor: theme.bgLight }}>
@@ -595,12 +648,18 @@ export default function OverviewPage() {
                               <Calendar size={24} />
                             </div>
                           )}
-                          <div className={`absolute top-1.5 right-1.5 ${theme.badge} text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase`}>
-                            {course.type}
+                          <div className="absolute top-1.5 right-1.5 flex gap-1 z-10">
+                            <span className="bg-white/95 text-gray-800 text-[9px] font-bold px-2 py-0.5 rounded-full uppercase shadow-sm">
+                              {course.category || "General"}
+                            </span>
+                            <span className={`${theme.badge} text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase shadow-sm`}>
+                              {course.type}
+                            </span>
                           </div>
                         </div>
-                        <h3 className="text-[15px] font-bold text-gray-900 mb-1.5 leading-snug line-clamp-2">{course.title}</h3>
-                        <p className="text-[12px] text-gray-500 mb-3">{course.educatorName}</p>
+                        <h3 className="text-[15px] font-bold text-gray-900 mb-1 leading-snug line-clamp-2">{course.title}</h3>
+                        <p className="text-[11px] font-semibold text-gray-400 mb-1.5">{course.educatorName}</p>
+                        <p className="text-[12px] text-gray-500 mb-3 line-clamp-2 leading-relaxed">{course.subtitle}</p>
                         <div className="flex items-center gap-3 text-[13px] text-gray-600">
                           <span className="flex items-center gap-1.5 border border-gray-200 px-2.5 py-1.5 rounded-lg whitespace-nowrap">
                             <Calendar size={14} className="shrink-0 text-gray-400" /> {course.dateLabel}
@@ -622,8 +681,8 @@ export default function OverviewPage() {
                   )}
                 </div>
 
-                {availableCourses.length > 4 && (
-                  <Link href="/s/sessions" className={`mt-3 flex items-center justify-center gap-1 text-[13px] font-medium ${getExploreTheme(0).link} transition-colors px-4 md:px-0`}>
+                {availableCourses.length > 3 && (
+                  <Link href="/courses" className={`mt-3 flex items-center justify-center gap-1 text-[13px] font-medium ${getExploreTheme(0).link} transition-colors px-4 md:px-0 shrink-0`}>
                     View All Courses <ExternalLink size={14} />
                   </Link>
                 )}

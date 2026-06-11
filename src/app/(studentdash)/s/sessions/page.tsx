@@ -14,6 +14,7 @@ interface SessionCardData {
   courseId: string;
   slug: string;
   title: string;
+  description: string;
   type: string;
   mentor: {
     name: string;
@@ -41,7 +42,6 @@ const hasActiveRescheduleRequest = (item: any) => {
   const requests = asArray(item.rescheduleRequests || item.reschedule_requests || item.reschedules || item.requests);
   return requests.some((request: any) => !["approved", "accepted", "rejected", "cancelled", "completed"].includes(String(request.status || request.action || "pending").toLowerCase()));
 };
-
 const getThemeStyles = (type: string, badgeType?: string) => {
   let badgeClasses = "";
   if (badgeType === "purple") badgeClasses = "bg-[#E0D4F5] text-[#7B42F6]";
@@ -57,6 +57,8 @@ const getThemeStyles = (type: string, badgeType?: string) => {
         badgeClasses,
       };
     case "mentorship":
+    case "1:1":
+    case "1-1":
       return {
         wrapperBorder: "from-[#FAD0A5] via-transparent to-[#FAD0A5]",
         bgGradient: "from-[#FFF3E3] via-white via-40% to-white",
@@ -69,6 +71,13 @@ const getThemeStyles = (type: string, badgeType?: string) => {
         bgGradient: "from-[#E6F8FA] via-white via-40% to-white",
         icon: "/images/team.svg",
         badgeClasses,
+      };
+    case "certification":
+      return {
+        wrapperBorder: "from-[#B6E0C3] via-transparent to-[#B6E0C3]",
+        bgGradient: "from-[#ECFDF3] via-white via-40% to-white",
+        icon: "/images/video-chat.svg",
+        badgeClasses: badgeType === "purple" ? badgeClasses : "bg-green-100 text-green-700",
       };
     case "workshop":
       return {
@@ -131,8 +140,16 @@ const formatTimeLabel = (item: any, date: Date | null) => {
   });
 };
 
-const normalizeSessionType = (item: any) =>
-  String(item.sessionType || item.type || item.courseType || "Webinar").toLowerCase();
+const normalizeSessionType = (item: any) => {
+  const rawType = String(item.sessionType || item.type || item.courseType || "Webinar").toLowerCase();
+  if (rawType === "certification" || rawType === "certification course" || rawType === "certification_course" || rawType === "course") {
+    return "certification";
+  }
+  if (rawType === "1:1" || rawType === "1-1" || rawType === "mentorship") {
+    return "1:1";
+  }
+  return rawType;
+};
 
 const mapStudentSession = (item: any, focusIds: Set<string>): SessionCardData => {
   const id = String(item._id || item.id || item.courseId || item.sessionId || item.slug);
@@ -163,6 +180,7 @@ const mapStudentSession = (item: any, focusIds: Set<string>): SessionCardData =>
     tab,
     isFocusToday,
     startIso: startDate?.toISOString() || "",
+    description: item.subtitle || item.description || "Learn from top educators in this interactive session.",
   };
 };
 
@@ -199,7 +217,8 @@ export default function SessionsPage() {
             courseId: item.courseId || course.id,
             slug: course.id || item.courseId || item.id || "",
             title: course.title || "Untitled Session",
-            type: course.subtitle || "Webinar",
+            description: course.subtitle || course.description || item.description || "Learn from top educators in this interactive session.",
+            type: normalizeSessionType(course),
             mentor: {
               name: educator.name || "Educator",
               role: educator.email || "Session Mentor",
@@ -217,7 +236,6 @@ export default function SessionsPage() {
             hasRescheduleRequest: hasActiveRescheduleRequest(course) || hasActiveRescheduleRequest(item),
           };
         });
-
         setSessions(mappedSessions);
       } catch (fetchError: any) {
         console.error("Student sessions fetch failed", fetchError);
@@ -273,18 +291,29 @@ export default function SessionsPage() {
 
           <div className="relative z-10 mb-6 flex items-start justify-between">
             <img src={theme.icon} alt="Icon" className="h-[64px] w-[64px] object-contain opacity-90" />
-            {session.badge ? (
-              <span className={`${theme.badgeClasses} flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide shadow-sm`}>
-                {session.badge.includes("STARTS") ? <Clock size={14} /> : null}
-                {session.badge}
+            <div className="flex flex-col items-end gap-2">
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                session.type === "webinar" ? "bg-purple-100 text-purple-700" :
+                session.type === "cohort" ? "bg-teal-100 text-teal-700" :
+                session.type === "1:1" ? "bg-orange-100 text-orange-700" :
+                "bg-green-100 text-green-700"
+              }`}>
+                {session.type === "1:1" ? "1:1" : session.type === "certification" ? "Certification Course" : session.type}
               </span>
-            ) : null}
+              {session.badge ? (
+                <span className={`${theme.badgeClasses} flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide shadow-sm`}>
+                  {session.badge.includes("STARTS") ? <Clock size={14} /> : null}
+                  {session.badge}
+                </span>
+              ) : null}
+            </div>
           </div>
 
           <div className="relative z-10 flex flex-1 flex-col">
             <Link href={`/s/sessions/${session.slug}`} className="transition-colors hover:text-[#042BFD]">
-              <h3 className="mb-5 pr-2 text-[18px] font-bold leading-snug text-gray-900 line-clamp-2">{session.title}</h3>
+              <h3 className="mb-2 pr-2 text-[18px] font-bold leading-snug text-gray-900 line-clamp-2">{session.title}</h3>
             </Link>
+            <p className="mb-5 text-[13px] text-gray-500 line-clamp-2 leading-relaxed">{session.description}</p>
 
             <div className="mt-auto mb-6 flex items-center gap-3">
               <img src={session.mentor.avatar} alt="Mentor" className="h-11 w-11 shrink-0 rounded-full object-cover" />
@@ -372,7 +401,6 @@ export default function SessionsPage() {
       </div>
     );
   };
-
   return (
     <div className="w-full bg-white md:bg-[#F8F9FA] font-sans pb-18 lg:pb-8">
       

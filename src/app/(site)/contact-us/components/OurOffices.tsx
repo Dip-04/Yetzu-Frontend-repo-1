@@ -40,16 +40,16 @@ const contactInfo = [
 
 export default function OurOffices() {
     return (
-        <section className="w-full bg-gradient-to-b from-white to-blue-50 py-10 px-4 sm:px-6 lg:px-10 flex flex-col items-center">
+        <section className="w-full bg-gradient-to-b from-white to-blue-50 py-10 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] flex flex-col items-center">
             <div className="text-center mb-12">
                 <SubHeading text="Our Offices" />
                 <Paragraph text="Join a Thriving Community Dedicated to Academic Excellence Supported by
                     Cutting-Edge Technology and Expert Mentorship."/>
             </div>
 
-            <div className="flex flex-col-reverse lg:flex-row bg-white rounded-2xl shadow-md overflow-hidden w-full max-w-7xl">
+            <div className="flex flex-col-reverse lg:flex-row bg-white rounded-2xl shadow-md overflow-hidden w-full max-w-[1224px]">
                 <div className="w-full lg:w-[40%] flex flex-col justify-center p-8 sm:p-10">
-                    <h3 className="text-4xl sm:text-3xl font-semibold text-blue-900 mb-8">
+                    <h3 className="text-4xl sm:text-3xl font-medium text-blue-900 mb-8">
                         Contact us
                     </h3>
 
@@ -60,7 +60,7 @@ export default function OurOffices() {
                                 className="flex flex-col items-center text-center space-y-2"
                             >
                                 <div>{item.icon}</div>
-                                <h4 className="font-semibold text-gray-900 text-base sm:text-lg">
+                                <h4 className="font-medium text-gray-900 text-base sm:text-lg">
                                     {item.title}
                                 </h4>
                                 <p className="text-gray-600 text-sm sm:text-base">

@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import React, { useState, useRef, useEffect } from "react";
-import { Menu, Bell, Search, ChevronDown, Settings, FileText, Video, Award, Calendar, CheckCircle2 } from "lucide-react";
+import { Menu, Bell, Search, ChevronDown, Settings, FileText, Video, Award, Calendar, CheckCircle2, UserPlus, Activity } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { AdminAPI, asArray } from "@/lib/api";
 import { getTimeAgo } from "@/lib/utils/dateUtils";
 
@@ -13,14 +14,40 @@ interface AdminHeaderProps {
 const notificationIconFor = (type?: string) => {
   const normalized = String(type || "").toLowerCase();
   if (normalized.includes("assignment")) return FileText;
+  if (normalized.includes("upcoming_session")) return Video;
   if (normalized.includes("session")) return Video;
+  if (normalized.includes("support_ticket")) return FileText;
+  if (normalized.includes("new_user")) return UserPlus;
   if (normalized.includes("certificate")) return Award;
+  if (normalized.includes("activity")) return Activity;
   return Calendar;
 };
 
+const getNotifTitle = (item: any) => {
+  switch (item.type) {
+    case "upcoming_session": return item.session?.title || item.title || "Upcoming Session";
+    case "support_ticket": return item.ticket?.subject || item.title || "Support Ticket";
+    case "new_user_registered": return `${item.user?.name || "New user"} registered`;
+    case "activity_feed": return item.activity?.title || item.title || "Activity";
+    default: return item.title || item.message || "Notification";
+  }
+};
+
+const getNotifDescription = (item: any) => {
+  switch (item.type) {
+    case "upcoming_session": return `${item.session?.sessionType || "Session"} • ${item.session?.code || ""}`;
+    case "support_ticket": return `${item.ticket?.ticketCode || ""} — ${item.ticket?.status || ""}`;
+    case "new_user_registered": return item.user?.email || "";
+    case "activity_feed": return item.activity?.description || "";
+    default: return item.subtitle || item.description || "";
+  }
+};
+
 export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
+    const router = useRouter();
     const [isNotifOpen, setIsNotifOpen] = useState(false);
     const [notifications, setNotifications] = useState<any[]>([]);
+    const [rawNotifications, setRawNotifications] = useState<any[]>([]);
     const unreadCount = notifications.filter(n => n.unread).length;
     const notifRef = useRef<HTMLDivElement>(null);
 
@@ -38,20 +65,43 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
       const fetchNotifications = async () => {
         try {
           const response = await AdminAPI.getNotifications();
-          setNotifications(asArray(response).map((item: any, index: number) => ({
+          const items = asArray(response);
+          setRawNotifications(items);
+          setNotifications(items.map((item: any, index: number) => ({
             id: item.id || index,
             icon: notificationIconFor(item.type || item.category),
-            title: item.title || item.message || "Notification",
-            subtitle: item.subtitle || item.description || "",
+            title: getNotifTitle(item),
+            subtitle: getNotifDescription(item),
             time: getTimeAgo(item.createdAt || item.time || item.timeAgo),
-            unread: Boolean(item.unread || item.isUnread || item.status === "unread"),
+            unread: !item.read,
+            _raw: item,
           })));
         } catch {
           setNotifications([]);
+          setRawNotifications([]);
         }
       };
       fetchNotifications();
     }, []);
+
+    const handleNotificationClick = (notif: any) => {
+      setIsNotifOpen(false);
+      const raw = notif._raw;
+      if (!raw) return;
+      switch (raw.type) {
+        case "upcoming_session":
+          if (raw.session?.id) router.push(`/a/sessions/${raw.session.id}`);
+          break;
+        case "support_ticket":
+          if (raw.ticket?.id) router.push(`/a/tickets/${raw.ticket.id}`);
+          break;
+        case "new_user_registered":
+          if (raw.user?.id) router.push(`/a/users/${raw.user.id}`);
+          break;
+        default:
+          break;
+      }
+    };
 
     const markAllAsRead = () => {
       setNotifications(notifications.map(n => ({ ...n, unread: false })));
@@ -118,7 +168,7 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                         {notifications.length > 0 ? (
                           <div className="flex flex-col">
                             {notifications.map((notif) => (
-                              <div key={notif.id} className="flex items-start gap-4 p-3 hover:bg-gray-50/80 transition-colors border-b border-gray-50 cursor-pointer">
+                              <div key={notif.id} onClick={() => handleNotificationClick(notif)} className="flex items-start gap-4 p-3 hover:bg-gray-50/80 transition-colors border-b border-gray-50 cursor-pointer">
                                 <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${notif.unread ? 'bg-[#E0E7FF] text-[#4F39F6]' : 'bg-[#F8FAFC] text-gray-500'}`}>
                                   <notif.icon size={16} strokeWidth={1.5} />
                                 </div>

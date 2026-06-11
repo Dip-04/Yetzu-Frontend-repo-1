@@ -11,7 +11,7 @@ export default function JoinCommunity() {
           {/* Left Content */}
           <div className="w-full md:w-[571px] md:h-[333px] flex flex-col md:gap-[40px] gap-6 text-center md:text-left">
             <div className="flex flex-col md:gap-[16px] gap-4 md:h-[241px]">
-              <h2 className="font-[Inter] font-medium text-[28px] md:text-[36px] lg:text-[46px] md:leading-[56px] leading-[120%] tracking-[-0.06em] text-white md:h-[168px]">
+              <h2 className="font-[Inter] font-medium text-[28px] md:text-[36px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-white md:h-[168px] capitalize">
                 Join Thousands of <br /> Successful
                 <span className="text-[#9BAAFE]"> Learners &</span> <br />
                 <span className="text-[#9BAAFE]">Educators</span>

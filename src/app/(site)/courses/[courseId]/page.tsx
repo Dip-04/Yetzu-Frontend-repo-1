@@ -34,8 +34,9 @@ import CourseCard, {
   CourseCardSkeleton,
 } from "@/app/(site)/courses/components/CourseCard";
 import { useMemo, useState } from "react";
-import PageTestimonialsSection from "@/components/shared/PageTestimonialsSection";
+import CustomTestimonials from "../components/CustomTestimonials";
 import PageFAQSection from "@/components/shared/PageFAQSection";
+import BookSlotSection from "@/app/(site)/contact-us/components/BookSlotSection";
 import MentorCard from "@/components/MentorCard";
 import { getImageUrl } from "@/lib/utils/imageUtils";
 import Button from "@/components/ui/Button";
@@ -62,6 +63,35 @@ export default function CourseDetailPage() {
     const shuffled = [...otherCourses].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, 3);
   }, [allCourses, courseId]);
+
+  const outcomesList = useMemo(() => {
+    const list = [
+      ...(course?.outcomes || []),
+      ...(course?.benefits || [])
+    ];
+    if (list.length === 0) {
+      return [
+        "Learn industry-relevant skills",
+        "Learn industry-relevant skills",
+        "Learn industry-relevant skills",
+        "Learn industry-relevant skills"
+      ];
+    }
+    return list;
+  }, [course]);
+
+  const syllabusList = useMemo(() => {
+    if (course?.syllabus && course.syllabus.length > 0) {
+      return course.syllabus;
+    }
+    return [
+      { _id: "1", title: "Title", desc: "Answer the frequently asked question in a simple sentence, a longish paragraph, or even in a list." },
+      { _id: "2", title: "Title", desc: "Answer the frequently asked question in a simple sentence, a longish paragraph, or even in a list." },
+      { _id: "3", title: "Title", desc: "Answer the frequently asked question in a simple sentence, a longish paragraph, or even in a list." },
+      { _id: "4", title: "Title", desc: "Answer the frequently asked question in a simple sentence, a longish paragraph, or even in a list." },
+      { _id: "5", title: "Title", desc: "Answer the frequently asked question in a simple sentence, a longish paragraph, or even in a list." }
+    ];
+  }, [course]);
 
   const handleBuyNow = async () => {
     if (!course || isCreatingOrder) return;
@@ -132,42 +162,48 @@ export default function CourseDetailPage() {
   return (
     <main className="min-h-screen bg-white">
       <section className="relative bg-[#F8FAFF] pt-10 pb-16 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px]">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1224px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            <div className="space-y-3">
-              <MainHeading text={course?.title} className="text-[#021165]" />
+            <div className="flex flex-col justify-center items-start gap-8 md:gap-11 w-full max-w-[657px]">
+              <h1 className="font-inter font-medium text-[32px] sm:text-[40px] md:text-[56px] leading-[1.2] md:leading-[68px] tracking-[-0.02em] text-[#021165]">
+                {course?.title}
+              </h1>
 
-              <h2 className="text-2xl font-semibold text-[#252525]">
-                {course?.subtitle ||
-                  "One-on-one sessions focused on your personal academic needs and growth"}
-              </h2>
+              <div className="flex flex-col items-start gap-2 md:gap-4 w-full max-w-[465px]">
+                <h2 className="font-inter font-semibold text-[18px] sm:text-[20px] md:text-[22px] leading-[27px] tracking-[-0.06em] text-[#252525]">
+                  {course?.subtitle ||
+                    "One-on-one sessions focused on your personal academic needs and growth"}
+                </h2>
 
-              <p className="text-gray-600 text-md leading-relaxed">
-                {course?.description ||
-                  "All educational materials, course content, documentation, and tools are protected by copyright. It is an offense to embed a filtration, and tools exclusive license to use this material solely for your personal, non-commercial educational purposes."}
-              </p>
+                <p className="font-sfpro font-normal text-[12px] leading-[14px] text-[#252525] max-w-[399px]">
+                  {course?.description ||
+                    "All educational materials, course content, documentation, and tools are protected by copyright. It is an offense to embed a filtration, and tools exclusive license to use this material solely for your personal, non-commercial educational purposes."}
+                </p>
 
-              <div className="flex flex-wrap gap-6 pt-1">
-                <div className="flex items-center gap-2">
-                  <Clock className="w-5 h-5 text-[#021165]" />
-                  <span className="text-md text-[#252525]">
-                    <span className="font-medium">Starts:</span>{" "}
-                    {new Date(course.startDateTime).toLocaleDateString(
-                      "en-GB",
-                      { day: "numeric", month: "short", year: "numeric" },
-                    )}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-[#021165]" />
-                  <span className="text-md text-[#252525]">
-                    <span className="font-medium">Duration:</span>{" "}
-                    {course.duration}
-                  </span>
+                <div className="flex flex-wrap gap-6">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-[#021165]" />
+                    <span className="font-sfpro font-normal text-[16px] leading-[19px] tracking-[-0.03em] text-[#021165]">
+                      Starts:{" "}
+                      {new Date(course.startDateTime).toLocaleDateString(
+                        "en-GB",
+                        { day: "numeric", month: "short", year: "numeric" },
+                      )}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-[#021165]" />
+                    <span className="font-sfpro font-normal text-[16px] leading-[19px] tracking-[-0.03em] text-[#021165]">
+                      Duration: {course.duration}
+                    </span>
+                  </div>
                 </div>
               </div>
-              <div className="pt-4">
-                <p className="text-md text-gray-600 mb-3">Already joined</p>
+
+              <div className="flex flex-col items-start gap-2 w-full max-w-[399px]">
+                <p className="font-sfpro font-normal text-[18px] leading-[21px] tracking-[-0.03em] text-[#252525]">
+                  Already joined
+                </p>
                 <div className="flex items-center gap-2">
                   <AvatarStack count={course.enrolledCount || 5} />
                 </div>
@@ -197,57 +233,51 @@ export default function CourseDetailPage() {
       </section>
 
       <section className="relative py-16 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] bg-white">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1224px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12">
             <div className="space-y-14">
+              {/* Topics To Be Covered Accordions */}
+              <div className="max-w-[680px]">
+                <SubHeading text="Topics To Be Covered" level={3} className="font-semibold tracking-tight !mb-6 text-[#021165]" />
+                <CourseTopicsAccordion
+                  items={syllabusList}
+                  firstExpanded={true}
+                />
+              </div>
+
+              {/* Next Steps Timeline Card */}
               <div>
-                <SubHeading text="What You Will Learn" level={3} />
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {course.benefits &&
-                    course.benefits.slice(0, 6).map((benefit, index) => (
-                      <div key={index} className="bg-[#E6EAFF] p-6 rounded-xl">
-                        <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-4">
-                          <Figma className="w-8 h-8 text-[#021165]" />
+                <SubHeading text="Next Steps" level={3} className="font-semibold tracking-tight !mb-6 text-[#021165]" />
+                <div className="w-full max-w-[480px] bg-white rounded-[24px] p-6 sm:p-8 border border-[#EDF0F7] shadow-[0_16px_32px_-12px_rgba(31,30,130,0.08)]">
+                  <div className="flex flex-col gap-8">
+                    {["Loren ipsum", "Loren ipsum", "Loren ipsum", "Loren ipsum"].map((title, idx) => (
+                      <div key={idx} className="flex items-start gap-5 relative">
+                        {/* Connecting vertical line */}
+                        {idx !== 3 && (
+                          <div className="absolute left-[20px] top-[40px] bottom-[-32px] w-[2px] bg-[#E6EAFF]" />
+                        )}
+                        {/* Circle badge container */}
+                        <div className="w-10 h-10 rounded-full bg-[#F2F4FF] flex items-center justify-center flex-shrink-0 relative z-10">
+                          <Activity className="w-5 h-5 text-[#042BFD]" />
                         </div>
-                        <h3 className="font-bold text-[#021165] mb-2 text-lg">
-                          Lorem Ipsum
-                        </h3>
-                        <p className="text-md text-gray-600">
-                          Lorem ipsum is a good way to start your design
-                        </p>
+                        {/* Title and details */}
+                        <div className="flex flex-col gap-1">
+                          <h4 className="font-semibold text-lg text-[#252525] leading-tight">
+                            {title}
+                          </h4>
+                          <p className="text-sm text-[#5C5C5C] leading-snug">
+                            Lorem ipsum is a good way to start your design Lorem
+                          </p>
+                        </div>
                       </div>
                     ))}
+                  </div>
                 </div>
               </div>
-              {course?.syllabus?.length > 0 && (
-                <div>
-                  <SubHeading text="Topics To Be Covered" level={3} />
-                  <CourseTopicsAccordion
-                    items={course?.syllabus || []}
-                    firstExpanded={true}
-                  />
-                </div>
-              )}
+
+              {/* Things You'll Get */}
               <div>
-                <SubHeading text="Next Steps" level={3} />
-                <div className="space-y-4">
-                  {[1, 2, 3, 4].map((item) => (
-                    <div key={item} className="flex items-start gap-4">
-                      <Activity className="w-6 h-6 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <h4 className="font-semibold text-[#021165] mb-1">
-                          Lorem ipsum
-                        </h4>
-                        <p className="text-sm text-gray-600">
-                          Lorem ipsum is a good way to start your design Lorem
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <SubHeading text="Things You'll Get" level={3} />
+                <SubHeading text="Things You'll Get" level={3} className="font-semibold tracking-tight !mb-6 text-[#021165]" />
                 <div className="flex flex-wrap gap-3">
                   <BadgePill
                     text="Certificate"
@@ -262,33 +292,37 @@ export default function CourseDetailPage() {
                     icon={<Check className="w-4 h-4" />}
                   />
                   <BadgePill
-                    text="13 Q&A Session"
+                    text="1:1 Q&A Session"
                     icon={<Check className="w-4 h-4" />}
                   />
                 </div>
               </div>
+
+              {/* Value You'll Receive */}
               <div>
-                <SubHeading text="Value You'll Receive" level={3} />
-                <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
-                  {[...course?.outcomes, ...course?.benefits].map((item) => (
+                <SubHeading text="Value You'll Receive" level={3} className="font-semibold tracking-tight !mb-6 text-[#021165]" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {outcomesList.map((item, idx) => (
                     <div
-                      key={item}
-                      className="border border-gray-200 rounded-xl p-5"
+                      key={idx}
+                      className="border border-[#EDF0F7] rounded-xl p-5 bg-white flex items-center gap-4 shadow-sm"
                     >
-                      <div className="flex items-start gap-3 flex-wrap">
-                        <Activity className="w-6 h-6 flex-shrink-0 mt-0.5" />
-                        <div>
-                          <h4 className="font-semibold text-black">{item}</h4>
-                        </div>
+                      <div className="w-10 h-10 rounded-full bg-[#F2F4FF] flex items-center justify-center flex-shrink-0">
+                        <Activity className="w-5 h-5 text-[#042BFD]" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-[#252525] text-[16px] leading-tight">{item}</h4>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
+
+              {/* Who Is This For */}
               <div>
-                <SubHeading text="Who Is This For" level={3} />
+                <SubHeading text="Who Is This For" level={3} className="font-semibold tracking-tight !mb-6 text-[#021165]" />
                 <div className="space-y-4">
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="text-gray-700 leading-relaxed text-[16px]">
                     Lorem ipsum is a good way to start your design Loren ipsum
                     is a good way for your design Lorem ipsum is a good way to
                     start your design Loren ipsum is a good way for your design
@@ -296,11 +330,11 @@ export default function CourseDetailPage() {
                     is a good way for your design Lorem ipsum is a good way to
                     start your design Loren ipsum is a good way for your design
                   </p>
-                  <ul className="space-y-2">
-                    {[1, 2, 3, 4].map((item) => (
-                      <li key={item} className="flex items-start gap-2">
-                        <span className="text-[#042BFD] mt-1.5">•</span>
-                        <span className="text-gray-700">Lorem ipsum</span>
+                  <ul className="space-y-3 mt-4">
+                    {["Lorem ipsum", "Lorem ipsum", "Lorem ipsum"].map((item, idx) => (
+                      <li key={idx} className="flex items-center gap-3">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#042BFD] flex-shrink-0" />
+                        <span className="text-gray-700 text-[16px]">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -308,7 +342,7 @@ export default function CourseDetailPage() {
               </div>
             </div>
             <div className="lg:col-span-1">
-              <div className="bg-white shadow-none rounded-2xl px-4 py-3 sticky top-24 space-y-4">
+              <div className="bg-white shadow-none rounded-2xl px-4 py-3 sticky top-24 space-y-4 border border-[#EDF0F7]">
                 <div className="relative w-full aspect-video rounded-xl overflow-hidden">
                   <Image
                     src={getImageUrl(course.thumbnail)}
@@ -407,8 +441,11 @@ export default function CourseDetailPage() {
           </div>
         </div>
       </section>
-      <PageTestimonialsSection pageKey="courses" />
-      <PageFAQSection pageKey="courses" />
+      <CustomTestimonials />
+      <div className="py-12">
+        <PageFAQSection pageKey="courses" />
+      </div>
+      <BookSlotSection />
     </main>
   );
 }
@@ -417,7 +454,7 @@ const CoursePageSkeleton = () => {
   return (
     <main className="min-h-screen bg-white">
       <section className="relative bg-[#F8FAFF] pt-24 pb-16 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px]">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1224px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <div className="space-y-6 animate-pulse">
               <div className="h-12 bg-gray-200 rounded-lg w-3/4"></div>
@@ -444,7 +481,7 @@ const CoursePageSkeleton = () => {
         </div>
       </section>
       <section className="relative py-16 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] bg-white">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-[1224px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12">
             <div className="space-y-12 animate-pulse">
               <div>

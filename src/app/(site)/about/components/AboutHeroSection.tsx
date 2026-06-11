@@ -1,7 +1,9 @@
 "use client";
 
+import { useRef } from "react";
 import Image from "next/image";
 import Button from "@/components/ui/Button";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 const heroImages = [
   "/images/Hero Section.png",
@@ -13,16 +15,27 @@ const heroImages = [
 ];
 
 export default function AboutHeroSection() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: "left" | "right") => {
+    if (!scrollRef.current) return;
+    const scrollAmount = scrollRef.current.clientWidth * 0.8;
+    scrollRef.current.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <section className="relative w-full bg-white overflow-hidden lg:min-h-[calc(100vh-68px)]">
       {/* Main Content Container */}
-      <div className="w-full h-full flex flex-col items-center lg:justify-center px-4 sm:px-6 lg:px-8 pt-20 pb-6 md:py-14 lg:py-16">
+      <div className="w-full h-full flex flex-col items-center lg:justify-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] pt-20 pb-6 md:py-14 lg:py-16">
         {/* Headings and Buttons Container */}
         <div className="w-full max-w-[884px] mx-auto mb-6 sm:mb-8 lg:mb-10">
           {/* Headings Section */}
           <div className="flex flex-col items-center gap-3 sm:gap-4 mb-6 sm:mb-7 lg:mb-8">
             <h1
-              className="font-semibold text-center w-full"
+              className="font-medium text-center w-full"
               style={{
                 fontFamily: "Inter, sans-serif",
                 fontSize: "clamp(32px, 5vw, 68px)",
@@ -71,15 +84,18 @@ export default function AboutHeroSection() {
         </div>
 
         {/* Cards Section */}
-        <div className="w-full max-w-full lg:max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden lg:overflow-visible">
-          <div className="flex lg:grid lg:grid-cols-6 overflow-x-auto lg:overflow-x-visible gap-4 sm:gap-5 lg:gap-7 pb-6 lg:pb-0 scrollbar-hide snap-x snap-mandatory">
+        <div className="w-full -mx-4 sm:-mx-6 lg:-mx-8 relative">
+          <div
+            ref={scrollRef}
+            className="flex overflow-x-auto gap-4 sm:gap-5 lg:gap-7 pb-6 scrollbar-hide snap-x snap-mandatory"
+          >
             {heroImages.map((img, index) => {
               const isBlue = index === 1 || index === 3 || index === 5;
 
               return (
                 <div
                   key={index}
-                  className="relative flex flex-col justify-end overflow-hidden flex-shrink-0 w-[calc((100vw-64px)/2.25)] sm:w-[calc((100vw-108px)/3.25)] lg:w-full snap-start"
+                  className="relative flex flex-col justify-end overflow-hidden flex-shrink-0 w-[calc((100vw-16px)/1.8)] sm:w-[calc((100vw-32px)/2.8)] md:w-[calc((100vw-48px)/3.8)] lg:w-[calc((100vw-64px)/4.8)] xl:w-[calc((100vw-80px)/5.8)] snap-start"
                   style={{
                     aspectRatio: "208 / 268.34",
                     boxShadow:
@@ -140,6 +156,24 @@ export default function AboutHeroSection() {
                 </div>
               );
             })}
+          </div>
+
+          {/* Navigation Buttons */}
+          <div className="flex justify-end gap-3 mt-4 px-4 sm:px-6 lg:px-8">
+            <button
+              onClick={() => scroll("left")}
+              className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition"
+              aria-label="Scroll left"
+            >
+              <FaArrowLeft className="text-gray-600 w-4 h-4" />
+            </button>
+            <button
+              onClick={() => scroll("right")}
+              className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition"
+              aria-label="Scroll right"
+            >
+              <FaArrowRight className="text-gray-600 w-4 h-4" />
+            </button>
           </div>
         </div>
       </div>

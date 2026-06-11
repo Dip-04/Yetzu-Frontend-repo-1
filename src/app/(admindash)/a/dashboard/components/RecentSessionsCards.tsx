@@ -1,41 +1,24 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React from "react";
 import { Session } from "@/app/(admindash)/types/SessionType";
 import { Calendar, Users, Clock } from "lucide-react";
-
-const vectorImages = [
-  "/admin-dashboard/Vector (3).png",
-  "/admin-dashboard/Vector (4).png",
-  "/admin-dashboard/Vector (5).png",
-];
 
 interface RecentSessionsCardsProps {
   sessions: Session[];
   onSelect: (session: Session) => void;
 }
 
-const getAdminSessionStyle = (type?: string) => {
-  const norm = String(type || "").toLowerCase();
-  if (norm.includes("1-1") || norm.includes("1:1") || norm.includes("one-on-one") || norm.includes("mentorship")) {
-    return {
-      gradient: "bg-gradient-to-b from-[#E3DCFA] to-white",
-      vector: "/admin-dashboard/Vector (3).png",
-    };
-  } else if (norm.includes("cohort")) {
-    return {
-      gradient: "bg-gradient-to-b from-[#DBF7F9] to-white",
-      vector: "/admin-dashboard/Vector (4).png",
-    };
-  } else {
-    return {
-      gradient: "bg-gradient-to-b from-[#FCF1DE] to-white",
-      vector: "/admin-dashboard/Vector (5).png",
-    };
-  }
-};
+const cardStyles = [
+  { gradient: "bg-gradient-to-b from-[#E3DCFA] to-white", vector: "/admin-dashboard/Vector (3).png" },
+  { gradient: "bg-gradient-to-b from-[#DBF7F9] to-white", vector: "/admin-dashboard/Vector (4).png" },
+  { gradient: "bg-gradient-to-b from-[#FCF1DE] to-white", vector: "/admin-dashboard/Vector (5).png" },
+  { gradient: "bg-gradient-to-b from-[#DBF7F9] to-white", vector: "/admin-dashboard/Vector (4).png" },
+  { gradient: "bg-gradient-to-b from-[#E3DCFA] to-white", vector: "/admin-dashboard/Vector (3).png" },
+];
 
 export default function RecentSessionsCards({ sessions, onSelect }: RecentSessionsCardsProps) {
+
   if (!sessions || sessions.length === 0) {
     return (
       <div className="flex flex-wrap gap-[16px]">
@@ -48,8 +31,8 @@ export default function RecentSessionsCards({ sessions, onSelect }: RecentSessio
 
   return (
     <div className="flex flex-wrap gap-[16px]">
-      {sessions.slice(0, 5).map((session) => {
-        const style = getAdminSessionStyle(session.type);
+      {sessions.slice(0, 5).map((session, index) => {
+        const style = cardStyles[index % cardStyles.length];
         return (
           <div
             key={session.id}

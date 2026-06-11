@@ -4,11 +4,11 @@ import Image from "next/image";
 
 export default function MissionVisionSection() {
   return (
-    <section className="w-full px-4 sm:px-6 md:px-12 lg:px-[108px] py-12 md:py-14 lg:py-16">
-      <div className="w-full max-w-[1440px] mx-auto">
+    <section className="w-full px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12 md:py-14 lg:py-16">
+      <div className="w-full max-w-[1224px] mx-auto">
         <div className="flex flex-col gap-12 lg:gap-14">
           {/* Title */}
-          <h2 className="text-[36px] sm:text-[48px] lg:text-[56px] leading-[1.2] lg:leading-[68px] font-semibold tracking-[-0.02em] text-[#021165] text-center">
+          <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] capitalize text-center">
             Mission & Vision
           </h2>
 
@@ -26,9 +26,9 @@ export default function MissionVisionSection() {
             </div>
 
             {/* Middle Cards */}
-            <div className="flex flex-col justify-center gap-6">
+            <div className="flex flex-col h-[300px] sm:h-[380px] lg:h-[455px] gap-6">
               {/* Mission Card */}
-              <div className="flex flex-col justify-center items-center p-8 pb-6 bg-[#E6EAFF] rounded-[20px] shadow-[0_16px_32px_-12px_rgba(31,30,130,0.1)]">
+              <div className="flex-1 flex flex-col justify-center items-center p-8 pb-6 bg-[#E6EAFF] rounded-[20px] shadow-[0_16px_32px_-12px_rgba(31,30,130,0.1)]">
                 <div className="flex gap-6 w-full">
                   <div className="w-[52px] h-[52px] flex items-center justify-center flex-shrink-0 bg-white rounded-full">
                     <svg
@@ -75,7 +75,7 @@ export default function MissionVisionSection() {
               </div>
 
               {/* Vision Card */}
-              <div className="flex flex-col justify-center items-center p-8 pb-6 bg-[#E6EAFF] rounded-[20px] shadow-[0_16px_32px_-12px_rgba(31,30,130,0.1)]">
+              <div className="flex-1 flex flex-col justify-center items-center p-8 pb-6 bg-[#E6EAFF] rounded-[20px] shadow-[0_16px_32px_-12px_rgba(31,30,130,0.1)]">
                 <div className="flex gap-6 w-full">
                   <div className="w-[52px] h-[52px] flex items-center justify-center flex-shrink-0 bg-white rounded-full">
                     <svg

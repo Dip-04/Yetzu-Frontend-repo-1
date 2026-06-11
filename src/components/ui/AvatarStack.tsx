@@ -5,12 +5,20 @@ interface AvatarStackProps {
     count: number;      // total number of enrolled users
     size?: number;      // px size, default 40
     style?: string;     // dicebear sprite style
+    borderColor?: string;
+    overlapClass?: string;
+    bgClass?: string;
+    textClass?: string;
 }
 
 export default function AvatarStack({
     count,
     size = 40,
     style = "adventurer", // you can use: bottts, thumbs, identicon, shapes, etc.
+    borderColor = "border-[#E6EAFF]",
+    overlapClass = "-space-x-3",
+    bgClass = "bg-white",
+    textClass = "text-[14px] font-normal leading-[17px] text-black font-sans",
 }: AvatarStackProps) {
     count = count > 0 ? count : 5;
     const maxVisible = 4;
@@ -25,11 +33,11 @@ export default function AvatarStack({
 
 
     return (
-        <div className="flex -space-x-2 items-center">
+        <div className={`flex ${overlapClass} items-center`}>
             {avatars.map((src, idx) => (
                 <div
                     key={idx}
-                    className="rounded-full border-2 border-white overflow-hidden bg-gray-200"
+                    className={`rounded-full border-2 ${borderColor} overflow-hidden bg-gray-200`}
                     style={{ width: size, height: size }}
                 >
                     <Image
@@ -43,12 +51,7 @@ export default function AvatarStack({
 
             {remaining > 0 && (
                 <div
-                    className="
-            rounded-full border-2 border-white 
-            bg-gray-100 
-            flex items-center justify-center 
-            text-xs font-bold text-gray-700
-          "
+                    className={`rounded-full border-2 ${borderColor} ${bgClass} flex items-center justify-center ${textClass}`}
                     style={{ width: size, height: size }}
                 >
                     +{remaining}

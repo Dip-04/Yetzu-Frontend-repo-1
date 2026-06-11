@@ -98,7 +98,7 @@ export default function HeroSection({
 
       {/* Stats Section */}
       <div
-        className="bg-[#252525] text-white rounded-[16px] py-4 px-3 sm:px-8 w-full max-w-[1220px] mx-auto shadow-none relative z-30 md:-mt-32 lg:-mt-40"
+        className="bg-[#252525] text-white rounded-[16px] py-4 px-3 sm:px-8 w-full max-w-[1224px] mx-auto shadow-none relative z-30 md:-mt-32 lg:-mt-40"
         style={{ marginTop: "-70px" }}
       >
         {/* Mobile: 2x2 Grid */}

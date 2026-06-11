@@ -189,7 +189,7 @@ const Navbar = () => {
     <>
       {/* Top Navbar */}
       <nav className="w-full bg-white shadow-md fixed top-0 left-0 z-50">
-        <div className="max-w-[1920px] mx-auto flex justify-between items-center px-4 sm:px-6 md:px-10 lg:px-16 h-[68px]">
+        <div className="max-w-[1224px] mx-auto flex justify-between items-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] h-[68px]">
           {/* Left: Logo */}
           <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center">

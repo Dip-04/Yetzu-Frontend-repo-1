@@ -39,11 +39,11 @@ export default function AssignmentSupportSection({
   ],
 }: AssignmentSupportSectionProps) {
   return (
-    <section className="flex justify-center bg-[linear-gradient(180deg,#FFFFFF_0%,#E2E7FF_45%,#FFFFFF_100%)] py-12 md:py-14 lg:py-16 px-4 sm:px-6 md:px-12 lg:px-[108px]">
+    <section className="flex justify-center bg-[linear-gradient(180deg,#FFFFFF_0%,#E2E7FF_45%,#FFFFFF_100%)] py-12 md:py-14 lg:py-16 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px]">
       <div className="w-full max-w-[1224px]">
         {/* ===== Header Row ===== */}
-        <div className="flex flex-col md:flex-row items-start justify-between mb-8 md:mb-14 lg:mb-16 gap-4 md:gap-6">
-          <h2 className="font-inter font-semibold text-[#021165] text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[1.2] md:leading-[56px] tracking-[-0.7%] max-w-full md:max-w-[640px]">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-14 lg:mb-16 gap-4 md:gap-6">
+          <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] max-w-full md:max-w-[658px] capitalize">
             {heading}
           </h2>
           <Button
@@ -66,7 +66,7 @@ export default function AssignmentSupportSection({
                 className="absolute top-0 right-0 w-[240px] md:w-[360px] h-[240px] md:h-[360px] object-contain"
               />
               <div className="relative z-10 max-w-full md:max-w-[330px]">
-                <h3 className="font-inter font-semibold text-[#252525] text-[18px] md:text-[22px] leading-[140%] md:leading-[27px] tracking-[-0.06em] mb-2 md:mb-3">
+                <h3 className="font-inter font-medium text-[#252525] text-[18px] md:text-[22px] leading-[140%] md:leading-[27px] tracking-[-0.06em] mb-2 md:mb-3">
                   {cards[0].title}
                 </h3>
                 <p className="font-sfpro text-[#5C5C5C] text-[13px] md:text-[14px] leading-[150%] md:leading-[20px]">
@@ -83,7 +83,7 @@ export default function AssignmentSupportSection({
                 className="absolute top-[8px] right-[8px] w-[180px] md:w-[260px] h-[230px] md:h-[330px] object-contain"
               />
               <div className="relative z-10 max-w-full md:max-w-[330px]">
-                <h3 className="font-inter font-semibold text-[#252525] text-[18px] md:text-[22px] leading-[140%] md:leading-[27px] tracking-[-0.06em] mb-2 md:mb-3">
+                <h3 className="font-inter font-medium text-[#252525] text-[18px] md:text-[22px] leading-[140%] md:leading-[27px] tracking-[-0.06em] mb-2 md:mb-3">
                   {cards[1].title}
                 </h3>
                 <p className="font-sfpro text-[#5C5C5C] text-[13px] md:text-[14px] leading-[150%] md:leading-[20px]">
@@ -103,7 +103,7 @@ export default function AssignmentSupportSection({
                 className="absolute top-[8px] right-[16px] w-[180px] md:w-[260px] h-[230px] md:h-[330px] object-contain"
               />
               <div className="relative z-10 max-w-full md:max-w-[330px]">
-                <h3 className="font-inter font-semibold text-[#252525] text-[18px] md:text-[22px] leading-[140%] md:leading-[27px] tracking-[-0.06em] mb-2 md:mb-3">
+                <h3 className="font-inter font-medium text-[#252525] text-[18px] md:text-[22px] leading-[140%] md:leading-[27px] tracking-[-0.06em] mb-2 md:mb-3">
                   {cards[2].title}
                 </h3>
                 <p className="font-sfpro text-[#5C5C5C] text-[13px] md:text-[14px] leading-[150%] md:leading-[20px]">
@@ -120,7 +120,7 @@ export default function AssignmentSupportSection({
                 className="absolute top-[4px] right-[8px] w-[240px] md:w-[340px] h-[230px] md:h-[330px] object-contain"
               />
               <div className="relative z-10 max-w-full md:max-w-[330px]">
-                <h3 className="font-inter font-semibold text-[#252525] text-[18px] md:text-[22px] leading-[140%] md:leading-[27px] tracking-[-0.06em] mb-2 md:mb-3">
+                <h3 className="font-inter font-medium text-[#252525] text-[18px] md:text-[22px] leading-[140%] md:leading-[27px] tracking-[-0.06em] mb-2 md:mb-3">
                   {cards[3].title}
                 </h3>
                 <p className="font-sfpro text-[#5C5C5C] text-[13px] md:text-[14px] leading-[150%] md:leading-[20px]">

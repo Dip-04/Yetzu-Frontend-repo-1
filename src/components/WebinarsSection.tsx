@@ -114,18 +114,15 @@ export default function WebinarsSection() {
 
   return (
     <section
-      className="w-full min-h-screen flex flex-col px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[100px] py-10 sm:py-12 md:py-16 lg:py-20"
+      className="w-full min-h-screen flex flex-col px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-10 sm:py-12 md:py-16 lg:py-20"
       style={{
         background: "linear-gradient(180deg, #FFFFFF 0%, #E2E7FF 45%, #FFFFFF 100%)",
       }}
     >
-      <div className="flex flex-col items-center w-full max-w-[1220px] mx-auto mb-[32px] md:mb-[40px]">
+      <div className="flex flex-col items-center w-full max-w-[1224px] mx-auto mb-[32px] md:mb-[40px]">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full gap-4 md:gap-6">
           <div>
-            <h2
-              className="font-inter font-semibold text-[32px] md:text-[38px] lg:text-[46px] leading-[120%] md:leading-[56px] tracking-[-0.06em] text-[#021165]"
-              style={{ fontFamily: "var(--font-inter)" }}
-            >
+            <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] max-w-full md:max-w-[658px] capitalize">
               Explore Expert-Led
               <br /> Webinars & Programs
             </h2>
@@ -137,16 +134,16 @@ export default function WebinarsSection() {
               Academic Journey.
             </p>
           </div>
-          <div className="w-full sm:w-auto">
-            <Link href="/courses">
-              <Button className="!w-full sm:!w-[160px]">Explore All</Button>
-            </Link>
-          </div>
+          <Link href="/courses">
+            <Button variant="primary" className="!w-fit px-8 !h-[48px] whitespace-nowrap">
+              Explore All
+            </Button>
+          </Link>
         </div>
       </div>
 
       <div className="flex flex-col items-center gap-[24px] w-full">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px] w-full max-w-[1220px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px] w-full max-w-[1224px] mx-auto">
           {displayCourses.slice(0, 3).map((course) => (
             <div
               key={course._id}
@@ -242,7 +239,7 @@ export default function WebinarsSection() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px] w-full max-w-[1220px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[24px] w-full max-w-[1224px] mx-auto">
           {displayCourses.slice(3, 6).map((course) => (
             <div
               key={course._id}

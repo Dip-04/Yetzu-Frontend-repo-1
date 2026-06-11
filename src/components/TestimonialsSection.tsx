@@ -168,7 +168,7 @@ export default function Testimonials({
   );
 
   return (
-    <section className="relative bg-white px-6 md:px-12 lg:px-20 xl:px-[108px] py-20 flex flex-col items-center gap-10 overflow-hidden">
+    <section className="relative bg-white px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-20 flex flex-col items-center gap-10 overflow-hidden">
       {/* Background Blur Effects */}
       <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
         <div className="absolute top-0 left-[10%] w-[600px] h-[600px] rounded-full bg-[#E5EAFF]/40 blur-[120px] opacity-60" />
@@ -183,7 +183,7 @@ export default function Testimonials({
         <div className="inline-block bg-[#E1E4EA] rounded-full px-4 py-1 text-[#021165] text-sm mb-3">
           {badge}
         </div>
-        <h2 className="text-[#021165] text-3xl md:text-5xl font-semibold mb-3">
+        <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] text-[#021165] leading-[100%] tracking-[-0.06em] mb-3 capitalize">
           {heading}
         </h2>
         <p className="text-[#333] max-w-3xl mx-auto">
@@ -192,7 +192,7 @@ export default function Testimonials({
       </div>
 
       {/* Scrolling Testimonial Columns - Desktop Only */}
-      <div className="hidden md:grid relative z-10 w-full max-w-[1200px] mx-auto grid-cols-3 gap-8 mt-8">
+      <div className="hidden md:grid relative z-10 w-full max-w-[1224px] mx-auto grid-cols-3 gap-8 mt-8">
         {[0, 1, 2].map((col) => {
           const heightPx = colHeight[col] || 0;
           // Middle column (col 1) scrolls DOWN, others scroll UP

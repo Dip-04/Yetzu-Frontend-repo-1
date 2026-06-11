@@ -44,13 +44,13 @@ export default function DashLayout({ children, role }: DashLayoutProps) {
                     isNotificationActive={isNotificationOpen} 
                 />
 
-                <main className="lg:pl-[228px] pt-18 h-full overflow-hidden rounded-2xl transition-all duration-300">
+                <main className="lg:pl-[260px] pt-18 h-full overflow-hidden rounded-2xl transition-all duration-300">
                     {isChatOpen ? (
                         <div className="h-[calc(100vh-80px)] w-full">
                             {/* <ChatWidget onClose={() => setIsChatOpen(false)} /> */}
                         </div>
                     ) : (
-                        <div className="pl-0 lg:pl-6 h-[calc(100vh-80px)] overflow-y-auto">
+                        <div className="h-[calc(100vh-80px)] overflow-y-auto">
                             {children}
                         </div>
                     )}

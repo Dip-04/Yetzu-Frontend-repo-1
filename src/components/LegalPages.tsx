@@ -2,7 +2,8 @@ import { LegalPageType } from "@/app/(site)/legal/utils";
 import React from "react";
 
 const LegalPages = ({ data }: { data: LegalPageType }) => (
-  <div className="flex flex-col lg:flex-row justify-between gap-10 lg:mx-20 lg:gap-30 mx-8 my-10">
+  <div className="w-full px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px]">
+  <div className="max-w-[1224px] mx-auto flex flex-col lg:flex-row justify-between gap-10 lg:gap-30 my-10">
     <aside className="lg:w-[20%] lg:sticky lg:top-20 self-start">
       <h1 className="text-5xl font-semibold leading-tight text-[#021165]">
         {data.title}
@@ -46,6 +47,7 @@ const LegalPages = ({ data }: { data: LegalPageType }) => (
         ))}
       </div>
     </main>
+  </div>
   </div>
 );
 

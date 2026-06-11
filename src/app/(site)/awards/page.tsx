@@ -44,7 +44,7 @@ const awards = [
 export default function AwardsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+      <div className="max-w-[1224px] mx-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12 md:py-20">
         <div className="text-center mb-12 md:mb-16">
           <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-amber-100 mb-4 md:mb-6">
             <Trophy className="w-8 h-8 md:w-10 md:h-10 text-amber-600" />

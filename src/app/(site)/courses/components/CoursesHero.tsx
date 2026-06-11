@@ -8,7 +8,7 @@ import Image from "next/image";
 export default function CoursesHero() {
     return (
         <section className="relative w-full bg-[#F8FAFF] pt-20 pb-16 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] overflow-hidden flex items-center min-h-[600px]">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
+            <div className="max-w-[1224px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full">
                 <div className="flex flex-col items-start space-y-6 z-10">
                     <MainHeading text="Choose your Ideal Course" highlights={["Ideal", "Course"]} />
                     <Paragraph text="Explore courses tailored to your level and goals." />

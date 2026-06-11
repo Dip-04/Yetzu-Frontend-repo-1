@@ -47,8 +47,8 @@ export default function FAQSection() {
   };
 
   return (
-    <section className="w-full bg-white px-4 sm:px-6 lg:px-10 flex flex-col items-center">
-      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
+    <section className="w-full bg-white px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] flex flex-col items-center">
+      <div className="max-w-[1224px] w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
         <div className="flex flex-col justify-between space-y-8">
           <div>
             <SubHeading text="FAQ" />
@@ -59,7 +59,7 @@ export default function FAQSection() {
           </div>
 
           <div className="bg-blue-50 p-6 rounded-2xl shadow-none max-w-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">
+            <h3 className="text-lg font-medium text-gray-900 mb-1">
               Still have questions?
             </h3>
             <p className="text-gray-600 text-sm mb-4">

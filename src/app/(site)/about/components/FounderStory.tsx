@@ -4,8 +4,8 @@ import Image from "next/image";
 
 export default function FounderStory() {
   return (
-    <section className="w-full flex justify-center px-4 sm:px-6 md:px-12 lg:px-[108px] py-4 md:py-14 lg:py-16">
-      <div className="max-w-[1440px] w-full mx-auto text-center lg:text-left">
+    <section className="w-full flex justify-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-4 md:py-14 lg:py-16">
+      <div className="max-w-[1224px] w-full mx-auto text-center lg:text-left">
         <div className="flex flex-col lg:flex-row items-start justify-between gap-8 lg:gap-12">
           {/* Left Content */}
           <div className="w-full lg:w-[46%] flex flex-col gap-6 lg:gap-8">
@@ -21,10 +21,7 @@ export default function FounderStory() {
                 Founder story
               </p>
 
-              <h2
-                className="text-[32px] sm:text-[40px] md:text-[48px] lg:text-[56px] leading-[40px] sm:leading-[48px] md:leading-[60px] lg:leading-[68px] font-semibold tracking-[-0.02em] text-[#252525]"
-                style={{ fontFamily: "Inter, system-ui, sans-serif" }}
-              >
+              <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] capitalize">
                 Founder Name
               </h2>
             </div>

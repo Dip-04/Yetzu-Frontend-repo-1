@@ -6,24 +6,15 @@ export default function TeamSection() {
   return (
     <div className="w-full bg-gradient-to-b from-white via-[#E2E7FF] to-white">
       {/* First Section - Takes full viewport with navbar consideration */}
-      <section className="px-4 sm:px-6 md:px-12 lg:px-[108px] py-12 md:py-14 lg:py-16 flex flex-col">
-        <div className="max-w-[1440px] mx-auto w-full flex flex-col h-full">
+      <section className="px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12 md:py-14 lg:py-16 flex flex-col">
+        <div className="max-w-[1224px] mx-auto w-full flex flex-col h-full">
           {/* Header and Button */}
-          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-start gap-4 lg:gap-12 mb-6 lg:mb-12 w-full">
-            <div className="w-full lg:w-[60%] flex flex-col gap-3 lg:gap-4">
-              <h2
-                className="text-[#021165] text-[32px] sm:text-[40px] md:text-[48px] lg:text-[56px] font-semibold leading-[1.2] lg:leading-[68px] tracking-[-0.02em]"
-                style={{ fontFamily: "Inter, system-ui, sans-serif" }}
-              >
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full mb-6 lg:mb-12 gap-4 md:gap-6">
+            <div className="max-w-full md:max-w-[658px]">
+              <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] capitalize">
                 Meet the Minds Behind Your Success
               </h2>
-              <p
-                className="text-[#252525] text-base sm:text-[18px] font-normal leading-relaxed lg:leading-[21px] tracking-[-0.03em]"
-                style={{
-                  fontFamily:
-                    "SF Pro, -apple-system, BlinkMacSystemFont, sans-serif",
-                }}
-              >
+              <p className="font-sfpro font-normal text-[16px] md:text-[18px] leading-[150%] md:leading-[21px] tracking-[-0.03em] text-[#252525] mt-4">
                 Our team of expert educators, doctors, and mentors bring years
                 of clinical experience and teaching excellence to help you
                 master every concept with clarity.
@@ -32,7 +23,7 @@ export default function TeamSection() {
 
             <Button
               variant="primary"
-              className="!w-fit !h-[40px] px-6 !rounded-[8px] mt-4 lg:mt-0"
+              className="!w-fit px-8 !h-[48px] whitespace-nowrap"
             >
               View All
             </Button>
@@ -80,7 +71,7 @@ export default function TeamSection() {
                     {/* Name and Expertise */}
                     <div className="flex flex-col gap-[1.57px]">
                       <h3
-                        className="text-white text-[22px] lg:text-[26px] font-semibold leading-[1.2] lg:leading-[31px] tracking-[-0.05em]"
+                        className="text-white text-[22px] lg:text-[26px] font-medium leading-[1.2] lg:leading-[31px] tracking-[-0.05em]"
                         style={{ fontFamily: "Inter, system-ui, sans-serif" }}
                       >
                         John Doe
@@ -118,8 +109,8 @@ export default function TeamSection() {
       </section>
 
       {/* Second Section - Second Row of Cards */}
-      <section className="px-4 sm:px-6 md:px-12 lg:px-[108px] pb-12 md:pb-14 lg:pb-16 pt-6 flex items-center">
-        <div className="max-w-[1440px] mx-auto w-full">
+      <section className="px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] pb-12 md:pb-14 lg:pb-16 pt-6 flex items-center">
+        <div className="max-w-[1224px] mx-auto w-full">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-[18.44px]">
             {[4, 5, 6].map((index) => (
               <div
@@ -161,7 +152,7 @@ export default function TeamSection() {
                     {/* Name and Expertise */}
                     <div className="flex flex-col gap-[1.57px]">
                       <h3
-                        className="text-white text-[22px] lg:text-[26px] font-semibold leading-[1.2] lg:leading-[31px] tracking-[-0.05em]"
+                        className="text-white text-[22px] lg:text-[26px] font-medium leading-[1.2] lg:leading-[31px] tracking-[-0.05em]"
                         style={{ fontFamily: "Inter, system-ui, sans-serif" }}
                       >
                         John Doe

@@ -1,11 +1,11 @@
 export default function InitiativesSection() {
   return (
-    <section className="w-full px-4 sm:px-6 md:px-12 lg:px-[108px] py-12 md:py-14 lg:py-16">
-      <div className="w-full max-w-[1440px] mx-auto">
+    <section className="w-full px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12 md:py-14 lg:py-16">
+      <div className="w-full max-w-[1224px] mx-auto">
         <div className="flex flex-col gap-12 lg:gap-14">
           {/* Header */}
           <div className="flex flex-col items-center gap-4 lg:gap-6">
-            <h2 className="text-[36px] sm:text-[48px] lg:text-[56px] leading-[1.2] lg:leading-[68px] font-semibold tracking-[-0.02em] text-[#021165] text-center">
+            <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] capitalize text-center">
               Initiatives
             </h2>
             <p className="text-base leading-[19px] tracking-[-0.03em] text-[#252525] text-center max-w-[500px]">
@@ -31,7 +31,7 @@ export default function InitiativesSection() {
                   <p className="text-[14px] leading-[17px] text-[#404040]">
                     Year {i}
                   </p>
-                  <h3 className="text-[26px] leading-[31px] font-semibold tracking-[-0.05em] text-[#252525]">
+                  <h3 className="text-[26px] leading-[31px] font-medium tracking-[-0.05em] text-[#252525]">
                     Lorem ipsum dolor
                   </h3>
                 </div>

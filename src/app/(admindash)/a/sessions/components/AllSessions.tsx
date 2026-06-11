@@ -77,7 +77,7 @@ export default function AllSessions({ data }: Props) {
           sessionType = "Cohort";
         } else if (sTypeLower === "1:1" || sTypeLower === "1-1" || sTypeLower === "mentorship") {
           sessionType = "1:1";
-        } else if (sTypeLower === "certification" || sTypeLower === "certification course") {
+        } else if (sTypeLower === "certification" || sTypeLower === "certification course" || sTypeLower === "certification_course" || sTypeLower === "course") {
           sessionType = "Certification Course";
         }
 
@@ -157,7 +157,7 @@ export default function AllSessions({ data }: Props) {
           sessionType = "Cohort";
         } else if (sTypeLower === "1:1" || sTypeLower === "1-1" || sTypeLower === "mentorship") {
           sessionType = "1:1";
-        } else if (sTypeLower === "certification" || sTypeLower === "certification course") {
+        } else if (sTypeLower === "certification" || sTypeLower === "certification course" || sTypeLower === "certification_course" || sTypeLower === "course") {
           sessionType = "Certification Course";
         }
 

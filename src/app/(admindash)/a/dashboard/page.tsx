@@ -38,7 +38,7 @@ export default function AdminDashboardPage() {
           
           return {
             id: item.sessionCode || item.id || item._id || `SESSION-${index + 1}`,
-            title: item.title || item.sessionType || "Session",
+            title: item.title || "Session",
             type: item.sessionType || item.type || "Webinar",
             educator: item.educator?.name || item.educatorName || item.mentorName || "Educator",
             students: studentsCount,

@@ -47,9 +47,13 @@ const getAlertStyles = (type: AlertType) => {
   }
 };
 
+const ITEMS_PER_PAGE = 5;
+
 export default function AlertIssues() {
     const router = useRouter();
     const [alerts, setAlerts] = useState<AlertItems[]>([]);
+    const [page, setPage] = useState(1);
+    const totalPages = Math.max(1, Math.ceil(alerts.length / ITEMS_PER_PAGE));
 
     useEffect(() => {
         const fetchAlerts = async () => {
@@ -70,8 +74,10 @@ export default function AlertIssues() {
         fetchAlerts();
     }, []);
 
+    const paginatedAlerts = alerts.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+
     return (
-        <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-6 sm:p-8 w-full group hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-500">
+        <div className="bg-white rounded-[32px] border border-gray-100 shadow-sm p-6 sm:p-8 w-full group hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-500 flex flex-col">
             <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                     <div className="p-2.5 bg-rose-50 text-rose-600 rounded-xl">
@@ -87,10 +93,10 @@ export default function AlertIssues() {
                 </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 flex-1 overflow-y-auto custom-scrollbar" style={{ maxHeight: '35vh' }}>
                 {alerts.length === 0 ? (
                     <p className="text-sm text-gray-500">No alerts or issues.</p>
-                ) : alerts.map((data) => {
+                ) : paginatedAlerts.map((data) => {
                     const styles = getAlertStyles(data.type);
                     const Icon = styles.icon;
 
@@ -113,12 +119,21 @@ export default function AlertIssues() {
                 })}
             </div>
 
-            <button 
-                onClick={() => router.push("/a/analytics")}
-                className="w-full mt-8 py-3 text-xs font-bold text-[#021165] hover:bg-gray-50 rounded-2xl border border-gray-100 transition-all uppercase tracking-widest"
-            >
-                Resolve All
-            </button>
+            <div className="flex items-center justify-center gap-2 mt-auto pt-4">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                    <button
+                        key={p}
+                        onClick={() => setPage(p)}
+                        className={`w-8 h-8 rounded-lg text-xs font-bold transition-all ${
+                            page === p
+                                ? "bg-[#021165] text-white"
+                                : "bg-gray-50 text-gray-500 hover:bg-gray-100 border border-gray-100"
+                        }`}
+                    >
+                        {p}
+                    </button>
+                ))}
+            </div>
         </div>
     );
 }

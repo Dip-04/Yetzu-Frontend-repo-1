@@ -59,11 +59,11 @@ export default function MentorshipSection({
   ],
 }: MentorshipSectionProps) {
   return (
-    <section className="flex flex-col justify-center items-center min-h-auto px-4 sm:px-6 md:px-12 lg:px-[108px] gap-6 sm:gap-8 md:gap-10 lg:gap-12 bg-white w-full py-12 md:py-14 lg:py-16">
+    <section className="flex flex-col justify-center items-center min-h-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] gap-6 sm:gap-8 md:gap-10 lg:gap-12 bg-white w-full py-12 md:py-14 lg:py-16">
       <div className="flex flex-col justify-center items-start gap-6 md:gap-8 w-full max-w-[1224px]">
         {/* Header & Button */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full gap-4 md:gap-6">
-          <h2 className="font-inter font-semibold text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[1.2] md:leading-[56px] tracking-[-0.7%] text-[#021165] max-w-full md:max-w-[658px]">
+          <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] max-w-full md:max-w-[658px] capitalize">
             {heading}
           </h2>
 
@@ -104,7 +104,7 @@ export default function MentorshipSection({
             {/* Text */}
             <div className="flex flex-col items-start gap-[4px] md:gap-[8px] w-full">
               <h3
-                className={`font-inter font-semibold text-[15px] md:text-[22px] leading-[1.2] md:leading-[27px] tracking-[-0.06em] ${item.titleColor}`}
+                className={`font-inter font-medium text-[15px] md:text-[22px] leading-[1.2] md:leading-[27px] tracking-[-0.06em] ${item.titleColor}`}
               >
                 {item.title}
               </h3>
