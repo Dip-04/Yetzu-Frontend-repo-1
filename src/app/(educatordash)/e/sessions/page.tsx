@@ -184,13 +184,13 @@ export default function EducatorSessionsPage() {
 
             {/* Tab Navigation */}
             <div className="border-gray-200">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-6">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto whitespace-nowrap pb-1 w-full md:w-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {tabs.map((tab) => (
                             <button
                                 key={tab.name}
                                 onClick={() => setActiveTab(tab.name as any)}
-                                className={`relative flex items-center gap-1.5 pb-3.5 pt-0 text-[14px] font-medium transition-colors ${
+                                className={`relative flex items-center gap-1.5 pb-3.5 pt-0 text-[14px] font-medium transition-colors shrink-0 ${
                                     activeTab === tab.name
                                         ? "text-[#0A0D14]"
                                         : "text-[#525866] hover:text-[#0A0D14]"
@@ -211,8 +211,8 @@ export default function EducatorSessionsPage() {
                     </div>
 
                     {/* Search */}
-                    <div className="flex items-center">
-                        <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg w-[320px]" style={{ height: "39px" }}>
+                    <div className="flex items-center w-full md:w-auto">
+                        <div className="flex items-center gap-2 px-3 py-2 bg-white border border-[rgba(0,0,0,0.1)] rounded-lg w-full md:w-[320px]" style={{ height: "39px" }}>
                             <Search className="text-[#717182] flex-shrink-0" size={14} strokeWidth={1.5} />
                             <input
                                 type="text"

@@ -210,9 +210,9 @@ export default function CalendarView({ sessions }: CalendarViewProps) {
     
     return (
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <div className="flex border-b border-gray-100">
-          <div className="shrink-0 w-14 py-3 text-center text-xs font-semibold text-gray-500 bg-gray-50">Time</div>
-          <div className="flex-1 py-3 px-4 text-xs font-semibold text-gray-900 bg-gray-50">
+        <div className="grid grid-cols-[56px_1fr] border-b border-gray-100">
+          <div className="border-r border-gray-100 bg-gray-50"></div>
+          <div className="py-3 px-4 text-xs font-semibold text-gray-900 bg-gray-50">
             {currentDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
           </div>
         </div>
@@ -220,14 +220,16 @@ export default function CalendarView({ sessions }: CalendarViewProps) {
           <div className="relative" style={{ height: hours.length * HOUR_HEIGHT }}>
             {/* Hour grid lines */}
             {hours.map((hour, i) => (
-              <div key={hour} className="absolute left-0 right-0 border-b border-gray-100" style={{ top: i * HOUR_HEIGHT }}>
-                <span className="absolute -left-14 top-0 w-14 pr-2 pt-1 text-right text-[10px] text-gray-400">
+              <div key={hour} className="absolute left-0 right-0 border-b border-gray-100" style={{ top: i * HOUR_HEIGHT, height: HOUR_HEIGHT }}>
+                <span className="absolute left-0 top-0 w-14 pr-1 pt-1 text-right text-[10px] text-gray-400">
                   {formatHourLabel(hour)}
                 </span>
               </div>
             ))}
-            {/* Session cards */}
-            {daySessions.map(session => renderSessionCard(session))}
+            {/* Day column with session cards */}
+            <div className="absolute top-0 bottom-0 left-14 right-0">
+              {daySessions.map(session => renderSessionCard(session))}
+            </div>
           </div>
         </div>
       </div>
@@ -239,38 +241,44 @@ export default function CalendarView({ sessions }: CalendarViewProps) {
     
     return (
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <div className="grid grid-cols-[56px_repeat(7,1fr)] border-b border-gray-100">
-          <div className="border-r border-gray-100 bg-gray-50"></div>
-          {weekDays.map((day, idx) => {
-            const isToday = day.toDateString() === today.toDateString();
-            return (
-              <div key={idx} className={`py-2.5 text-center border-r border-gray-100 last:border-r-0 ${isToday ? 'bg-blue-50' : 'bg-gray-50'}`}>
-                <div className="text-[10px] text-gray-500 font-medium uppercase">{getDayName(day)}</div>
-                <div className={`text-base font-bold leading-tight ${isToday ? 'text-blue-600' : 'text-gray-900'}`}>{day.getDate()}</div>
-              </div>
-            );
-          })}
-        </div>
-        
-        <div ref={containerRef} className="relative overflow-y-auto" style={{ height: hours.length * HOUR_HEIGHT }}>
-          {/* Hour grid rows */}
-          {hours.map((hour, i) => (
-            <div key={hour} className="absolute left-0 right-0 border-b border-gray-100" style={{ top: i * HOUR_HEIGHT, height: HOUR_HEIGHT }}>
-              <span className="absolute left-0 top-0 w-14 pr-1 pt-1 text-right text-[10px] text-gray-400">
-                {formatHourLabel(hour)}
-              </span>
+        <div className="overflow-x-auto w-full">
+          <div className="min-w-[720px] md:min-w-full">
+            <div className="grid grid-cols-[56px_repeat(7,1fr)] border-b border-gray-100">
+              <div className="border-r border-gray-100 bg-gray-50"></div>
+              {weekDays.map((day, idx) => {
+                const isToday = day.toDateString() === today.toDateString();
+                return (
+                  <div key={idx} className={`py-2.5 text-center border-r border-gray-100 last:border-r-0 ${isToday ? 'bg-blue-50' : 'bg-gray-50'}`}>
+                    <div className="text-[10px] text-gray-500 font-medium uppercase">{getDayName(day)}</div>
+                    <div className={`text-base font-bold leading-tight ${isToday ? 'text-blue-600' : 'text-gray-900'}`}>{day.getDate()}</div>
+                  </div>
+                );
+              })}
             </div>
-          ))}
-          {/* Day columns with session cards */}
-          {weekDays.map((day, dayIdx) => {
-            const dayKey = day.toDateString();
-            const daySessions = getDaySessions(dayKey);
-            return (
-              <div key={dayKey} className="absolute top-0 bottom-0 border-r border-gray-100 last:border-r-0" style={{ left: `calc(56px + ${dayIdx} * (100% - 56px) / 7)`, width: `calc((100% - 56px) / 7)` }}>
-                {daySessions.map(session => renderSessionCard(session))}
+            
+            <div className="max-h-[500px] overflow-y-auto">
+              <div ref={containerRef} className="relative" style={{ height: hours.length * HOUR_HEIGHT }}>
+                {/* Hour grid rows */}
+                {hours.map((hour, i) => (
+                  <div key={hour} className="absolute left-0 right-0 border-b border-gray-100" style={{ top: i * HOUR_HEIGHT, height: HOUR_HEIGHT }}>
+                    <span className="absolute left-0 top-0 w-14 pr-1 pt-1 text-right text-[10px] text-gray-400">
+                      {formatHourLabel(hour)}
+                    </span>
+                  </div>
+                ))}
+                {/* Day columns with session cards */}
+                {weekDays.map((day, dayIdx) => {
+                  const dayKey = day.toDateString();
+                  const daySessions = getDaySessions(dayKey);
+                  return (
+                    <div key={dayKey} className="absolute top-0 bottom-0 border-r border-gray-100 last:border-r-0" style={{ left: `calc(56px + ${dayIdx} * (100% - 56px) / 7)`, width: `calc((100% - 56px) / 7)` }}>
+                      {daySessions.map(session => renderSessionCard(session))}
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -285,48 +293,52 @@ export default function CalendarView({ sessions }: CalendarViewProps) {
     
     return (
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-        <div className="grid grid-cols-7 border-b border-gray-100">
-          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
-            <div key={day} className="py-3 text-center text-xs font-semibold text-gray-500 bg-gray-50 border-r border-gray-100 last:border-r-0">
-              {day}
+        <div className="overflow-x-auto w-full">
+          <div className="min-w-[750px] md:min-w-full">
+            <div className="grid grid-cols-7 border-b border-gray-100">
+              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
+                <div key={day} className="py-3 text-center text-xs font-semibold text-gray-500 bg-gray-50 border-r border-gray-100 last:border-r-0">
+                  {day}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        
-        <div className="max-h-[500px] overflow-y-auto">
-          {weeks.map((week, weekIdx) => (
-            <div key={weekIdx} className="grid grid-cols-7 border-b border-gray-100 last:border-b-0">
-              {week.map((day, dayIdx) => {
-                const isCurrentMonth = day.getMonth() === currentDate.getMonth();
-                const isToday = day.toDateString() === today.toDateString();
-                const daySessions = filteredSessions.filter(s => {
-                  if (!s.dateTime) return false;
-                  return new Date(s.dateTime).toDateString() === day.toDateString();
-                });
-                
-                return (
-                  <div 
-                    key={dayIdx} 
-                    className={`min-h-[100px] p-2 border-r border-gray-100 last:border-r-0 ${!isCurrentMonth ? 'bg-gray-50' : 'bg-white'}`}
-                  >
-                    <div className={`text-sm font-medium mb-1 ${!isCurrentMonth ? 'text-gray-400' : isToday ? 'text-blue-600' : 'text-gray-900'}`}>
-                      {day.getDate()}
-                    </div>
-                    <div className="space-y-1">
-                      {daySessions.slice(0, 2).map(session => (
-                        <div key={session.id} className={`p-1 text-[10px] truncate rounded ${getSessionColor(session.type).split(' ')[0]}`}>
-                          <span className="font-medium">{session.title || session.type}</span>
+            
+            <div className="max-h-[500px] overflow-y-auto">
+              {weeks.map((week, weekIdx) => (
+                <div key={weekIdx} className="grid grid-cols-7 border-b border-gray-100 last:border-b-0">
+                  {week.map((day, dayIdx) => {
+                    const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+                    const isToday = day.toDateString() === today.toDateString();
+                    const daySessions = filteredSessions.filter(s => {
+                      if (!s.dateTime) return false;
+                      return new Date(s.dateTime).toDateString() === day.toDateString();
+                    });
+                    
+                    return (
+                      <div 
+                        key={dayIdx} 
+                        className={`min-h-[100px] p-2 border-r border-gray-100 last:border-r-0 ${!isCurrentMonth ? 'bg-gray-50' : 'bg-white'}`}
+                      >
+                        <div className={`text-sm font-medium mb-1 ${!isCurrentMonth ? 'text-gray-400' : isToday ? 'text-blue-600' : 'text-gray-900'}`}>
+                          {day.getDate()}
                         </div>
-                      ))}
-                      {daySessions.length > 2 && (
-                        <div className="text-[10px] text-gray-500">+{daySessions.length - 2} more</div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+                        <div className="space-y-1">
+                          {daySessions.slice(0, 2).map(session => (
+                            <div key={session.id} className={`p-1 text-[10px] truncate rounded ${getSessionColor(session.type).split(' ')[0]}`}>
+                              <span className="font-medium">{session.title || session.type}</span>
+                            </div>
+                          ))}
+                          {daySessions.length > 2 && (
+                            <div className="text-[10px] text-gray-500">+{daySessions.length - 2} more</div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     );
@@ -335,7 +347,7 @@ export default function CalendarView({ sessions }: CalendarViewProps) {
   return (
     <div className="bg-white rounded-[20px] shadow-sm overflow-hidden border border-gray-100 p-4 md:p-6 mt-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <div className="flex items-center bg-gray-100 rounded-lg p-1">
             <button
               onClick={() => navigateDate('prev')}
@@ -350,7 +362,7 @@ export default function CalendarView({ sessions }: CalendarViewProps) {
               <ChevronRight size={18} className="text-gray-600" />
             </button>
           </div>
-          <h3 className="font-semibold text-lg text-gray-900 min-w-[200px]">{formatDateHeader()}</h3>
+          <h3 className="font-semibold text-sm sm:text-base md:text-lg text-gray-900 text-center sm:text-left min-w-0 md:min-w-[200px]">{formatDateHeader()}</h3>
           <button
             onClick={goToToday}
             className="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
@@ -359,12 +371,12 @@ export default function CalendarView({ sessions }: CalendarViewProps) {
           </button>
         </div>
         
-        <div className="flex items-center bg-gray-100 rounded-lg p-1">
+        <div className="flex items-center bg-gray-100 rounded-lg p-1 w-full sm:w-auto justify-between sm:justify-start">
           {viewTypes.map(type => (
             <button
               key={type}
               onClick={() => setViewType(type)}
-              className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+              className={`flex-1 sm:flex-none text-center px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${
                 viewType === type
                   ? 'bg-white text-gray-900 shadow-sm'
                   : 'text-gray-500 hover:text-gray-700'
