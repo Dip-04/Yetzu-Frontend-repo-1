@@ -90,25 +90,11 @@ export default function CartPage() {
         title: `Yetzu Cart (${cartCount} items)`,
         userName: user?.name,
         userEmail: user?.email,
-        onSuccess: async (paymentId: string, orderId: string, signature: string) => {
-          // Payment captured — trigger enrollment for each item via local webhook
-          try {
-            const userId = user?.id || "";
-            for (const item of cartItems) {
-              await PaymentAPI.verifyPayment({
-                userId,
-                sessionId: item._id,
-                amount: Math.max(1, Number(item.cost) || 1),
-              });
-            }
-            toast.success("Success! Enrolled in sessions.");
-            clearCart();
-            router.push("/s/dashboard");
-          } catch (err: any) {
-            console.error("Enrollment after payment failed:", err);
-            toast.error(err?.message || "Payment succeeded but enrollment failed. Contact support.");
-            setIsCheckingOut(false);
-          }
+        onSuccess: () => {
+          // Payment captured — Razorpay will call the production webhook to finalize enrollment.
+          toast.success("Success! Enrolled in sessions.");
+          clearCart();
+          router.push("/s/dashboard");
         },
         onDismiss: () => {
           setIsCheckingOut(false);

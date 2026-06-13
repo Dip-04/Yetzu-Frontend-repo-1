@@ -57,30 +57,42 @@ const handleEnroll = async () => {
     try {
       let amount = Number(course.cost || 0);
       if (amount <= 0) amount = 1;
-      
-      // Step 1: Create order
+
+      // Step 1: Create Razorpay order
       const orderResult = await PaymentAPI.createOrder({
         amount: amount,
         sessionId: course._id,
       });
 
-      console.log("Order created:", orderResult);
+      const orderData = orderResult?.data || orderResult;
+      const razorpayOrderId = orderData?.orderId || orderData?.id || "";
+      const keyId = orderData?.keyId || "";
 
-      // Step 2: Verify payment (triggers webhook → enrollment)
-      const userId = orderResult?.userId || "";
-      await PaymentAPI.verifyPayment({
-        userId: userId,
-        sessionId: course._id,
-        amount: amount,
+      if (!razorpayOrderId || !keyId) {
+        throw new Error("Failed to create payment order.");
+      }
+
+      // Step 2: Open Razorpay checkout
+      const { loadRazorpay, openRazorpayCheckout } = await import("@/lib/razorpay");
+      await loadRazorpay();
+      openRazorpayCheckout({
+        keyId,
+        orderId: razorpayOrderId,
+        amount,
+        currency: orderData?.currency || "INR",
+        title: course.title || "Course Purchase",
+        userName: "",
+        userEmail: "",
+        onSuccess: () => {
+          toast.success(`Successfully enrolled in ${course.title}!`);
+          window.location.href = `/courses/${course._id}`;
+        },
+        onDismiss: () => {
+          setIsBuying(false);
+        },
       });
-
-      toast.success(`Successfully enrolled in ${course.title}!`);
-      
-      // Step 3: Redirect to enrolled courses or refresh
-      window.location.href = `/courses/${course._id}`;
     } catch {
       toast.error("Unable to complete enrollment. Please try again.");
-    } finally {
       setIsBuying(false);
     }
   };

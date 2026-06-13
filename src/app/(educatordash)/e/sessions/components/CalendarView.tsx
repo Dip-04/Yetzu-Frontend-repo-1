@@ -135,7 +135,9 @@ export default function CalendarView({ sessions }: CalendarViewProps) {
         return sessionDate.toDateString() === currentDate.toDateString();
       } else if (viewType === 'Week') {
         const days = getWeekDays(currentDate);
-        return sessionDate >= days[0] && sessionDate <= days[6];
+        const endOfWeek = new Date(days[6]);
+        endOfWeek.setHours(23, 59, 59, 999);
+        return sessionDate >= days[0] && sessionDate <= endOfWeek;
       } else {
         return sessionDate.getMonth() === currentDate.getMonth() && 
                sessionDate.getFullYear() === currentDate.getFullYear();
@@ -182,7 +184,7 @@ export default function CalendarView({ sessions }: CalendarViewProps) {
         style={{ top, height }}
       >
         <div className="text-[11px] font-semibold text-gray-800 leading-tight truncate">{session.title}</div>
-        <div className="text-[9px] text-gray-500 mt-0.5 truncate">{session.educator || "Educator"}</div>
+        <div className="text-[9px] text-gray-500 mt-0.5 truncate">{typeof session.educator === 'string' ? session.educator : "Educator"}</div>
         {height >= 50 && (
           <div className="flex items-center gap-2 mt-1">
             <span className="text-[9px] text-gray-400">{session.startTime} - {session.endTime}</span>

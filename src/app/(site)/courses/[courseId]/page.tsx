@@ -133,21 +133,10 @@ export default function CourseDetailPage() {
         title: course.title || "Course Purchase",
         userName: user?.name,
         userEmail: user?.email,
-        onSuccess: async (paymentId: string, orderId: string, signature: string) => {
-          // Payment captured — trigger enrollment via local webhook
-          try {
-            await PaymentAPI.verifyPayment({
-              userId: user?.id || "",
-              sessionId: courseId,
-              amount,
-            });
-            toast.success(`Enrolled successfully in ${course.title}!`);
-            router.push("/s/dashboard");
-          } catch (err: any) {
-            console.error("Enrollment after payment failed:", err);
-            toast.error(err?.message || "Payment succeeded but enrollment failed. Contact support.");
-            setIsCreatingOrder(false);
-          }
+        onSuccess: () => {
+          // Payment captured — Razorpay will call the production webhook to finalize enrollment.
+          toast.success(`Enrolled successfully in ${course.title}!`);
+          router.push("/s/dashboard");
         },
         onDismiss: () => {
           setIsCreatingOrder(false);

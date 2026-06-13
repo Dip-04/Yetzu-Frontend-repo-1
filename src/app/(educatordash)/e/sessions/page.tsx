@@ -115,7 +115,9 @@ export default function EducatorSessionsPage() {
                         startTime: item.startTime || item.time || dateTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
                         endTime: item.endTime || "",
                         status: item.status === "Missed" ? "Missed" : computedStatus,
-                        educator: item.educator || item.educatorName || "Educator",
+                        educator: typeof item.educator === 'object' && item.educator !== null
+                            ? (item.educator.name || item.educator.email || "Educator")
+                            : (item.educator || item.educatorName || "Educator"),
                         assignments: asArray(item.assignments),
                         resources: asArray(item.resources || item.files || item.materials),
                         rescheduleRequests: sessionRequests,
