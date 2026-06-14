@@ -114,7 +114,7 @@ export default function WebinarsSection() {
 
   return (
     <section
-      className="w-full min-h-screen flex flex-col px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-10 sm:py-12 md:py-16 lg:py-20"
+      className="w-full min-h-auto flex flex-col px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12 md:py-14 lg:py-16"
       style={{
         background: "linear-gradient(180deg, #FFFFFF 0%, #E2E7FF 45%, #FFFFFF 100%)",
       }}

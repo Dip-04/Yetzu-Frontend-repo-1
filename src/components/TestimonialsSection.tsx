@@ -168,7 +168,7 @@ export default function Testimonials({
   );
 
   return (
-    <section className="relative bg-white px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-20 flex flex-col items-center gap-10 overflow-hidden">
+    <section className="relative bg-white px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12 md:py-14 lg:py-16 flex flex-col items-center gap-10 overflow-hidden">
       {/* Background Blur Effects */}
       <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
         <div className="absolute top-0 left-[10%] w-[600px] h-[600px] rounded-full bg-[#E5EAFF]/40 blur-[120px] opacity-60" />

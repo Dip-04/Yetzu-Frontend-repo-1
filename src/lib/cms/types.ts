@@ -5,7 +5,8 @@ export interface HeroStat {
 
 export interface HeroData {
   topMessage: string;
-  heading: string;
+  blackheader: string;
+  blueheader: string;
   subheading: string;
   stats: HeroStat[];
   avatars: string[];
@@ -151,4 +152,16 @@ export interface CMSSectionResponse<D = Record<string, unknown>> {
   sortOrder: number;
   metadata: Record<string, unknown>;
   data: D;
+}
+
+export interface PublicCMSPageSection<D = Record<string, unknown>> {
+  sectionKey: string;
+  sectionTitle?: string;
+  sortOrder?: number;
+  data: D;
+}
+
+export interface PublicCMSPage {
+  pageKey: string;
+  sections: PublicCMSPageSection[];
 }

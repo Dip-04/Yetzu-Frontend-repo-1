@@ -13,7 +13,7 @@ export default function ProgramsWebinarsSection({
   subheading = "Explore upcoming webinars and programs led by experienced educators with dates, times, and mentors clearly listed so you can plan with confidence.",
 }: ProgramsWebinarsSectionProps) {
   return (
-    <div className="w-full bg-white px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-6 sm:py-12 md:py-16 lg:py-20 flex flex-col items-center">
+    <div className="w-full bg-white px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12 md:py-14 lg:py-16 flex flex-col items-center">
       {/* Header Section */}
       <div className="text-center mb-[32px] md:mb-[52px]">
         <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] mb-[16px] capitalize">

@@ -26,40 +26,47 @@ export default function HeroSection({
     { num: "100+", label: "Students Mentored" },
   ],
 }: HeroSectionProps) {
+  const finalHeadingMobile = headingMobile && headingMobile[0] && headingMobile[1]
+    ? headingMobile
+    : ["Your Ultimate Academic", "Mentorship & Learning Ecosystem"];
+
+  const finalHeadingDesktop = headingDesktop && headingDesktop[0] && headingDesktop[1]
+    ? headingDesktop
+    : ["Your Ultimate Academic", "Mentorship & Learning Ecosystem"];
+
   return (
-    <section className="relative text-center min-h-auto md:min-h-[calc(100vh-80px)] flex flex-col justify-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] overflow-hidden bg-gradient-to-b from-[#F8FAFF] to-white py-8 sm:py-12 md:py-6">
+    <section className="relative text-center min-h-auto md:min-h-[calc(100vh-80px)] flex flex-col justify-center px-8 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] overflow-hidden bg-gradient-to-b from-[#F8FAFF] to-white py-[52px] md:py-6">
       {/* Background Gradient Behind Hero Image */}
       <div className="absolute inset-0 bg-[linear-gradient(180deg,#FFFFFF_0%,#E2E7FF_50.01%,#FFFFFF_100%)] z-0"></div>
 
       {/* Avatars + Student count */}
-      <div className="flex justify-center items-center gap-2 mb-6 md:mb-3 relative z-10 flex-wrap">
-        <div className="flex -space-x-2">
+      <div className="flex justify-center items-center gap-3 mb-[32px] md:mb-3 relative z-10 flex-wrap">
+        <div className="flex -space-x-3">
           {studentAvatars.map((src, i) => (
             <Image
               key={i}
               src={src}
               alt={`Student ${i + 1}`}
-              width={32}
-              height={32}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white"
+              width={36}
+              height={36}
+              className="w-9 h-9 md:w-10 md:h-10 rounded-full border-2 border-[#E6EAFF]"
             />
           ))}
         </div>
-        <p className="text-[12px] md:text-base text-[#021165] font-sfpro font-normal">
+        <p className="text-[18px] md:text-base text-[#021165] font-sfpro font-normal leading-[21px] tracking-[-0.03em]">
           {studentCount}
         </p>
       </div>
 
       {/* Mobile H1 */}
       <h1
-        className="md:hidden font-inter font-semibold 
-        text-[18px] sm:text-[28px] 
-        leading-[24px] sm:leading-[36px] 
-        tracking-tight text-[#252525] 
-        max-w-[95%] mx-auto mb-4 md:mb-6 relative z-20"
+        className="md:hidden font-inter font-medium 
+        text-[18px] min-[360px]:text-[20px] min-[375px]:text-[22px] min-[415px]:text-[25px] sm:text-[32px]
+        leading-[1.2] tracking-[-0.06em] text-[#252525] 
+        max-w-full mx-auto mb-2 relative z-20 capitalize"
       >
-        {headingMobile.map((line, i) => (
-          <span key={i} className={`block${i >= 1 ? ' text-[#042BFD]' : ''}`}>
+        {finalHeadingMobile.map((line, i) => (
+          <span key={i} className={`block whitespace-nowrap${i >= 1 ? ' text-[#042BFD]' : ''}`}>
             {line}
           </span>
         ))}
@@ -71,9 +78,9 @@ export default function HeroSection({
         md:text-[52px] lg:text-[68px] 
         md:leading-[60px] lg:leading-[84px]
         tracking-tight text-[#252525] 
-        md:max-w-5xl mx-auto mb-4 md:mb-6 relative z-20"
+        md:max-w-[1150px] mx-auto mb-4 md:mb-6 relative z-20"
       >
-        {headingDesktop.map((line, i) => (
+        {finalHeadingDesktop.map((line, i) => (
           <span key={i} className={`block${i >= 1 ? ' text-[#042BFD]' : ''}`}>
             {line}
           </span>
@@ -81,14 +88,14 @@ export default function HeroSection({
       </h1>
 
       {/* Subheading */}
-      <p className="text-[#252525] max-w-[95%] md:max-w-3xl mx-auto text-[13px] sm:text-[16px] md:text-[18px] leading-[1.4] font-sfpro font-normal relative z-20 mb-8 md:mb-6">
+      <p className="text-[#252525] max-w-full md:max-w-3xl mx-auto text-[16px] leading-[19px] tracking-[-0.03em] font-sfpro font-normal relative z-20 mb-[24px] md:mb-6">
         {subheading}
       </p>
 
       {/* Hero Image */}
-      <div className="flex justify-center relative z-20 mb-6 md:mb-8">
+      <div className="flex justify-center relative z-20 mb-[24px] md:mb-2">
         <Image
-          src={heroImage}
+          src="/three-header-image.png"
           alt="Mentors"
           width={1100}
           height={600}
@@ -98,34 +105,33 @@ export default function HeroSection({
 
       {/* Stats Section */}
       <div
-        className="bg-[#252525] text-white rounded-[16px] py-4 px-3 sm:px-8 w-full max-w-[1224px] mx-auto shadow-none relative z-30 md:-mt-32 lg:-mt-40"
-        style={{ marginTop: "-70px" }}
+        className="bg-[#252525] text-white rounded-[16px] md:rounded-[20px] py-4 px-3 sm:px-8 md:p-[42px] w-full max-w-[1224px] mx-auto shadow-none relative z-30 -mt-[70px] md:-mt-32 lg:-mt-40"
       >
         {/* Mobile: 2x2 Grid */}
-        <div className="grid grid-cols-2 gap-2 md:hidden">
+        <div className="grid grid-cols-2 gap-4 md:hidden">
           {kpis.map((item, i) => (
             <div
               key={i}
-              className="flex flex-col items-center justify-center gap-1 bg-white rounded-[12px] shadow-md p-2 min-h-[85px]"
+              className="flex flex-col items-center justify-center gap-1 bg-white rounded-[16px] shadow-md py-3 px-2 min-h-[107px] h-auto"
             >
-              <h3 className="font-inter font-bold text-[20px] leading-tight text-center text-[#021165] w-full">
+              <h3 className="font-inter font-bold text-[26px] leading-[32px] text-center text-[#021165] w-full">
                 {item.num}
               </h3>
-              <p className="font-sfpro font-normal text-[10px] leading-tight text-center tracking-tight text-[#252525] w-full line-clamp-2">
+              <p className="font-sfpro font-normal text-[14px] leading-[18px] text-center tracking-[-0.03em] text-[#252525] w-full line-clamp-2">
                 {item.label}
               </p>
             </div>
           ))}
         </div>
 
-        {/* Desktop: Horizontal Scroll */}
-        <div className="hidden md:flex flex-nowrap justify-center gap-6 overflow-x-auto">
+        {/* Desktop: Horizontal Row */}
+        <div className="hidden md:flex flex-row flex-nowrap gap-[24px]">
           {kpis.map((item, i) => (
             <div
               key={i}
-              className="flex flex-col items-center justify-center gap-2 w-[267px] min-w-[267px] flex-shrink-0 h-[164px] bg-white rounded-[16px] shadow-md transition-transform p-[24px]"
+              className="flex flex-col items-center justify-center gap-[8px] flex-1 h-[164px] bg-white rounded-[16px] shadow-md transition-transform p-[24px]"
             >
-              <h3 className="font-inter font-semibold text-[56px] leading-[68px] text-center tracking-[-0.02em] text-[#021165]">
+              <h3 className="font-inter font-medium text-[56px] leading-[68px] text-center tracking-[-0.02em] text-[#021165]">
                 {item.num}
               </h3>
               <p className="font-inter font-semibold text-[22px] leading-[27px] text-center tracking-[-0.06em] text-[#252525]">

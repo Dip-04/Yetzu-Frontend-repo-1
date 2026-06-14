@@ -2,8 +2,9 @@ import type { HomePageContent } from "./types";
 
 export const DEFAULT_HOME_CONTENT: HomePageContent = {
   hero: {
-    topMessage: "Over 1,200+ learners building credible academic profiles with Yetzu",
-    heading: "Mentor-led research guidance that turns effort into academic credibility",
+    topMessage: "150+ Students Enrolled",
+    blackheader: "Your Ultimate Academic",
+    blueheader: "Mentorship & Learning Ecosystem",
     subheading:
       "Work with verified mentors, structured programs, and secure review systems that take you from idea to publication-ready step by step.",
     stats: [

@@ -5,7 +5,7 @@ import Button from "../ui/Button";
 
 export default function JoinCommunity() {
   return (
-    <section className="bg-gradient-to-b from-white via-[#E2E7FF] to-white min-h-auto flex items-center justify-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-8 md:py-10 lg:py-12">
+    <section className="bg-gradient-to-b from-white via-[#E2E7FF] to-white min-h-auto flex items-center justify-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12 md:py-14 lg:py-16">
       <div className="w-full max-w-[1224px] mx-auto">
         <div className="rounded-3xl overflow-hidden shadow-xl md:p-[64px_76px_64px_83px] p-6 flex flex-col md:flex-row items-center md:gap-[101px] gap-8 bg-[#252525] md:h-[523px]">
           {/* Left Content */}

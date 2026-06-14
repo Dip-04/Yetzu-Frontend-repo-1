@@ -16,17 +16,16 @@ const footerLinks = [
     ],
   },
   {
-    title: "Socials",
+    title: "Sessions",
     links: [
-      { label: "Instagram", route: "/" },
-      { label: "YouTube", route: "/" },
-      { label: "Facebook", route: "/" },
-      { label: "LinkedIn", route: "/" },
-      { label: "X(Twitter)", route: "/" },
+      { label: "Webinars", route: "/courses?category=Webinars" },
+      { label: "1:1", route: "/courses?category=1:1" },
+      { label: "Cohort", route: "/courses?category=Cohort" },
+      { label: "Certification Courses", route: "/courses?category=Certification Courses" },
     ],
   },
   {
-    title: "Compilance",
+    title: "Compliance",
     links: [
       { label: "Privacy Policy", route: "/legal/privacy-policy" },
       { label: "Terms and Conditions", route: "/legal/terms" },
@@ -46,26 +45,55 @@ const socialIcons = [
 export default function Footer() {
   return (
     <div className="relative w-full flex flex-col items-center px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px]">
-      <footer className="relative w-full max-w-[1224px] mx-auto p-6 sm:p-[42px_42px_54px] bg-gradient-to-l from-[#E6EAFF] to-[#FFFFFF] shadow-[0_16px_40px_-8px_rgba(31,30,130,0.16)] rounded-[28px]">
-        <div className="flex flex-col lg:flex-row justify-between items-start gap-10 lg:gap-[143px]">
-          {/* Left Column */}
-          <div className="flex flex-col justify-between items-start gap-8 lg:gap-[82px] w-full lg:w-[497px]">
+      <footer className="relative w-full max-w-[1224px] mx-auto p-6 sm:p-[32px_42px_40px] bg-gradient-to-l from-[#E6EAFF] to-[#FFFFFF] shadow-[0_16px_40px_-8px_rgba(31,30,130,0.16)] rounded-[28px]">
+        <div className="flex flex-col gap-6 lg:gap-8">
+          {/* Top Section: Logo/Desc and Links */}
+          <div className="flex flex-col lg:flex-row justify-between items-start gap-6 lg:gap-[143px]">
             {/* Logo + Description */}
-            <div className="flex flex-col items-start gap-1 w-full max-w-[409px]">
+            <div className="flex flex-col items-start gap-[14px] w-full max-w-[409px]">
               <img
                 src="/logo-Yetzu.svg"
                 alt="YETZU Logo"
                 className="w-[209px] h-auto"
               />
-              <p className="text-[#404040] text-lg leading-[21px] tracking-[-0.03em]">
+              <p className="text-[#404040] text-sm font-light leading-[20px] tracking-[-0.03em]">
                 Loren ipsym , can be used for free any where for anything. Ir is
                 effectove tool so solve our text relate problems. can be
               </p>
             </div>
 
+            {/* Links Row */}
+            <div className="flex flex-row flex-wrap justify-between items-start w-full lg:w-[561px]">
+              {footerLinks.map((section, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-start p-2 gap-2"
+                  style={{ width: index === 0 ? '150px' : index === 1 ? '143px' : '204px' }}
+                >
+                  <h4 className="text-[#404040] text-[20px] font-semibold leading-[27px] tracking-[-0.06em] w-full text-right">
+                    {section.title}
+                  </h4>
+                  <div className="flex flex-col items-start gap-2 w-full">
+                    {section.links.map((link, i) => (
+                      <Link
+                        key={i}
+                        href={link.route}
+                        className="block text-[#404040] hover:text-gray-900 w-full text-right text-[14px] leading-[21px] tracking-[-0.03em] transition"
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom Section: Subscribe & Social Icons */}
+          <div className="flex flex-col md:flex-row justify-between items-center md:items-end gap-6 w-full pt-6 border-t border-gray-200/50">
             {/* Subscribe */}
             <div className="flex flex-col items-start gap-3 w-full max-w-[497px]">
-              <h3 className="text-[#404040] text-[26px] font-medium leading-[31px] tracking-[-0.05em]">
+              <h3 className="text-[#404040] text-[22px] font-medium leading-[27px] tracking-[-0.05em]">
                 Subscribe to Newsletter
               </h3>
               <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-[21px] w-full">
@@ -79,38 +107,9 @@ export default function Footer() {
                 </button>
               </div>
             </div>
-          </div>
-
-          {/* Right Column */}
-          <div className="flex flex-col justify-between items-end gap-[143px] w-full lg:w-[561px]">
-            {/* Links Row */}
-            <div className="flex flex-row flex-wrap justify-between items-start w-full">
-              {footerLinks.map((section, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col items-start p-3 gap-3"
-                  style={{ width: index === 0 ? '150px' : index === 1 ? '143px' : '204px' }}
-                >
-                  <h4 className="text-[#404040] text-[22px] font-semibold leading-[27px] tracking-[-0.06em] w-full text-right">
-                    {section.title}
-                  </h4>
-                  <div className="flex flex-col items-start gap-3 w-full">
-                    {section.links.map((link, i) => (
-                      <Link
-                        key={i}
-                        href={link.route}
-                        className="block text-[#404040] hover:text-gray-900 w-full text-right text-lg leading-[21px] tracking-[-0.03em] transition"
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
 
             {/* Social Icons Row */}
-            <div className="flex flex-row items-center gap-[42px]">
+            <div className="flex flex-row items-center gap-[42px] pb-1">
               {socialIcons.map((social, index) => {
                 const Icon = social.icon;
                 return (

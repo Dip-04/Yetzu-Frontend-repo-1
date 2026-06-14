@@ -20,10 +20,12 @@ interface MentorshipSectionProps {
 }
 
 export default function MentorshipSection({
-  heading = "1:1 mentorship that makes research feel possible",
-  subtext = "Book dedicated time with a verified mentor to clarify your topic, structure your project, and move confidently toward publication.",
-  ctaLabel = "Explore 1:1 mentorship sessions",
-  cards = [
+  heading,
+  subtext,
+  ctaLabel,
+  cards,
+}: MentorshipSectionProps) {
+  const defaultCards = [
     {
       title: "Clarity on your path",
       desc: "Define your goals, choose the right project, and understand exactly what to do next.",
@@ -56,34 +58,39 @@ export default function MentorshipSection({
       titleColor: "text-white",
       descColor: "text-white",
     },
-  ],
-}: MentorshipSectionProps) {
+  ];
+
+  const finalCards = cards && cards.length >= 4 ? cards : defaultCards;
+  const finalHeading = heading || "1:1 mentorship that makes research feel possible";
+  const finalSubtext = subtext || "Book dedicated time with a verified mentor to clarify your topic, structure your project, and move confidently toward publication.";
+  const finalCtaLabel = ctaLabel || "Explore 1:1 mentorship sessions";
+
   return (
     <section className="flex flex-col justify-center items-center min-h-auto px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] gap-6 sm:gap-8 md:gap-10 lg:gap-12 bg-white w-full py-12 md:py-14 lg:py-16">
       <div className="flex flex-col justify-center items-start gap-6 md:gap-8 w-full max-w-[1224px]">
         {/* Header & Button */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full gap-4 md:gap-6">
           <h2 className="font-inter font-medium text-[26px] sm:text-[32px] md:text-[40px] lg:text-[46px] leading-[100%] tracking-[-0.06em] text-[#021165] max-w-full md:max-w-[658px] capitalize">
-            {heading}
+            {finalHeading}
           </h2>
 
           <Button
             variant="primary"
             className="!w-fit px-8 !h-[48px] whitespace-nowrap"
           >
-            {ctaLabel}
+            {finalCtaLabel}
           </Button>
         </div>
 
         {/* Subtext */}
         <p className="font-sfpro font-normal text-[16px] md:text-[18px] leading-[150%] md:leading-[21px] tracking-[-0.03em] text-[#252525] w-full max-w-full md:max-w-[860px]">
-          {subtext}
+          {finalSubtext}
         </p>
       </div>
 
       {/* Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6 w-full max-w-[1224px]">
-        {cards.map((item, index) => (
+        {finalCards.map((item, index) => (
           <div
             key={index}
             className={`flex flex-col justify-between items-start p-3 md:p-6 gap-3 md:gap-5 w-full min-h-[180px] md:min-h-[288px] ${item.bgColor} shadow-[0px_16px_32px_-12px_rgba(31,30,130,0.1)] rounded-[16px]`}

@@ -66,7 +66,7 @@ export default function FAQSection({
   };
 
   return (
-    <section className="w-full bg-white px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] flex flex-col items-center mb-10">
+    <section className="w-full bg-white px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] py-12 md:py-14 lg:py-16 flex flex-col items-center">
       <div className="max-w-[1224px] w-full grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
         <div className="flex flex-col justify-between space-y-8">
           <div>

@@ -1,11 +1,22 @@
-import { authApi } from "../axios";
-import type { CMSSectionResponse } from "../cms/types";
+import { api, authApi } from "../axios";
+import type { CMSSectionResponse, PublicCMSPage } from "../cms/types";
 
 const log = (label: string, error: unknown, meta?: Record<string, unknown>) => {
   console.error(`[CMS:${label}]`, { message: (error as Error)?.message, meta });
 };
 
 export const CMSApi = {
+  getPublicPage: async (pageKey: string): Promise<PublicCMSPage | null> => {
+    try {
+      const response = await api.get(`/api/public/cms/pages/${pageKey}`);
+      const data = response?.data?.data || response?.data || response;
+      return data as PublicCMSPage;
+    } catch (error) {
+      log("getPublicPage", error, { pageKey });
+      return null;
+    }
+  },
+
   getSection: async <D = Record<string, unknown>>(
     pageKey: string,
     sectionKey: string

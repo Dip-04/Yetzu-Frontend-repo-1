@@ -5,7 +5,8 @@ import { TextField, ImageUpload, StatsField } from "./CMSField";
 
 interface HeroSectionData {
   topMessage: string;
-  heading: string;
+  blackheader: string;
+  blueheader: string;
   subheading: string;
   heroImage: string;
   stats: Array<{ num: string; label: string }>;
@@ -57,9 +58,15 @@ export function HeroSectionEditor({ data, onChange }: Props) {
       <section>
         <h3 className="text-lg font-semibold text-slate-900 mb-6">Main Message</h3>
         <TextField
-          label="Heading"
-          value={d.heading ?? ""}
-          onChange={(v) => update({ heading: v })}
+          label="Black Heading"
+          value={d.blackheader ?? ""}
+          onChange={(v) => update({ blackheader: v })}
+          multiline
+        />
+        <TextField
+          label="Blue Heading"
+          value={d.blueheader ?? ""}
+          onChange={(v) => update({ blueheader: v })}
           multiline
         />
         <TextField

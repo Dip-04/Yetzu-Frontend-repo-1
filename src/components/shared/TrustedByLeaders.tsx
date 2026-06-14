@@ -2,7 +2,7 @@ import Button from "../ui/Button";
 
 export default function TrustedByLeaders() {
   return (
-    <section className="py-12 md:py-14 lg:py-16 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] min-h-[calc(100vh-68px)] flex items-center justify-center bg-[linear-gradient(180deg,_#FFFFFF_0%,_#F8FAFF_40%,_#F5F8FF_60%,_#FFFFFF_100%)] rounded-b-[60px]">
+    <section className="py-12 md:py-14 lg:py-16 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px] min-h-auto bg-[linear-gradient(180deg,_#FFFFFF_0%,_#F8FAFF_40%,_#F5F8FF_60%,_#FFFFFF_100%)] rounded-b-[60px]">
       <div className="w-full max-w-[1224px] mx-auto rounded-[24px] overflow-hidden shadow-[0_16px_40px_-8px_rgba(31,30,130,0.16)] relative">
         {/* Main Combined Image - 16:9 Aspect Ratio */}
         <div className="relative w-full aspect-[16/9] overflow-hidden max-h-[400px] lg:max-h-[500px]">

@@ -21,6 +21,8 @@ export default function Home() {
       <HeroSection
         studentCount={data.hero.topMessage}
         studentAvatars={data.hero.avatars}
+        headingMobile={[data.hero.blackheader, data.hero.blueheader]}
+        headingDesktop={[data.hero.blackheader, data.hero.blueheader]}
         subheading={data.hero.subheading}
         heroImage={data.hero.heroImage}
         kpis={data.hero.stats}

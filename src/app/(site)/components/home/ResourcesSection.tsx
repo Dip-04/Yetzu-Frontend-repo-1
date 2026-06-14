@@ -66,7 +66,7 @@ export default function ResourcesSection({
   ],
 }: ResourcesSectionProps) {
   return (
-    <section className="bg-gradient-to-b from-white via-[#E2E7FF] to-white py-[60px] md:py-[80px] px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px]">
+    <section className="bg-gradient-to-b from-white via-[#E2E7FF] to-white py-12 md:py-14 lg:py-16 px-4 sm:px-6 md:px-12 lg:px-20 xl:px-[108px]">
       <div className="w-full max-w-[1224px] mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end w-full mb-[40px] md:mb-[52px] gap-4 md:gap-6">
           <div className="max-w-full md:max-w-[658px]">
