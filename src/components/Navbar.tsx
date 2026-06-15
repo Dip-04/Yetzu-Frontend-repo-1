@@ -28,6 +28,7 @@ import Button from "./ui/Button";
 import { useCart } from "@/providers/CartProvider";
 import { StudentAPI, asArray } from "@/lib/api";
 import { getTimeAgo } from "@/lib/utils/dateUtils";
+import { usePathname } from "next/navigation";
 
 const Navbar = () => {
   const { user } = useSession();
@@ -60,6 +61,7 @@ const Navbar = () => {
 
   const name = studentProfile?.name || contextName;
   const email = studentProfile?.email || contextEmail;
+  const pathname = usePathname() || "";
   const { mutateAsync: logout } = useLogoutMutation();
   const { cartCount } = useCart();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -184,6 +186,7 @@ const Navbar = () => {
   };
 
   const menuItemsToUse = getUserMenuItems();
+  const isNavActive = (href: string) => href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <>
@@ -203,17 +206,19 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Center: Navigation Links (Desktop) */}
-          <div className="hidden lg:flex items-center space-x-8 text-gray-800">
-            {navigationLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="hover:text-[#2563eb] font-medium transition-colors duration-200"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {/* Center: Navigation Links (Desktop) */}
+            <div className="hidden lg:flex items-center space-x-8 text-gray-800">
+              {navigationLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`font-medium transition-colors duration-200 ${
+                    isNavActive(link.href) ? "text-[#042BFD]" : "hover:text-[#2563eb]"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
           </div>
 
           {/* Right: User Actions */}
@@ -461,7 +466,11 @@ const Navbar = () => {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-[#2563eb] rounded-lg transition-all duration-200 font-medium"
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 font-medium ${
+                    isNavActive(link.href)
+                      ? "text-[#042BFD] bg-blue-50"
+                      : "text-gray-700 hover:bg-blue-50 hover:text-[#2563eb]"
+                  }`}
                   onClick={() => setIsSidebarOpen(false)}
                 >
                   <Bell size={18} />

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { AdminAPI, asArray } from '@/lib/api';
-import type { TimeRange } from '../page';
+import type { TimeRange } from '../types';
 
 const mapOrganization = (org: any, index: number) => {
   const students = Number(org.students || org.totalStudents || org.studentCount || org.studentsCount || 0);
